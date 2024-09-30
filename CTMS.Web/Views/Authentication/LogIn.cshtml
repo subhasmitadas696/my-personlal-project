@@ -1,0 +1,366 @@
+﻿@{
+    ViewData["Title"] = "TroupeRegistration";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+@Html.AntiForgeryToken()
+
+<link rel="stylesheet" href="~/css/troupe-login.css">
+<script src="~/js/aes.js"></script>
+<style>
+    .captchabox__text {
+        padding: 1.0rem;
+    }
+</style>
+<div class="innerpage-container login-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                <h3 class="section__heading">@Localizer["The all-in-one solution for Managing your Troupe"]</h3>
+                <ul class="list-group list-group-flush instruction-list">
+                    <li class="list-group-item">
+                        <i class="bi bi-arrow-right list-group-item__icon"></i>
+                       @Localizer["Manage your troupe details & activities online."]
+                    </li>
+
+                    <li class="list-group-item">
+                        <i class="bi bi-arrow-right list-group-item__icon"></i>
+                       @Localizer["Get cultural program call at your own area from Govt authority."]
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-arrow-right list-group-item__icon"></i>
+                       @Localizer["Set your program charges online & get paid directly to your bank account."] 
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6 col-xl-5 offset-xl-1 order-1 order-lg-2">
+                <div class="card card--login">
+                    <div class="card-body">
+                        <h4 class="card--login__title">@Localizer["Login"]</h4>
+                       
+                        <div class="mb-4">
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" id="txtusername" placeholder="Username" autocomplete="off">
+                                <label>@Localizer["Username"]</label>
+                                <i class="bi bi-person form-floating__icon-right"></i>
+                            </div>
+                            <small class="error-messageUsername text-danger"></small>
+                            <small class="error-messagenotfound text-danger" id="errmsg"></small>
+                        </div>
+                        <div class="mb-4">
+                            <div class="form-floating ">
+                                <input type="password" class="form-control" id="txtpassword" placeholder="Password">
+                                <label>@Localizer["Password"]</label>
+                                <i class="bi bi-eye-slash form-floating__icon-right" id="togglePassword"></i>
+                            </div>
+                            <small class="error-messagePassword text-danger" id="errormsggg"></small>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="CaptchaInput"
+                                           placeholder="Enter captcha">
+                                    <label>@Localizer["Enter captcha"]</label>
+                                </div>
+                                <small class="error-messageCaptcha text-danger"></small>
+                            </div>
+                            <div class="col-6 ps-0 ps-sm-3">
+                                <div class="captchabox  d-flex align-items-center">
+                                    <div class="captchabox__text">
+                                        <img id="captchimg" alt="captcha" src="~/get-captcha-image" style="pointer-events: none; user-drag: none; -moz-user-select: none; -webkit-user-drag: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;" />
+                                    </div>
+                                    <a href="#" id="img-captcha" class="login-ref">
+                                        <i class="bi bi-arrow-clockwise captchabox__refresh"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="text-center mt-4 mt-md-5">
+                            <button id="btnLogin" type="button" class="btn-primary btn w-100 rounded-pill btn-lg mb-3">@Localizer["Login"]</button>
+                            <a href="/ChangePassword/ForgotPassword" title="Forgot Password" class="text-secondary card--login__link">@Localizer["Forgot Password"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/aes.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#togglePassword").click(function () {
+            $(this).toggleClass("bi-eye bi-eye-slash");
+            var type = $(this).hasClass("bi-eye-slash") ? "password" : "text";
+            $("#txtpassword").attr("type", type);
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById("CaptchaInput").addEventListener("paste", function (e) {
+        e.preventDefault();
+        var clipboardData = e.clipboardData || window.clipboardData;
+        var pastedData = clipboardData.getData("text/plain");
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function DecryptsEncry(strEncrypted, key, iv) {
+        var decrypted = CryptoJS.AES.decrypt(strEncrypted, key, {
+            iv: iv,
+            padding: CryptoJS.pad.Pkcs7,
+            mode: CryptoJS.mode.CBC
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+
+    var encryptedValue = "U2FsdGVkX1+3bIMIvQpBb4Ea8yv+QKbT4FvxIRGQohw=";
+    var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+    var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+    var decryptedValue = DecryptsEncry(encryptedValue, key, iv);
+    console.log(decryptedValue);
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function SubmitsEncry(strCntrol) {
+        var strData = $('#' + strCntrol).val();
+        var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+        var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+        var encryptedlogin = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(strData), key,
+            {
+                keySize: 128 / 8,
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+        $('#' + strCntrol).val(encryptedlogin);
+    }
+    $(document).ready(function () {
+        $("#CaptchaInput").keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+        $("#CaptchaInput").keypress(function (e) {
+            if (e.which === 13) { 
+                $("#btnLogin").click(); 
+            }
+        });
+        $("#btnLogin").click(function () {
+            var username = $("#txtusername").val().trim();
+            var password = $("#txtpassword").val().trim();
+            var captcha = $("#CaptchaInput").val().trim();
+            if (username === "") {
+                $("#txtusername").addClass("error");
+                $(".error-messageUsername").text("Please Enter Username!!");
+                valid = false;
+            }
+            else{
+                $("#txtusername").removeClass("error");
+                $(".error-messageUsername").text("");
+                $(".error-messagenotfound").html("");
+                valid = true;
+            }
+            if (password === "") {
+                $("#txtpassword").addClass("error");
+                $(".error-messagePassword").text("Please Enter Password!!");
+                valid = false;
+            }
+            else {
+                $("#txtpassword").removeClass("error");
+                $(".error-messagePassword").text("");
+                $(".error-messagenotfound").html("");
+                valid = true;
+            }
+            if (captcha === "") {
+                $("#CaptchaInput").addClass("error");
+                $(".error-messageCaptcha").text("Please Enter Captch!!");
+                valid = false;
+            }
+            else {
+                $("#CaptchaInput").removeClass("error");
+                $(".error-messageCaptcha").text("");
+                $(".error-messagenotfound").html("");
+                valid = true;
+            }
+           
+            if (valid) {
+                $(".error-messageUsername").text("");
+                $(".error-messagePassword").text("");
+                $(".error-messageCaptcha").text("");
+                $("#txtpassword").removeClass("error");
+                $("#txtusername").removeClass("error");
+                $("#CaptchaInput").removeClass("error");
+                SubmitsEncry('txtusername');
+                SubmitsEncry('txtpassword');
+                SubmitsEncry('CaptchaInput');
+                username = $("#txtusername").val().trim();
+                password = $("#txtpassword").val().trim();
+                captcha = $("#CaptchaInput").val().trim();
+                manageuser(username, password, captcha);
+            }
+            return false;
+        });
+        function manageuser(username, password, captcha) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Authentication/LogIn',
+                data: { USERNAME: $.trim(username), UPASSWORD: $.trim(password), captcha: $.trim(captcha) },
+                headers: { "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val() },
+                type: "POST",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    $("#overlay").show();
+                },
+                success: function (data) {
+                    if (data.state == "success") {
+                        if (data.data == "200") {
+                            var url = '@Url.Content("~/ApprovalConfig/Dashboard")';
+                            window.setTimeout(function () {
+                                window.location.href = url;
+                            }, 1);
+                        }
+
+                        else {
+                            var url = '@Url.Content("~/Authentication/ManageUser")';
+                            alert(data.message+", Success 200 Else");
+                            window.setTimeout(function () {
+                                window.location.href = url;
+                            }, 3);
+                        }
+                    }
+                    else if (data.state == "warning") {
+                        if (data.data == "101") {
+                            resetCaptchaImage();
+                            $(".error-messagePassword").text(data.message);
+                            $("#perrmsg").html(data.message);
+                            $("#Rusername").val(username);
+                            $(".otpGenerateBox").hide();
+                            $(".PasswordGenerateBox").show();
+                            $(".rollNumberBox").hide();
+                            $("#txtusername").val("");
+                            $("#txtpassword").val("");
+                            $("#CaptchaInput").val("");
+                        }
+                        else if (data.data == "4") {
+                            $(".error-messagenotfound").html(data.message);
+                            $(".otpGenerateBox").hide();
+                            $(".rollNumberBox").show();
+                        }
+                        else if (data.data == "null") {
+                            $(".error-messagenotfound").html(data.message);
+                            $(".otpGenerateBox").hide();
+                            $(".rollNumberBox").show();
+                        }
+                        else {
+                            if (data.data == "300") {
+                                $(".error-messageCaptcha").html(data.message);
+
+                                var usernameEncrypted = $("#txtusername").val().trim();
+                                var passwordEncrypted = $("#txtpassword").val().trim();
+
+                                if (usernameEncrypted !== '' && passwordEncrypted !== '') {
+                                    var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+                                    var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+
+                                    var decryptedUsername = DecryptsEncry(usernameEncrypted, key, iv);
+                                    var decryptedPassword = DecryptsEncry(passwordEncrypted, key, iv);
+
+                                    $("#txtusername").val(decryptedUsername);
+                                    $("#txtpassword").val(decryptedPassword);
+                                }
+                                resetCaptchaImage();
+                                $(".error-messagenotfound").html("");
+                                $("#CaptchaInput").val("");
+                            }
+                            else {
+                                $(".error-messagenotfound").html(data.message);
+                                $(".error-messagePassword").text("Invalid Password !");
+                                $("#txtusername").val("");
+                                $("#txtpassword").val("");
+                                $("#CaptchaInput").val("");
+                            }
+                            $("#oerrmsg").html(data.message);
+                            $("#Rusername").val(username);
+                            $(".otpGenerateBox").show();
+                            $(".PasswordGenerateBox").hide();
+                            $(".rollNumberBox").hide();
+
+                        }
+
+                    }
+                    else {
+                        $(".error-messagenotfound").html(data.message);
+                        $("#errmsg").html(data.message);
+                    }
+
+
+                },
+                error: function (req, status, error) {
+                    alert(error + "|" + req + "|" + status+" , Error ");
+                },
+                complete: function () {
+                    $("#overlay").hide();
+                }
+            });
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    const otpInputs = document.querySelectorAll(".otp-inputs__box");
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener("input", (event) => {
+            const currentInput = event.target;
+            if (currentInput.value.length >= currentInput.maxLength) {
+                if (index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            }
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function updateCountdown() {
+        var countdownElement = document.getElementById("countdown");
+        var time = countdownElement.textContent.split(":");
+        var minutes = parseInt(time[0]);
+        var seconds = parseInt(time[1]);
+
+        if (minutes === 0 && seconds === 0) {
+            $("#resendotp").show();
+            resendLink.href = "#"; 
+        }
+        else {
+            if (seconds === 0) {
+                minutes -= 1;
+                seconds = 59;
+            } else {
+                seconds -= 1;
+            }
+
+            var formattedTime = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            countdownElement.textContent = formattedTime;
+
+            setTimeout(updateCountdown, 1000);
+        }
+    }
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $("#img-captcha").click(function () {
+        resetCaptchaImage();
+    });
+
+    function resetCaptchaImage() {
+        $.ajax({
+            url: '/get-captcha-image',
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' 
+            },
+            success: function (response) {
+                var imageUrl = URL.createObjectURL(response);
+                $('#captchimg').attr('src', imageUrl);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>

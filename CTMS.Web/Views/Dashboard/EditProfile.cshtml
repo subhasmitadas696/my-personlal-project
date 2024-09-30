@@ -1,0 +1,2222 @@
+﻿@{
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+<link rel="stylesheet" href="~/css/edit-profile.css">
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<div class="container"> 
+    <main class="content-body">
+        @Html.AntiForgeryToken()
+        <div class="back-profile mb-3">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left "></i>Back to Profile</a>
+        </div>
+        <div class="card view-form-details card--lg">
+            <h5 class="card-header view-form-details__head mb-0">
+                Basic Information
+            </h5>
+            <div class="card-body">
+                <h6 class=" view-form-details__title mt-0">Cultural Troupe Information</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control alphabetInput" id="txtGroupName" oninput="avoidFirstSpace(event)">
+                            <label for="txtGroupName">Cultural Troupe Name<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtGroupName"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" name="txtGrpCreatedOn" id="txtGrpCreatedOn" class="form-control" placeholder="From Date" autocomplete="off">
+                            <label for="txtGrpCreatedOn">Troupe Created on<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errtxtGrpCreatedOn"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlDist" name="ddlDist">
+                                <option value="0" selected>Select District</option>
+                            </select>
+                            <label for="ddlDist">District<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlDist"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlBlock" name="ddlBlock">
+                                <option value="0" selected>Select Block</option>
+                            </select>
+                            <label for="ddlBlock">Block/ULB<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlBlock"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlGp" name="ddlGp">
+                                <option value="0" selected>Select Gram Panchayat</option>
+                            </select>
+                            <label for="ddlGp">Gram Panchayat/Ward<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlGp"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="txtAddress" name="txtAddress" autocomplete="off" oninput="avoidFirstSpace(event)">
+                            <label for="txtAddress">Address<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtAddress"></span>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="txtPincode" maxlength="6" autocomplete="off" onKeyPress="if(this.value.length==6) return false;" oninput="avoidFirstSpace(event)">
+                            <label for="txtPincode">Pincode<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtPincode"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="file" class="form-control" id="grpphoto" accept="image/*">
+                            <label for="lblgrpphoto" id="lblgrpphoto">Group Photo<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errgrpphoto"></small>
+                            <span class="text-danger" id="photospanid">@Localizer["(Maximum upload group photo size is 1MB and only image(.jpeg/jpg/png) files are allowed)"]</span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="file" class="form-control" id="video" accept="video/*">
+                            <label for="lblvideo" id="lblvideo">Upload Video<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errvideo"></small>
+                            <span class="text-danger" id="videospanid">@Localizer["(Maximum upload video size is 5MB and only video(.mp4/avi/mov/wmv) files are allowed)"]</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="" class="d-block">
+                            Registered through 1860 society act<span class="text-danger">*</span>
+                        </label>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="GrpRegister" id="societyAct1" value="true">
+                            <label class="form-check-label" for="societyAct1">Yes</label>
+                        </div>
+                        <div class="form-check-inline">
+                            <input class="form-check-input" type="radio" name="GrpRegister" id="societyAct2" value="false" checked>
+                            <label class="form-check-label" for="societyAct2">No</label>
+                        </div>
+
+                    </div>
+                    <div class="col-md-4" style="display:none" id="SocietyRegDiv">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="txtSocietyactNo" placeholder="Cultural Troupe Registration No." oninput="avoidFirstSpace(event)">
+                            <label for="txtSocietyactNo">Registration No.<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtSocietyactNo"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="display:none" id="SocietyRegDate">
+                        <div class="form-floating">
+                            <input type="text" name="txtSocietyRegDate" id="txtSocietyRegDate" class="form-control" placeholder="Society Registration Date" autocomplete="off">
+                            <label for="regdate">Registration Date<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errtxtSocietyRegDate"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" style="display:none" id="fileUploadDiv11">
+                        <div class="form-floating mb-3">
+                            <input type="file" class="form-control" id="regphotoupload" placeholder="Society Registration Certificate">
+                            <label for="lblsocdoc" id="lblsocdoc">Upload Registration Certificate<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtregphotoupload"></span>
+                            <span class="text-danger" id="regspanid">@Localizer["(Maximum upload Registration Certificate size is 1MB and only PDF & image(.jpeg/jpg/png/pdf) files are allowed)"]</span>
+                        </div>
+                    </div>
+                </div>
+                <h6 class="view-form-details__title">Art & Performance Details</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlCategory" name="ddlCategory">
+                                <option value="0">Select Category</option>
+                            </select>
+                            <label for="ddlCategory">Category<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlCategory"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlSubCategory" name="ddlSubCategory">
+                                <option value="0">Select Sub-Category</option>
+                            </select>
+                            <label for="ddlSubCategory">Sub-Category<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlSubCategory"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3" id="banerimage">
+                            <input type="file" class="form-control" id="bannerupload" placeholder="Cultural Troupe Banner" accept="image/*">
+                            <label for="lblbannerupload" id="lblbannerupload">Cultural Troupe Banner</label>
+                            <span class="text-danger" id="errbannerupload"></span>
+                            <span class="text-danger" id="bannerspanid">@Localizer["(Maximum upload Cultural Troupe Banner size is 1MB and only PDF & image(.jpeg/jpg/png/pdf) files are allowed)"]</span>
+                        </div>
+                    </div>
+                </div>
+                <h6 class="view-form-details__title">Troupe Member Details</h6>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="hidden" id="selectedGender" value="3">
+                            <input type="text" class="form-control alphabetInput" name="txtMember" id="txtMember" autocomplete="off" placeholder="Member Name" oninput="avoidFirstSpace(event)">
+                            <label for="txtMember">Member Name<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errtxtMember"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control alphabetInput" name="txtmemfather" id="txtmemfather" autocomplete="off"
+                                   placeholder="Member's Father Name" oninput="avoidFirstSpace(event)">
+                            <label for="floatingInputGrid">Member's Father Name<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errtxtmemfather"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" name="txtmemdob" id="txtmemdob" class="form-control" placeholder="Member Date of Birth" autocomplete="off">
+                            <label for="memdob">Member's Date Of Birth<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errtxtmemdob"></small>
+                        </div>
+                    </div>
+                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlmemDist" name="ddlmemDist">
+                                <option value="0" selected>Select District</option>
+                            </select>
+                            <label for="mdist">District<span class="text-danger">*</span></label>
+                            <input type="hidden" id="hidmemdistId" />
+                            <small class="text-danger" id="errddlmemDist"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlmemBlock" name="ddlmemBlock">
+                                <option value="0" selected>Select Block</option>
+                            </select>
+                            <label for="mblock">Block/ULB<span class="text-danger">*</span></label>
+                            <input type="hidden" id="hidmemblockId" />
+                            <small class="text-danger" id="errddlmemBlock"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlmemGp" name="ddlmemGp">
+                                <option value="0" selected>Select Gram Panchayat</option>
+                            </select>
+                            <label for="mgp"> Gram Panchayat/Ward<span class="text-danger">*</span></label>
+                            <input type="hidden" id="hidmemgpId" />
+                            <small class="text-danger" id="errddlmemGp"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" id="memrole">
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="ddlmemRole" name="ddlmemRole">
+                                <option value="0" selected>Select Role</option>
+                            </select>
+                            <label for="mrole"> Member Role<span class="text-danger">*</span></label>
+                            <input type="hidden" id="hidmemRole" />
+                            <small class="text-danger" id="errddlmemRole"></small>
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="display:none" id="roleintroupe">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control alphabetInput" name="txtRole" id="txtRole" autocomplete="off" placeholder="Role in Troupe">
+                            <label for="txtRole">Role in Troupe<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtRole"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="txtAadhar" name="txtAadhar" maxlength="12" onchange="isValidAadhar();" placeholder="Aadhaar Number" oninput="avoidFirstSpace(event)" onKeyPress="if(this.value.length==12) return false;">
+                            <label for="txtAadhar">Aadhaar Number<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtAadhar"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="txtMobileNumber" name="txtMobileNumber" onchange="isValidMobileNumber();" placeholder="Mobile Number" oninput="avoidFirstSpace(event)"
+                                   autocomplete="off" maxlength="10" onKeyPress="if(this.value.length==10) return false;">
+                            <label for="txtMobileNumber">Mobile Number<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtMobileNumber"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="txtEmail" name="txtEmail" autocomplete="off" placeholder="Email" oninput="avoidFirstSpace(event)">
+                            <label for="txtEmail">Email</label>
+                            <span class="text-danger" id="errtxtEmail"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="d-block">Gender<span class="text-danger">*</span></label>
+                        <div class="mb-3">
+                            <div class="form-check-inline">
+                                <input class="form-check-input" type="radio" value="1" name="rdobtnGender"
+                                       id="rdobtnGender1">
+                                <label class="form-check-label" for="rdobtnGender1">
+                                    Male
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <input class="form-check-input" type="radio" value="2" name="rdobtnGender"
+                                       id="rdobtnGender2" >
+                                <label class="form-check-label" for="rdobtnGender2">
+                                    Female
+                                </label>
+                            </div>
+                            <div class="form-check-inline">
+                                <input class="form-check-input" type="radio" value="3" name="rdobtnGender"
+                                       id="rdobtnGender3" >
+                                <label class="form-check-label" for="rdobtnGender3">
+                                    Others
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group  mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="txtIFSC" name="txtIFSC" onkeyup="OnIFSCChange();" oninput="avoidFirstSpace(event)" placeholder=" " autocomplete="off">
+                                <label for="floatingInputGrid" autocomplete="off">IFSC Code<span class="text-danger">*</span></label>
+                            </div>
+                            <span class="input-group-text getIfsc-code" data-bs-toggle="modal" data-bs-target="#getIfscModal">Get IFSC</span>
+                        </div>
+                        <span class="text-danger" id="errtxtIFSC"></span>
+                    </div>
+                </div>
+                <div class="row"> 
+                    
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="txtBank" name="txtBank" aria-label="Floating label select example" placeholder=" " readonly>
+                            <label for="txtBank" autocomplete="off">Bank Name<span class="text-danger">*</span></label>
+                            <input type="hidden" id="hidBankId" />
+                            <span class="text-danger" id="errtxtBank"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="txtBranch" name="txtBranch" placeholder=" " readonly>
+                            <label for="txtBranch">Branch Name<span class="text-danger">*</span></label>
+                            <input type="hidden" id="hidBranchId" />
+                            <span class="text-danger" id="errtxtBranch"></span>
+                        </div>
+                    </div> 
+                    <div class="col-md-4">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="txtAccountNo" name="txtAccountNo" placeholder=" " oninput="avoidFirstSpace(event)">
+                            <label for="txtAccountNo">Account Number<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtAccountNo"></span>
+                        </div>
+                    </div> 
+                </div>
+                <div class="text-end">
+                    <button type="button" class="btn btn-secondary btn-lg" id="btnAddLst" value="">
+                        <i class="bi bi-plus-circle pe-2"></i> Add Members
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card view-form-details mt-4 card--lg">
+            <h5 class="card-header view-form-details_head mb-0">
+                Artist Information
+            </h5>
+            <div class="card-body">
+                <div class="table-responsive--rounded ">
+                    <div class="table-responsive">
+                        <h6 class="content-body__heading">Members Details</h6>
+                        <table class="table" id="tblmembers">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Troupe Leader</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Address</th>                                   
+                                    <th scope="col">Mobile/Email</th>
+                                    <th scope="col">Bank Details</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmore">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <input type="button" class="rounded-pill btn btn-primary btn-lg" id="FinalSubmit"
+                           title="Submit" value="Update" />
+                   
+                </div>
+            </div>
+        </div>
+    </main>
+
+</div>
+<div class="modal fade" id="getIfscModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlBank" name="ddlBank">
+                                <option value="0" selected>Select Bank</option>
+                            </select>
+                            <label for="block">Bank</label>
+                            <span class="text-danger" id="errddlBank"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlBranch" name="ddlBranch">
+                                <option value="0" selected>Select Branch</option>
+                            </select>
+                            <label for="block"> Branch</label>
+                            <span class="text-danger" id="errddlBranch"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 d-none" id="ifscDiv">
+                        <div class="form-floating">
+                            <h6>IFSC No:<span id="txtIFSCLbl"></span> </h6>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="padding-left:125px;">
+                        <button type="button" class="btn btn-primary" id="saveIFSC">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeIFSC">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#txtGroupName').on('change', function () {
+        var inputValue = $('#txtGroupName').val().trim();
+        if (inputValue !== "") {
+            $('#txtGroupName').removeClass("is-invalid");
+            $('#errtxtGroupName').text("");
+        } else {
+            $('#txtGroupName').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtGroupName').text("Please Enter Troupe Name!");
+            $('#txtGroupName').focus();
+        }
+    });
+
+    $('#ddlDist').on('change', validateDistrictSelection);
+    function validateDistrictSelection() {
+        var selectedValue = $('#ddlDist').val();
+        if (selectedValue !== "0") {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        } else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+        }
+    }
+    $('#ddlBlock').on('change', validateBlockSelection);
+    function validateBlockSelection() {
+        var selectedValue = $('#ddlBlock').val();
+        if (selectedValue !== "0") {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').text("");
+        } else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please Select Block!");
+            $('#ddlBlock').focus();
+        }
+    }
+    $('#ddlGp').on('change', validateGpSelection);
+
+    function validateGpSelection() {
+        var selectedValue = $('#ddlGp').val();
+        if (selectedValue !== "0") {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').text("");
+        } else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please Select Gram Panchayat!");
+            $('#ddlGp').focus();
+        }
+    }
+    $('#txtAddress').on('change', validateAddress);
+    function validateAddress() {
+        var inputValue = $('#txtAddress').val().trim();
+        if (inputValue !== "") {
+            $('#txtAddress').removeClass("is-invalid");
+            $('#errtxtAddress').text("");
+        } else {
+            $('#txtAddress').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAddress').text("Please Enter Address!");
+            $('#txtAddress').focus();
+        }
+    }
+    $('#txtPincode').on('change', validatePincode);
+
+    function validatePincode() {
+        var inputValue = $('#txtPincode').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length === 6) {
+                $('#txtPincode').removeClass("is-invalid");
+                $('#errtxtPincode').text("");
+            } else {
+                $('#txtPincode').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtPincode').text("Pincode number should have exactly 6 digits!");
+                $('#txtPincode').focus();
+            }
+        } else {
+            $('#txtPincode').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtPincode').text("Please Enter Pincode!");
+            $('#txtPincode').focus();
+        }
+    }
+    $('#txtSocietyactNo').on('change', function () {
+        var inputValue = $('#txtSocietyactNo').val().trim();
+        if (inputValue !== "") {
+            $('#txtSocietyactNo').removeClass("is-invalid");
+            $('#errtxtSocietyactNo').text("");
+        } else {
+            $('#txtSocietyactNo').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtSocietyactNo').text("Please Enter Troupe Name!");
+            $('#txtSocietyactNo').focus();
+        }
+    });
+    $('#txtSocietyRegDate').on('change', validateSocietyRegDate);
+    function validateSocietyRegDate() {
+        var inputValue = $('#txtSocietyRegDate').val().trim();
+        if (inputValue !== "") {
+            $('#txtSocietyRegDate').removeClass("is-invalid");
+            $('#errtxtSocietyRegDate').text("");
+        } else {
+            $('#txtSocietyRegDate').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtSocietyRegDate').text("Please Choose Group Created On!");
+            $('#txtSocietyRegDate').focus();
+        }
+    }
+
+    $('#ddlCategory').on('change', validateCategorySelection);
+
+    function validateCategorySelection() {
+        var selectedValue = $('#ddlCategory').val();
+        if (selectedValue !== "0") {
+            $('#ddlCategory').removeClass("is-invalid");
+            $('#errddlCategory').text("");
+        } else {
+            $('#ddlCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlCategory').text("Please Select Category!");
+            $('#ddlCategory').focus();
+        }
+    }
+    $('#ddlSubCategory').on('change', validateSubCategorySelection);
+    function validateSubCategorySelection() {
+        var selectedValue = $('#ddlSubCategory').val();
+        if (selectedValue !== "0") {
+            $('#ddlSubCategory').removeClass("is-invalid");
+            $('#errddlSubCategory').text("");
+        } else {
+            $('#ddlSubCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlSubCategory').text("Please Select SubCategory!");
+            $('#ddlSubCategory').focus();
+        }
+    }
+    $('#txtMember').on('change', validateMemberName);
+
+    function validateMemberName() {
+        var inputValue = $('#txtMember').val().trim();
+        if (inputValue !== "") {
+            $('#txtMember').removeClass("is-invalid");
+            $('#errtxtMember').text("");
+        } else {
+            $('#txtMember').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMember').text("Please Enter Member Name!");
+            $('#txtMember').focus();
+        }
+    }
+
+    $('#txtmemfather').on('change', validateMemberFatherName);
+
+    function validateMemberFatherName() {
+        var inputValue = $('#txtmemfather').val().trim();
+        if (inputValue !== "") {
+            $('#txtmemfather').removeClass("is-invalid");
+            $('#errtxtmemfather').text("");
+        } else {
+            $('#txtmemfather').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmemfather').text("Please Enter Member's Father Name!");
+            $('#txtmemfather').focus();
+        }
+    }
+
+
+    $('#ddlmemDist').on('change', validateMemberDistrict);
+
+    function validateMemberDistrict() {
+        var selectedValue = $('#ddlmemDist').val().trim();
+        if (selectedValue !== "0") {
+            $('#ddlmemDist').removeClass("is-invalid");
+            $('#errddlmemDist').text("");
+        } else {
+            $('#ddlmemDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemDist').text("Please Select District!");
+            $('#ddlmemDist').focus();
+        }
+    }
+
+    $('#ddlmemBlock').on('change', validateMemberBlock);
+
+    function validateMemberBlock() {
+        var selectedValue = $('#ddlmemBlock').val().trim();
+        if (selectedValue !== "0") {
+            $('#ddlmemBlock').removeClass("is-invalid");
+            $('#errddlmemBlock').text("");
+        } else {
+            $('#ddlmemBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemBlock').text("Please Select Block!");
+            $('#ddlmemBlock').focus();
+        }
+    }
+
+    $('#ddlmemGp').on('change', validateMemberGramPanchayat);
+
+    function validateMemberGramPanchayat() {
+        var selectedValue = $('#ddlmemGp').val().trim();
+        if (selectedValue !== "0") {
+            $('#ddlmemGp').removeClass("is-invalid");
+            $('#errddlmemGp').text("");
+        } else {
+            $('#ddlmemGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemGp').text("Please Select Gram Panchayat!");
+            $('#ddlmemGp').focus();
+        }
+    }
+
+    $('#ddlmemRole').on('change', validateMemberRole);
+
+    function validateMemberRole() {
+        var selectedValue = $('#ddlmemRole').val().trim();
+        if (selectedValue !== "0") {
+            $('#ddlmemRole').removeClass("is-invalid");
+            $('#errddlmemRole').text("");
+        } else {
+            $('#ddlmemRole').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemRole').text("Please Select Role!");
+            $('#ddlmemRole').focus();
+        }
+    }
+
+    $('#txtRole').on('change', validateCustomRole);
+
+    function validateCustomRole() {
+        var ddlrole = $("#ddlmemRole").val();
+        if (ddlrole == "2") {
+            var inputValue = $('#txtRole').val().trim();
+            if (inputValue !== "") {
+                $('#txtRole').removeClass("is-invalid");
+                $('#errtxtRole').text("");
+            } else {
+                $('#txtRole').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtRole').text("Please Enter Role!");
+                $('#txtRole').focus();
+            }
+        }
+    }
+
+
+    $('#txtAadhar').on('change', validateAadharNumber);
+
+    function validateAadharNumber() {
+        var inputValue = $('#txtAadhar').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length === 12) {
+                $('#txtAadhar').removeClass("is-invalid");
+                $('#errtxtAadhar').text("");
+            } else {
+                $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtAadhar').text("Please Enter a Valid Aadhaar No.!");
+                $('#txtAadhar').focus();
+            }
+        } else {
+            $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAadhar').text("Please Enter Aadhaar No.!");
+            $('#txtAadhar').focus();
+        }
+    }
+
+    $('#txtMobileNumber').on('change', validateMobileNumber);
+
+    function validateMobileNumber() {
+        var inputValue = $('#txtMobileNumber').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length === 10) {
+                $('#txtMobileNumber').removeClass("is-invalid");
+                $('#errtxtMobileNumber').text("");
+            } else {
+                $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtMobileNumber').text("Please Enter a Valid Mobile Number.!");
+                $('#txtMobileNumber').focus();
+            }
+        } else {
+            $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMobileNumber').text("Please Enter Mobile Number.!");
+            $('#txtMobileNumber').focus();
+        }
+    }
+
+    $('#txtMobileNumber').change(function () {
+        if($('#txtMobileNumber').val().trim() !==""){
+            if (MobileNumber($('#txtMobileNumber').val()) == false) {
+                $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtMobileNumber').text("Please Enter a Valid Mobile Number.!");
+                $('#txtMobileNumber').focus();
+            }
+            else {
+                $('#txtMobileNumber').removeClass("is-invalid");
+                $('#errtxtMobileNumber').text("");
+            }
+        }
+        else {
+            $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMobileNumber').text("Please Enter Mobile Number.!");
+            $('#txtMobileNumber').focus();
+        }
+    })
+
+    $('#txtAccountNo').on('change', validateAccountNumber);
+    function validateAccountNumber() {
+        var inputValue = $('#txtAccountNo').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length >= 8 && inputValue.length <= 20) {
+                $('#txtAccountNo').removeClass("is-invalid");
+                $('#errtxtAccountNo').text("");
+            } else {
+                $('#txtAccountNo').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtAccountNo').text("Please Enter a Valid Account No.!");
+                $('#txtAccountNo').focus();
+            }
+        } else {
+            $('#txtAccountNo').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAccountNo').text("Please Enter Account No.!");
+            $('#txtAccountNo').focus();
+        }
+    }
+
+
+
+
+    $('#txtEmail').on('change', function () {
+        var inputValue = $(this).val();
+        if (inputValue.length !== 0) {
+            if (isValidEmail(inputValue)) {
+                $('#txtEmail').removeClass("is-invalid");
+                $('#errtxtEmail').text("");
+            } else {
+                $('#txtEmail').addClass("is-invalid");
+                $('#errtxtEmail').text("Please Enter a Valid Email.!");
+            }
+        } else {
+            $('#txtEmail').removeClass("is-invalid");
+            $('#errtxtEmail').text("");
+        }
+    });
+
+    function isValidEmail(email) {
+        var emailRegex = /^[a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        return emailRegex.test(email);
+    }
+
+</script>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('regphotoupload').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 1 * 1024 * 1024; 
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileType = fileInput.files[0].type;
+            var validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            $("#regspanid").hide();
+            if (!validTypes.includes(fileType)) {
+                document.getElementById('errtregphotoupload').innerText = 'Only PDF and Image files are allowed.';
+                fileInput.value = '';
+            }
+            else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errtregphotoupload').innerText = 'File size exceeds 1MB limit.';
+                fileInput.value = '';
+            }
+            else {
+                document.getElementById('errtregphotoupload').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('video').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 5 * 1024 * 1024; 
+        var validExtensions = ['mp4', 'avi', 'mov', 'wmv'];
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileExtension = fileInput.files[0].name.split('.').pop().toLowerCase();
+
+            $("#videospanid").hide();
+
+            if (!validExtensions.includes(fileExtension)) {
+                document.getElementById('errvideo').innerText = 'Only Video files are allowed.';
+                fileInput.value = '';
+            } else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errvideo').innerText = 'File size exceeds 5MB limit.';
+                fileInput.value = '';
+            } else {
+                document.getElementById('errvideo').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('grpphoto').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 1 * 1024 * 1024; 
+        
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileType = fileInput.files[0].type;
+            
+            var validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+
+            $("#photospanid").hide();
+            if (!validTypes.includes(fileType)) {
+                document.getElementById('errgrpphoto').innerText = 'Only Image files are allowed.';
+                fileInput.value = '';
+            }
+           else if(fileSize > maxSizeInBytes) {
+                document.getElementById('errgrpphoto').innerText = 'File size exceeds 1MB limit.';
+                fileInput.value = '';
+            } else {
+                document.getElementById('errgrpphoto').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('bannerupload').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 1 * 1024 * 1024; 
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileType = fileInput.files[0].type;
+            var validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            $("#bannerspanid").hide();
+            if (!validTypes.includes(fileType)) {
+                document.getElementById('errbannerupload').innerText = 'Only PDF and Image files are allowed.';
+                fileInput.value = '';
+            }
+            else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errbannerupload').innerText = 'File size exceeds 1MB limit.';
+                fileInput.value = '';
+            } else {
+                document.getElementById('errbannerupload').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#txtSocietyRegDate').on('change', function () {
+            var gd = new Date($("#txtGrpCreatedOn").val().trim());
+            var rd = new Date($(this).val().trim());
+            if (gd > rd) {
+                $(this).addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSocietyRegDate').text("Registration date should be greater than or equal to Troupe created date!");
+                //$(this).focus();
+            } else {
+                $(this).removeClass("is-invalid");
+                $('#errtxtSocietyRegDate').text("");
+            }
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $("#txtEmail").keyup(function () {
+            $(this).val($(this).val().toLowerCase());
+        });
+    });
+    $("#txtIFSC").keyup(function () {
+        $(this).val($(this).val().toUpperCase());
+    });
+    $(".alphabetInput").on("input", function () {
+        var inputValue = $(this).val();
+        var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+
+        if (inputValue !== sanitizedValue) {
+            $(this).val(sanitizedValue);
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function(){
+        $('#MembersProfileDashboard').addClass('active');
+        $('#ProfileDashboard').removeClass('btn-primary');
+        $('#ProfileDashboard').addClass('btn-outline-primary');
+        getBanks();
+        getDistrict();
+        getmemDistrict();
+        getCategory();
+
+        document.querySelectorAll('input[type="number"]').forEach(function (input) {
+            input.addEventListener("keydown", function (event) {
+                if (event.key.toLowerCase() === 'e') {
+                    event.preventDefault();
+                }
+            });
+        });
+
+        var radioButtons = document.getElementsByName('rdobtnGender');
+        radioButtons.forEach(function (radioButton) {
+            radioButton.addEventListener('change', function () {
+                if (radioButton.checked) {
+                    var selectedValue = radioButton.value;
+                    document.getElementById('selectedGender').value = selectedValue;
+                }
+            });
+        });
+        $("input[name='GrpRegister']").change(function () {
+            if ($(this).val() === "true") {
+                $("#SocietyRegDiv").show();
+                $("#SocietyRegDate").show();
+                $("#fileUploadDiv11").show();
+            } else {
+                $("#SocietyRegDiv").hide();
+                $("#SocietyRegDate").hide();
+                $("#fileUploadDiv11").hide();
+            }
+        });
+        EditDetails(@ViewBag.Troupeid);
+        getRole();
+        $('#txtmemdob').datetimepicker({
+            format: 'DD-MMM-YYYY',
+            maxDate: new Date(),
+            defaultDate: null
+
+        });
+        $('#txtGrpCreatedOn').datetimepicker({
+            format: 'DD-MMM-YYYY',
+            maxDate: new Date(),
+            defaultDate: null
+
+        });
+        $('#txtSocietyRegDate').datetimepicker({
+            format: 'DD-MMM-YYYY',
+            maxDate: new Date(),
+            defaultDate: null
+
+        });
+        $('#txtGrpCreatedOn').val("");
+        $('#txtSocietyRegDate').val("");
+        $('#txtmemdob').val("");
+    });
+    function getmemDistrict() {
+        var thisHtml = '<option value="0">--Select--</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrict',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    if ('@Lang' == "or") {
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+                    }
+                    $('#ddlmemDist').html(thisHtml);
+                }
+                else {
+                    $('#ddlmemDist').html(thisHtml);
+                }
+            }
+        });
+    }
+    function EditDetails(TroupeId) {
+        $('#txtMobileNumber').val('');
+        var Troupeid = TroupeId;
+        $("#tblmembers").show();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllDetails", "Registration")',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: { "TROUPEID": Troupeid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#ddlDist').val(data.data[0].DistId);
+                $('#ddlDist').trigger('change');
+                $('#ddlBlock').val(data.data[0].BlockId);
+                $('#ddlBlock').trigger('change');
+                $('#ddlGp').val(data.data[0].GpId);
+                $('#txtLeaderName').val(data.data[0].LeaderName);
+              
+                $('#txtPincode').val(data.data[0].Pincode);
+                $('#ddlCategory').val(data.data[0].CategoryId);
+                $('#ddlCategory').trigger('change');
+                $('#ddlSubCategory').val(data.data[0].SubCategoryId);
+                $('#txtAddress').val(data.data[0].Address);
+                $('#txtGroupName').val(data.data[0].GroupName);
+                $('#txtGrpCreatedOn').val(data.data[0].GrpCreatedOn);
+                if(data.data[0].BannerImg!=null){
+                    $('#lblbannerupload').text(data.data[0].BannerImg);
+                }
+                $('#lblvideo').text(data.data[0].UploadVideo);
+                $('#lblgrpphoto').text(data.data[0].GroupPhoto);
+
+                if (data.data[0].IsSocietyReg == 1) {
+                    var radio = document.getElementById("societyAct1");
+                    radio.checked = true;
+                    $("#SocietyRegDiv").show();
+                    $("#SocietyRegDate").show();
+                    $("#fileUploadDiv11").show();
+                    $('#fileUploadDiv11').val(data.data[0].SocietyRegDoc);
+                    $('#lblsocdoc').text(data.data[0].SocietyRegDoc);
+                    $('#txtSocietyactNo').val(data.data[0].RegDocNo);
+                    $('#txtSocietyRegDate').val(data.data[0].SocietyRegDate);
+                }
+                else {
+                    $('#radiono').prop('checked', true);
+                    $('#lblsocdoc').text("");
+                }
+                $('#memberdetails').hide();
+                for (i = 0; i < data.data.length; i++) {
+                    var slno = i; 
+                    var isChecked = data.data[i].IsLeader === 1;
+                    var add = '<tr>'
+                    add += '<td>' + '<input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1_' + slno + '"' + (isChecked ? ' checked' : '') + '>' + '</td>';
+                    var genderValue = data.data[i].Gender;
+                    var genderid;
+                    if (genderValue == "Male") {
+                        genderid = "1";
+                    }
+                    else if (genderValue == "Female") {
+                        genderid = "2";
+                    }
+                    else {
+                        genderid = "3";
+                    }
+                    if (data.data[i].RoleId == 2) {
+                        if (data.data[i].IsLeader == 1) {
+
+                            add += '<td><div>' + data.data[i].MemberName + '</div>' + '<div class=text-muted>' + data.data[i].MemberDob + '</div>' + '<div class=text-muted>' + data.data[i].MemberFatherName + '</div>' + '<div class=text-muted>' + data.data[i].RoleName + ',' + data.data[i].Role + '</div>' + '<div class=text-muted>' + genderValue + '</div>' + '<div class=text-muted>' + data.data[i].AadharNo + '</div>' + '</td> ';
+                            add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + data.data[i].MemberDob + '"/><input type="hidden" id="hidnmemroleid" value="' + data.data[i].RoleId + '"/></td>';
+                        }
+                        else {
+                            add += '<td><div id="hmembername">' + data.data[i].MemberName+'</div>' + '<div class=text-muted>' + data.data[i].MemberDob + '</div>' + '<div class=text-muted>' + data.data[i].MemberFatherName + '</div>' + '<div class=text-muted>' + data.data[i].RoleName + ',' + data.data[i].Role + '</div>' + '<div class=text-muted>' + genderValue + '</div>' + '<div class=text-muted>' + data.data[i].AadharNo + '</div>' + '</td> ';
+                            add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + data.data[i].MemberDob + '"/><input type="hidden" id="hidnmemroleid" value="' + data.data[i].RoleId + '"/></td>';
+                        }
+                    }
+                    else {
+                        if (data.data[i].IsLeader == 1) {
+
+                            add += '<td><div>' + data.data[i].MemberName + '</div>' + '<div class=text-muted>' + data.data[i].MemberDob + '</div>' + '<div class=text-muted>' + data.data[i].MemberFatherName + '</div>' + '<div class=text-muted>' + data.data[i].RoleName + '</div>' + '<div class=text-muted>' + genderValue + '</div>' + '<div class=text-muted>' + data.data[i].AadharNo + '</div>' + '</td> ';
+                            add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + data.data[i].MemberDob + '"/><input type="hidden" id="hidnmemroleid" value="' + data.data[i].RoleId + '"/></td>';
+                        }
+                        else {
+                            add += '<td><div id="hmembername">' + data.data[i].MemberName +'</div> '+'<div class=text-muted>' + data.data[i].MemberDob + '</div>' + '<div class=text-muted>' + data.data[i].MemberFatherName + '</div>' + '<div class=text-muted>' + data.data[i].RoleName + '</div>' + '<div class=text-muted>' + genderValue + '</div>' + '<div class=text-muted>' + data.data[i].AadharNo + '</div>'+'</td>';
+                            add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + data.data[i].MemberDob + '"/><input type="hidden" id="hidnmemroleid" value="' + data.data[i].RoleId + '"/></td>';
+                        }
+                    }
+                        
+                    add += '<td>' + '<div id=hmemdistid>' + data.data[i].MemberDistrictName + '</div><div class="text-muted" id="hmemblockid">' + data.data[i].MemberBlockName + ' </div><div class="text-muted" id="hmemgpid">' + data.data[i].MemberGPName + ' </div>' + '</td>';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdistid" value="' + data.data[i].MemDistId + '"/><input type="hidden" id="hidnmemblockid" value="' + data.data[i].MemBlockId + '"/><input type="hidden" id="hidnmemgpid" value="' + data.data[i].MemGpId + '"/></td>';
+                   
+                    add += '<td><div>' + data.data[i].MobileNo + '</div>'+'<div class=text-muted>' + data.data[i].Email + '</div>' + '</td>';
+                    add += '<td>' + '<div id="hbankname1">' + data.data[i].BankName + '</div>' + '<div class=text-muted id="hifsc1">' + data.data[i].IFSC + '</div>' + '<div class=text-muted id="hbranchname1">' + data.data[i].BranchName + '</div>' + '<div class=text-muted id="haccountnumber1">' + data.data[i].AccountNo + '</div>' + '</td>';
+                    add += '<td>' + '<a id="edit1" href="javascript:;" class="table__icon-btn edit-btn" data - bs - toggle="tooltip" data - bs - title="Edit" ><i class="bi bi-pencil-square"></i></a ><button class="table__icon-btn delete-btn" id="remove" data-bs-toggle="tooltip" data-bs-title="Delete">  <i class="bi bi-trash3"></i></button>' + '</td>';
+                    add += '<td style="display:none"><input type="hidden" id="hdnGender" value="' + genderid + '"/></td>';
+                    add += '<td style="display:none"><input type="hidden" id="hdnisleader" value="' + data.data[i].IsLeader + '"/></td>';
+                    add += '<td style="display:none"><input type="hidden" id="hdnuploadbannerfolder" value="' + data.data[0].UploadBannerFolder + '"/></td>';
+                    add += '</tr>';
+                  
+                    $("#addmore").append(add);
+                }
+            }
+        })
+    }
+    $("#ddlmemDist").change(function () {
+            var thisHtml1 = '<option value="0">--Select--</option>';
+            var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlmemDist').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetBlock',
+                    data: { DistCode: $('#ddlmemDist').val(), },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlmemBlock').html(thisHtml);
+                            $('#ddlmemGp').html(thisHtml1);
+                        }
+                        else {
+                            $('#ddlmemBlock').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlmemBlock').html(thisHtml);
+            $('#ddlmemGp').html(thisHtml);
+            }
+        });
+    $("#ddlmemBlock").change(function () {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlmemBlock').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetGP',
+                data: { BlockCode: $('#ddlmemBlock').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlmemGp').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlmemGp').html(thisHtml);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlmemGp').html(thisHtml);
+        }
+    });
+    $("#ddlBank").change(function () {
+        var thisHtml = '<option value="0">Select Branch</option>';
+        if ($('#ddlBank').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetBranch',
+                data: { BankId: $('#ddlBank').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+                        $('#ddlBranch').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlBranch').html(thisHtml);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlBranch').html(thisHtml);
+        }
+    });
+    $("#ddlBranch").change(function () {
+        if ($('#ddlBranch').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetIFSC',
+                data: { BranchId: $('#ddlBranch').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        $('#ifscDiv').removeClass("d-none");
+                        $('#txtIFSCLbl').text(result[0].TextVal);
+                    }
+                    else {
+
+                        $('#txtIFSCLbl').text("");
+                    }
+                }
+            });
+        }
+        else {
+            $('#txtIFSCLbl').text("");
+        }
+    });
+    function OnIFSCChange() {
+        $('#txtIFSC').blur(function () {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetBankBranch',
+                data: { IFSC: $('#txtIFSC').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state === "success" && data.data !== null) {
+                        $('#txtBank').val(data.data.TextVal);
+                        $('#txtBranch').val(data.data.EncKeyVal);
+                        $('#hidBankId').val(data.data.KeyVal);
+                        $('#hidBranchId').val(data.data.NewKeyVal);
+                        $('#txtBank').prop("readonly", true);
+                        $('#txtBranch').prop("readonly", true);
+                    }
+                    else {
+                        $("#txtBank").val("");
+                        $("#txtBranch").val("");
+                    }
+                },
+                error: function () {
+                    $("#txtBank").val("");
+                    $("#txtBranch").val("");
+                }
+            });
+        });
+    }
+    function saveIFSCValidation() {
+        if ($("#ddlBank").val().trim() != "0") {
+            $('#ddlBank').removeClass("is-invalid");
+            $('#errddlBank').text("");
+
+        }
+        else {
+            $('#ddlBank').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBank').text("Please Select Bank!");
+            $('#ddlBank').focus();
+            return false;
+        }
+        if ($("#ddlBranch").val().trim() != "0") {
+            $('#ddlBranch').removeClass("is-invalid");
+            $('#errddlBranch').text("");
+        }
+        else {
+            $('#ddlBranch').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBranch').text("Please Select Branch!");
+            $('#ddlBranch').focus();
+            return false;
+        }
+        return true;
+    }
+    const ddlBank = document.getElementById('ddlBank');
+    const errddlBank = document.getElementById('errddlBank');
+
+    ddlBank.addEventListener('change', function () {
+        errddlBank.textContent = '';
+    });
+
+    const ddlBranch = document.getElementById('ddlBranch');
+    const errddlBranch = document.getElementById('errddlBranch');
+
+    ddlBranch.addEventListener('change', function () {
+        errddlBranch.textContent = '';
+    });
+    $('#saveIFSC').click(function () {
+        if (saveIFSCValidation()) {
+            $('#txtIFSC').val($('#txtIFSCLbl').text().trim());
+            $('#txtBank').val($('#ddlBank :selected').text());
+            $('#txtBranch').val($('#ddlBranch :selected').text());
+            $('#hidBankId').val($('#ddlBank').val());
+            $('#hidBranchId').val($('#ddlBranch').val());
+            $('#txtBank').prop("readonly", true);
+            $('#txtBranch').prop("readonly", true);
+            $('#closeIFSC').click();
+            $('#ifscDiv').addClass("d-none");
+            $('#ddlBank').val(0);
+            $('#ddlBank').trigger('change');
+            $('#ddlBranch').val(0);
+            $('#txtIFSCLbl').text("");
+            $('#txtIFSC').removeClass("is-invalid");
+            $('#errtxtIFSC').text("");
+        }
+    });
+    $(document).on('click', '#edit1', function () {
+        $('#memberdetails').show();
+        $("#btnAddLst").show();
+        var closestRow = $(this).closest("tr");
+        var isleader = closestRow.find('#hdnisleader').val();
+        var membername = closestRow.find('div:eq(0)').text();
+        var MemberDob = closestRow.find("#hidnmemdob").val();
+        var MemberFatherName = closestRow.find('div:eq(2)').text();
+        var RoleId = closestRow.find("#hidnmemroleid").val();
+        if (RoleId == 2) {
+            var role = closestRow.find('div:eq(3)').text().split(',')[1];
+        }
+        var Gender = closestRow.find('#hdnGender').val();
+        var aadhaar = closestRow.find('div:eq(5)').text();
+        var mobilenumber = closestRow.find('div:eq(9)').text();
+        var Email = closestRow.find('div:eq(10)').text();
+        var MemberDistId = closestRow.find('#hidnmemdistid').val();
+        var MemberBlockId = closestRow.find('#hidnmemblockid').val();
+        var MemberGpId = closestRow.find('#hidnmemgpid').val();
+        var IFSCCode;
+        var accno;
+        let BankId;
+        let BranchID;
+        if (isleader == 1) {
+            BankId = closestRow.find('div:eq(11)').text();
+            IFSCCode = closestRow.find('div:eq(12)').text();
+            BranchID = closestRow.find('div:eq(13)').text();
+            accno = closestRow.find('div:eq(14)').text();
+        }
+        else {
+            BankId = closestRow.find('div:eq(11)').text();
+            IFSCCode = closestRow.find('div:eq(12)').text();
+            BranchID = closestRow.find('div:eq(13)').text();
+            accno = closestRow.find('div:eq(14)').text();
+        }
+        $("#txtMember").val(membername);
+        $("#txtmemdob").val(MemberDob);
+        $("#txtmemfather").val(MemberFatherName);
+        $("#ddlmemDist").val(MemberDistId);
+        $('#ddlmemDist').trigger('change');
+        $("#ddlmemBlock").val(MemberBlockId);
+        $('#ddlmemBlock').trigger('change');
+        $("#ddlmemGp").val(MemberGpId);
+        $("#ddlmemRole").val(RoleId);
+        if (RoleId == 2) {
+            $("#roleintroupe").show();
+            $("#txtRole").val(role);
+        }
+        else {
+            $("#roleintroupe").hide();
+        }
+        $("#txtAadhar").val(aadhaar);
+        $('#txtMobileNumber').val(mobilenumber);
+        $('#txtEmail').val(Email);
+        var genderValue = Gender;
+        $("input[name='rdobtnGender']").each(function () {
+            $(this).prop('checked', false);
+            if ($(this).val() == genderValue) {
+                $(this).prop('checked', true);
+            }
+        });
+        $("#txtIFSC").val(IFSCCode);
+        $("#txtBank").val(BankId);
+        $("#txtAccountNo").val(accno);
+        $("#txtBranch").val(BranchID);
+        $(this).parents('tr').remove();
+
+    });
+
+    $('#btnAddLst').click(function () {
+        if (ArtistValidations()) {
+            return true;
+        }
+    });
+    function ArtistValidations() {
+        if ($("#txtMember").val().trim() != "") {
+            $('#txtMember').removeClass("is-invalid");
+            $('#errtxtMember').text("");
+        }
+        else {
+            $('#txtMember').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMember').text("Please Enter Member Name!");
+            $('#txtMember').focus();
+            return false;
+        }
+        if ($("#txtmemfather").val().trim() != "") {
+            $('#txtmemfather').removeClass("is-invalid");
+            $('#errtxtmemfather').text("");
+        }
+        else {
+            $('#txtmemfather').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmemfather').text("Please Enter Member's Father Name!");
+            $('#txtmemfather').focus();
+            return false;
+        }
+        if ($("#txtmemdob").val().trim() != "") {
+            $('#txtmemdob').removeClass("is-invalid");
+            $('#errtxtmemdob').text("");
+        }
+        else {
+            $('#txtmemdob').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmemdob').text("Please Choose Member's Date Of Birth!");
+            $('#txtmemdob').focus();
+            return false;
+        }
+        if ($("#ddlmemDist").val().trim() != "0") {
+            $('#ddlmemDist').removeClass("is-invalid");
+            $('#errddlmemDist').text("");
+        }
+        else {
+            $('#ddlmemDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemDist').text("Please Select District!");
+            $('#ddlmemDist').focus();
+            return false;
+        }
+        if ($("#ddlmemBlock").val().trim() != "0") {
+            $('#ddlmemBlock').removeClass("is-invalid");
+            $('#errddlmemBlock').text("");
+        }
+        else {
+            $('#ddlmemBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemBlock').text("Please Select Block!");
+            $('#ddlmemBlock').focus();
+            return false;
+        }
+        if ($("#ddlmemGp").val().trim() != "0") {
+            $('#ddlmemGp').removeClass("is-invalid");
+            $('#errddlmemGp').text("");
+        }
+        else {
+            $('#ddlmemGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemGp').text("Please Select GramPanchayat!");
+            $('#ddlmemGp').focus();
+            return false;
+        }
+        
+        if ($("#ddlmemRole").val().trim() != "0") {
+            $('#ddlmemRole').removeClass("is-invalid");
+            $('#errddlmemRole').text("");
+        }
+        else {
+            $('#ddlmemRole').addClass("form-control shadow-sm is-invalid");
+            $('#errddlmemRole').text("Please Select Role!");
+            $('#ddlmemRole').focus();
+            return false;
+        }
+        var ddlrole = $("#ddlmemRole").val();
+        if (ddlrole == "2") {
+            if ($("#txtRole").val().trim() != "") {
+                $('#txtRole').removeClass("is-invalid");
+                $('#errtxtRole').text("");
+            }
+            else {
+                $('#txtRole').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtRole').text("Please Enter Role!");
+                $('#txtRole').focus();
+                return false;
+            }
+        }
+        if ($("#txtAadhar").val().trim() != "") {
+            $('#txtAadhar').removeClass("is-invalid");
+            $('#errtxtAadhar').text("");
+        }
+        else {
+            $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAadhar').text("Please Enter Aadhaar No.!");
+            $('#txtAadhar').focus();
+            return false;
+        }
+        if ($("#txtAadhar").val().trim().length != 12 || parseInt($("#txtAadhar").val()) <= 0) {
+            $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAadhar').text("Please Enter a Valid Aadhaar No.!");
+            $('#txtAadhar').focus();
+            return false;
+        }
+        else {
+            var isDuplicateAadhaar = false;
+            $('#tblmembers tbody tr').each(function () {
+                var aadhaar = $(this).find('div:eq(5)').text();
+                if (aadhaar == $("#txtAadhar").val().trim()) {
+                    isDuplicateAadhaar = true;
+                    return false;
+                }
+            });
+
+            if (isDuplicateAadhaar) {
+                $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtAadhar').text("Duplicate Aadhaar Number Found!");
+                $('#txtAadhar').focus();
+                return false;
+            } else {
+                $('#txtAadhar').removeClass("is-invalid");
+                $('#errtxtAadhar').text("");
+            }
+        }
+        if ($("#txtMobileNumber").val().trim() != "") {
+            $('#txtMobileNumber').removeClass("is-invalid");
+            $('#errtxtMobileNumber').text("");
+        }
+        else {
+            $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMobileNumber').text("Please Enter Mobile Number.!");
+            $('#txtMobileNumber').focus();
+            return false;
+        }
+        if ($("#txtMobileNumber").val().trim().length != 10 ) {
+            $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMobileNumber').text("Please Enter a Valid Mobile Number.!");
+            $('#txtMobileNumber').focus();
+            return false;
+        }
+        else {
+            var isDuplicateMobile = false;
+            $('#tblmembers tbody tr').each(function () {
+                var mobile = $(this).find('div:eq(9)').text();
+                if (mobile == $("#txtMobileNumber").val().trim()) {
+                    isDuplicateMobile = true;
+                    return false;
+                }
+            });
+
+            if (isDuplicateMobile) {
+                $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtMobileNumber').text("Duplicate Mobile Number Found!");
+                $('#txtMobileNumber').focus();
+                return false;
+            } else {
+                $('#txtMobileNumber').removeClass("is-invalid");
+                $('#errtxtMobileNumber').text("");
+            }
+
+        }
+        if (MobileNumber($('#txtMobileNumber').val()) == false) {
+            $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMobileNumber').text("Please Enter a Valid Mobile Number.!");
+            $('#txtMobileNumber').focus();
+            return false;
+
+        }
+        else {
+            $('#txtMobileNumber').removeClass("is-invalid");
+            $('#errtxtMobileNumber').text("");
+        }
+        if ($("#txtEmail").val().trim() !== "") {
+            var email = $("#txtEmail").val().trim();
+            var emailPattern = /^[a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (emailPattern.test(email)) {
+                $('#txtEmail').removeClass("is-invalid");
+                $('#errtxtEmail').text("");
+
+            } else {
+                $('#txtEmail').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEmail').text("Please Enter a Valid Email.!");
+                $('#txtEmail').focus();
+                return false;
+            }
+
+            var isDuplicateEmail = false;
+            $('#tblmembers tbody tr').each(function () {
+                var email = $(this).find('div:eq(10)').text().trim();
+                if (email == $("#txtEmail").val().trim()) {
+                    isDuplicateEmail = true;
+                    return false;
+                }
+            });
+
+            if (isDuplicateEmail) {
+                $('#txtEmail').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEmail').text("Duplicate Email Found!");
+                $('#txtEmail').focus();
+                return false;
+            } else {
+                $('#txtMobileNumber').removeClass("is-invalid");
+                $('#errtxtMobileNumber').text("");
+            }
+        }
+        if ($("#txtIFSC").val().trim() != "") {
+            $('#txtIFSC').removeClass("is-invalid");
+            $('#errtxtIFSC').text("");
+        }
+        else {
+            $('#txtIFSC').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtIFSC').text("Please Enter IFSC!");
+            $('#txtIFSC').focus();
+            return false;
+        }
+        if ($("#txtBank").val().trim() != "") {
+            $('#txtBank').removeClass("is-invalid");
+            $('#errtxtBank').text("");
+        }
+        else {
+            $('#txtBank').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtBank').text("Please Select Bank!");
+            $('#txtBank').focus();
+            return false;
+        }
+        if ($("#txtBranch").val().trim() != "") {
+            $('#txtBranch').removeClass("is-invalid");
+            $('#errtxtBranch').text("");
+        }
+        else {
+            $('#txtBranch').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtBranch').text("Please Select Branch!");
+            $('#txtBranch').focus();
+            return false;
+        }
+        if ($("#txtAccountNo").val().trim() != "") {
+            $('#txtAccountNo').removeClass("is-invalid");
+            $('#errtxtAccountNo').text("");
+        }
+        else {
+            $('#txtAccountNo').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAccountNo').text("Please Enter Account No.!");
+            $('#txtAccountNo').focus();
+            return false;
+        }
+        var accountNumber = $("#txtAccountNo").val().trim();
+        if (accountNumber.length < 8 || accountNumber.length > 20 || parseInt($("#txtAccountNo").val()) <= 0) {
+            $('#txtAccountNo').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAccountNo').text("Please Enter a Valid Account No.!");
+            $('#txtAccountNo').focus();
+            return false;
+        }
+        else {
+            $('#txtAccountNo').removeClass("is-invalid");
+            $('#errtxtAccountNo').text("");
+        }
+        return true;
+    }
+    function getBanks() {
+        var thisHtml = '<option value="0">Select Bank</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetBanks',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    for (var i = 0; i < result.length; i++) {
+                        thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                    }
+                    $('#ddlBank').html(thisHtml);
+                }
+                else {
+                    $('#ddlBank').html(thisHtml);
+                }
+            }
+        });
+    }
+    function isValidMobileNumber() {
+        let mobileNumber = $('#txtMobileNumber').val();
+        let digitsOnly = mobileNumber.replace(/\D/g, '');
+        return digitsOnly.length >= 10;
+    }
+    $("#txtMobileNumber").on("input", function () {
+        let mobileNumber = $(this).val();
+        if (isValidMobileNumber(mobileNumber)) {
+            $(this).removeClass("is-invalid");
+            $('#errtxtMobileNumber').text("");
+        } else {
+            $(this).addClass("is-invalid");
+            $('#errtxtMobileNumber').text("Mobile number should have at least 10 digits.");
+        }
+    });
+    function isValidAadhar() {
+        let aadharNumber = $('#txtAadhar').val();
+        const digitsOnly = aadharNumber.replace(/\D/g, '');
+        return digitsOnly.length === 12; 
+    }
+    $("#txtAadhar").on("input", function () {
+        const aadharNumber = $(this).val();
+
+        if (isValidAadhar(aadharNumber)) { 
+            $(this).removeClass("is-invalid");
+            $('#errtxtAadhar').text("");
+        } else {
+            $(this).addClass("is-invalid");
+            $('#errtxtAadhar').text("Aadhar number should have exactly 12 digits.");
+        }
+    });
+    
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).on('click', '#btnAddLst', function () {
+        var slno = $('#addmore tr').length;
+        var membername = $("#txtMember").val();
+        var memdob = $("#txtmemdob").val();
+        $('#hidmemdistId').val($('#ddlmemDist').val());
+        let memdistid = $("#hidmemdistId").val();
+        $('#hidmemblockId').val($('#ddlmemBlock').val());
+        let memblockid = $("#hidmemblockId").val();
+        $('#hidmemgpId').val($('#ddlmemGp').val());
+        let memgpid = $("#hidmemgpId").val();
+        var memdistname = $("#ddlmemDist option:selected").text().trim().split('-')[1].trim();
+        var memblockname = $("#ddlmemBlock option:selected").text().trim().split('-')[1].trim();
+        var memgpname = $("#ddlmemGp option:selected").text().trim();
+        var firstHyphenIndex = memgpname.indexOf('-');
+        if (firstHyphenIndex !== -1) {
+            memgpname = memgpname.substring(firstHyphenIndex + 1).trim();
+        }
+        var memfathername = $("#txtmemfather").val();
+        $('#hidmemRole').val($('#ddlmemRole').val());
+        let memroleid = $("#hidmemRole").val();
+        var memrolename = $("#ddlmemRole option:selected").text();
+        if (memroleid == 2) {
+            var role = $("#txtRole").val();
+        }
+
+        var aadhaar = $("#txtAadhar").val();
+        var Mobile = $("#txtMobileNumber").val();
+        var Email = $("#txtEmail").val();
+        var radioButtons = document.getElementsByName("rdobtnGender");
+        for (var i = 0; i < radioButtons.length; i++) {
+            if (radioButtons[i].checked) {
+
+                var Gender = radioButtons[i].value;
+                break;
+            }
+        }
+        var ifsc = $("#txtIFSC").val();
+        let bankid = $("#hidBankId").val();
+        let branchid = $("#hidBranchId").val();
+        var bankname = $("#txtBank").val();
+        var branchname = $("#txtBranch").val();
+        var accno = $("#txtAccountNo").val();
+        var rowcount = 0;
+        if (!ArtistValidations()) {
+            rowcount = 0;
+            return false;
+        }
+        else {
+            rowcount++;
+        }
+        if (rowcount > 0) {
+            $("#tblmembers").show();
+            if (slno == 0) {
+                slno = 1;
+                $('#hidmemberno').val(slno);
+            }
+            else {
+                slno = slno + 1;
+                $('#hidmemberno').val(slno);
+            }
+            var add = '<tr>'
+            add += '<td>' + '<input class="form-check-input" type="radio" name="radioNoLabel" id="radioNoLabel1_${slno}">' + '</td>';
+
+            if (memroleid == 2) {
+                if (Gender == "1") {
+                    add += '<td><div>' + membername + '</div>' + '<div class="text-muted">' + memdob + '</div>' + '<div class="text-muted">' + memfathername + '</div>' + '<div class="text-muted" id="himemrid">' + memrolename + ',' + role + '</div>' + '<div class="text-muted">' + 'Male' + '</div>' + '<div class="text-muted">' + aadhaar + '</div>' + '</td> ';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + memdob + '"/><input type="hidden" id="hidnmemroleid" value="' + memroleid + '"/></td>';
+
+                }
+                else if (Gender == "2") {
+                    add += '<td><div>' + membername + '</div>' + '<div class="text-muted">' + memdob + '</div>' + '<div class="text-muted">' + memfathername + '</div>' + '<div class="text-muted" id="himemrid">' + memrolename + ',' + role + '</div>' + '<div class="text-muted">' + 'Female' + '</div>' + '<div class="text-muted">' + aadhaar + '</div>' + '</td> ';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + memdob + '"/><input type="hidden" id="hidnmemroleid" value="' + memroleid + '"/></td>';
+                }
+                else {
+                    add += '<td><div>' + membername + '</div>' + '<div class="text-muted">' + memdob + '</div>' + '<div class="text-muted">' + memfathername + '</div>' + '<div class="text-muted" id="himemrid">' + memrolename + ',' + role + '</div>' + '<div class="text-muted">' + 'Others' + '</div>' + '<div class="text-muted">' + aadhaar + '</div>' + '</td> ';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + memdob + '"/><input type="hidden" id="hidnmemroleid" value="' + memroleid + '"/></td>';
+                }
+            }
+            else {
+                if (Gender == "1") {
+                    add += '<td><div>' + membername + '</div>' + '<div class="text-muted">' + memdob + '</div>' + '<div class="text-muted">' + memfathername + '</div>' + '<div class="text-muted" id="himemrid">' + memrolename + '</div>' + '<div class="text-muted">' + 'Male' + '</div>' + '<div class="text-muted">' + aadhaar + '</div>' + '</td> ';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + memdob + '"/><input type="hidden" id="hidnmemroleid" value="' + memroleid + '"/></td>';
+                }
+                else if (Gender == "2") {
+                    add += '<td><div>' + membername + '</div>' + '<div class="text-muted">' + memdob + '</div>' + '<div class="text-muted">' + memfathername + '</div>' + '<div class="text-muted" id="himemrid">' + memrolename + '</div>' + '<div class="text-muted">' + 'Female' + '</div>' + '<div class="text-muted">' + aadhaar + '</div>' + '</td> ';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + memdob + '"/><input type="hidden" id="hidnmemroleid" value="' + memroleid + '"/></td>';
+                }
+                else {
+                    add += '<td><div>' + membername + '</div>' + '<div class="text-muted">' + memdob + '</div>' + '<div class="text-muted">' + memfathername + '</div>' + '<div class="text-muted" id="himemrid">' + memrolename + '</div>' + '<div class="text-muted">' + 'Others' + '</div>' + '<div class="text-muted">' + aadhaar + '</div>' + '</td> ';
+                    add += '<td style="display:none"><input type="hidden" id="hidnmemdob" value="' + memdob + '"/><input type="hidden" id="hidnmemroleid" value="' + memroleid + '"/></td>';
+                }
+            }
+            add += '<td>' + '<div id=hmemdistid>' + memdistname + '</div><div class="text-muted" id="hmemblockid">' + memblockname + ' </div><div class="text-muted" id="hmemgpid">' + memgpname + ' </div>' + '</td>';
+            add += '<td style="display:none"><input type="hidden" id="hidnmemdistid" value="' + memdistid + '"/><input type="hidden" id="hidnmemblockid" value="' + memblockid + '"/><input type="hidden" id="hidnmemgpid" value="' + memgpid + '"/></td>';
+            add += '<td><div>' + Mobile + '</div>' + '<div class=text-muted>' + Email + '</div>' + '</td>';
+            add += '<td>' + '<div id="hbankname1">' + bankname + '</div>' + '<div class=text-muted id="hifsc1">' + ifsc + '</div>' + '<div class=text-muted id="hbranchname1">' + branchname + '</div>' + '<div class=text-muted id="haccountnumber1">' + accno + '</div>' + '</td>';
+            add += '<td>' + '<a id="edit1" href="javascript:;" class="table__icon-btn edit-btn" data - bs - toggle="tooltip" data - bs - title="Edit" ><i class="bi bi-pencil-square"></i></a ><button class="table__icon-btn delete-btn" id="remove" data-bs-toggle="tooltip" data-bs-title="Delete">  <i class="bi bi-trash3"></i></button>' + '</td>';
+            add += '<td style="display:none"><input type="hidden" id="hdnGender" value="' + Gender + '"/></td>';
+            add += '</tr>';
+            $("#addmore").append(add);
+            var membername = $("#txtMember").val("");
+            var memdob = $("#txtmemdob").val("");
+            var memdistname = $("#ddlmemDist").val("0");
+            var memblockname = $("#ddlmemBlock").val("0");
+            var memgpname = $("#ddlmemGp").val("0");
+            var memfathername = $("#txtmemfather").val("");
+            var memrolename = $("#ddlmemRole").val("0");
+            var role = $("#txtRole").val("");
+            var aadhaar = $("#txtAadhar").val("");
+            var Mobile = $("#txtMobileNumber").val("");
+            var Email = $("#txtEmail").val("");
+            var accno = $("#txtAccountNo").val("");
+            var ifsc = $("#txtIFSC").val("");
+            var branchname = $("#txtBranch").val("");
+            var bankname = $("#txtBank").val("");
+
+            $('#txtmemdob').val("");
+            $('#txtmemdob').datetimepicker('destroy');
+            $('#txtmemdob').datetimepicker({
+                format: 'DD-MMM-YYYY'
+            });
+        }
+    });
+    $(document).on('click', '#remove', function () {
+        $(this).parents('tr').remove();
+    });
+    $(document).on('click', '#edit', function () {
+        $('#memberdetails').show();
+        $("#btnAddLst").show();
+        var closestRow = $(this).closest("tr");
+        var membername = closestRow.find("td:eq(1)").text().split('[')[0];
+        var role = closestRow.find("td:eq(1)").text().split('[')[1].replace("]", '');
+        var aadhaar = closestRow.find("td:eq(3)").text();
+        var mobilenumber = closestRow.find("td:eq(4)").text().substring(0, 10);
+        var Email = closestRow.find("td:eq(4)").text().substring(10, 100);
+        var IFSCCode = closestRow.find("div:eq(4)").text();
+        var accno = closestRow.find("div:eq(6)").text();
+        var Gender = closestRow.find('#hdnGender').val();
+        let BankId = closestRow.find("div:eq(3)").text();
+        let BranchID = closestRow.find("div:eq(5)").text();
+        $("#txtMember").val(membername);
+        $("#txtRole").val(role);
+        $("#txtAadhar").val(aadhaar);
+        $('#txtMobileNumber').val(mobilenumber);
+        $('#txtEmail').val(Email);
+        var genderValue = Gender;
+        $("input[name='rdobtnGender']").each(function () {
+            if ($(this).val() == genderValue) {
+                $(this).prop('checked', true);
+            }
+        });
+        $("#txtIFSC").val(IFSCCode);
+        $("#txtBank").val(BankId);
+        $("#txtAccountNo").val(accno);
+        $("#txtBranch").val(BranchID);
+        $(this).parents('tr').remove();
+    });
+       $("#FinalSubmit").on("click", function () {
+        if (TroupeValidations()) {
+            var MemberDetails = new Array();
+            var TroupeData = new FormData();
+            var bannerupload = $("#bannerupload").get(0);
+            var regphotoupload = $("#regphotoupload").get(0);
+            var groupphoto = $("#grpphoto").get(0);
+            var uploadvideo = $("#video").get(0);
+            var banneruploadfile = bannerupload.files;
+            var regphotouploadfile = regphotoupload.files;
+            var troupegroupphotofile = groupphoto.files;
+            var troupvideofile = uploadvideo.files;
+            var radioButtons = document.getElementsByName("radioNoLabel");
+            $('#tblmembers tbody tr').each(function (index) {
+                var MemberDetail = {};
+                var checkedValue = null;
+                var checkedValue = $(this).find('td:eq(0)').find('input[type="radio"]:checked').length > 0;
+                if (checkedValue) {
+                    MemberDetail.IsLeader = 1;
+                } else {
+                    MemberDetail.IsLeader = 0;
+                }
+                MemberDetail.MemberName = $(this).find('div:eq(0)').text();
+                MemberDetail.MemberDob = $(this).find("#hidnmemdob").val();
+                MemberDetail.MemberFatherName = $(this).find('div:eq(2)').text();
+                MemberDetail.RoleId = $(this).find("#hidnmemroleid").val();
+                if (MemberDetail.RoleId == 2) {
+                    MemberDetail.Role = $(this).find('div:eq(3)').text().split(',')[1];
+                }
+                MemberDetail.Gender = $(this).find('#hdnGender').val();
+                MemberDetail.AadharNumber = $(this).find('div:eq(5)').text();
+                MemberDetail.MemberDistId = $(this).find('#hidnmemdistid').val();
+                MemberDetail.MemberBlockId = $(this).find('#hidnmemblockid').val();
+                MemberDetail.MemberGpId = $(this).find('#hidnmemgpid').val();
+                MemberDetail.MobileNumber = $(this).find('div:eq(9)').text();
+                MemberDetail.Email = $(this).find('div:eq(10)').text();
+
+
+
+                
+                if (MemberDetail.IsLeader == 1) {
+                    MemberDetail.BankID = $(this).find('div:eq(11)').text();
+                    MemberDetail.IFSCCode = $(this).find('div:eq(12)').text();
+                    MemberDetail.BranchID = $(this).find('div:eq(13)').text();
+                    MemberDetail.BankAccountNo = $(this).find('div:eq(14)').text();
+                }
+                else {
+                    MemberDetail.BankID = $(this).find('div:eq(11)').text();
+                    MemberDetail.IFSCCode = $(this).find('div:eq(12)').text();
+                    MemberDetail.BranchID = $(this).find('div:eq(13)').text();
+                    MemberDetail.BankAccountNo = $(this).find('div:eq(14)').text();
+                }
+                MemberDetails.push(MemberDetail);
+            });
+            if ('@ViewBag.Troupeid' != '0') {
+                TroupeData.append("TroupeId", @ViewBag.Troupeid);
+            }
+
+            if (banneruploadfile.length > 0) {
+                TroupeData.append("UploadBanner", banneruploadfile[0] );
+            }
+            else {
+                TroupeData.append("UploadBannerImage", $('#lblbannerupload').text());
+            }
+            if (regphotouploadfile.length > 0) {
+                TroupeData.append("UpldRegPhtCopy", regphotouploadfile[0]);
+            }
+            else {
+                TroupeData.append("UpldRegPhtCopyImage", $('#lblsocdoc').text());
+            }
+            if (troupegroupphotofile.length > 0) {
+                TroupeData.append("GroupPhotoImg", troupegroupphotofile[0]);
+            }
+            else {
+                TroupeData.append("GroupPhoto", $('#lblgrpphoto').text());
+            }
+            if (troupvideofile.length > 0) {
+                TroupeData.append("Upldvdofile", troupvideofile[0]);
+            }
+            else {
+                TroupeData.append("UpldVdo", $('#lblvideo').text());
+            }
+            TroupeData.append("UploadFolderPath", $('#hdnuploadbannerfolder').val());
+            TroupeData.append("vchGroupName", $('#txtGroupName').val());
+            TroupeData.append("GrpCreatedDate", $('#txtGrpCreatedOn').val());
+            TroupeData.append("DistrictId", $('#ddlDist').val());
+            TroupeData.append("BlockId", $('#ddlBlock').val());
+            TroupeData.append("GpId", $('#ddlGp').val());
+            TroupeData.append("vchAddress", $('#txtAddress').val());
+            TroupeData.append("Pincode", $('#txtPincode').val());
+            TroupeData.append("GrpRegistered", $('input[name="GrpRegister"]:checked').val());
+            TroupeData.append("SocietyRegactNo", $('#txtSocietyactNo').val());
+            TroupeData.append("RegistrationDate", $('#txtSocietyRegDate').val());
+            TroupeData.append("CategoryId", $('#ddlCategory').val());
+            TroupeData.append("SubCategoryId", $('#ddlSubCategory').val());
+            TroupeData.append("Elements", JSON.stringify(MemberDetails));
+            const radioButtonss = document.getElementsByName("radioNoLabel");
+            let checked = false;  
+
+            for (let i = 0; i < radioButtonss.length; i++) {
+                if (radioButtonss[i].checked) {
+                    checked = true;  
+                    break;  
+                }
+            }
+            if (!checked) {
+                new Swal("error", "Please Choose Leader!", "");
+                return false;  
+            }
+            else {
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to Update Troupe Details.",
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Submit'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        AddTroupeData(TroupeData);
+                    }
+                });
+            }
+            function AddTroupeData(Data) {
+                $.ajax({
+                    type: "post",
+                    url: "../Dashboard/EditProfile",
+                   
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: Data,
+                    success: function (response) {
+                        response = JSON.parse(response);
+                        if (response.data == 1) {
+                            $('#divaddform').hide();
+                            $('#divacknowledgement').show();
+                            $('#lblackno').text("Ack no: " + response.AcknowledgementNo);
+                        }
+                        else if (response.data == 2) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var url = '@Url.Action("ProfileDashboard", "Dashboard", new { area = "" })';
+                                    location.href = url;
+                                }
+                            })
+                            
+                        }
+                        else if (response.data == 11) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'warning',
+                                text: response.message
+                            });
+                        }
+                        else if (response.data == 9) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'warning',
+                                text: response.message
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'waring',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!!',
+                            text: error
+                        });
+                    }
+                });
+            }
+
+        }
+       });
+    function validateField(inputElement, errorElement, errorMessage) {
+        const value = $(inputElement).val().trim();
+        if (value !== "") {
+            $(inputElement).removeClass("is-invalid");
+            $(errorElement).text("");
+        } else {
+            $(inputElement).addClass("form-control shadow-sm is-invalid");
+            $(errorElement).text(errorMessage);
+            $(inputElement).focus();
+            return false;
+        }
+        return true;
+    }
+    function TroupeValidations() {
+        if ($("#txtGroupName").val().trim() != "") {
+            $('#txtGroupName').removeClass("is-invalid");
+            $('#errtxtGroupName').text("");
+        }
+        else {
+            $('#txtGroupName').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtGroupName').text("Please Enter Troupe Name!");
+            $('#txtGroupName').focus();
+            return false;
+        }
+        if ($("#txtGrpCreatedOn").val().trim() != "") {
+            $('#txtGrpCreatedOn').removeClass("is-invalid");
+            $('#errtxtGrpCreatedOn').text("");
+        }
+        else {
+            $('#txtGrpCreatedOn').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtGrpCreatedOn').text("Please Choose Group Created On!");
+            $('#txtGrpCreatedOn').focus();
+            return false;
+        }
+        if ($("#ddlDist").val() != 0) {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        }
+        else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+            return false;
+        }
+        if ($("#ddlBlock").val() != 0) {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').text("");
+        }
+        else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please Select Block!");
+            $('#ddlBlock').focus();
+            return false;
+        }
+        if ($("#ddlGp").val() != 0) {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').text("");
+        }
+        else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please Select Gram Panchayat!");
+            $('#ddlGp').focus();
+            return false;
+        }
+        if ($("#txtAddress").val().trim() != "") {
+            $('#txtAddress').removeClass("is-invalid");
+            $('#errtxtAddress').text("");
+        }
+        else {
+            $('#txtAddress').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAddress').text("Please Enter Address!");
+            $('#txtAddress').focus();
+            return false;
+        }
+        if ($("#txtPincode").val().trim() != "") {
+            $('#txtPincode').removeClass("is-invalid");
+            $('#errtxtPincode').text("");
+        }
+        else {
+            $('#txtPincode').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtPincode').text("Please Enter Pincode!");
+            $('#txtPincode').focus();
+            return false;
+        }
+        var pincode = $("#txtPincode").val().trim();
+        if (pincode.length !== 6 || parseInt($("#txtPincode").val()) <= 0) {
+            $('#txtPincode').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtPincode').text("@Localizer["Pincode number should have exactly 6 digits!"]");
+            $('#txtPincode').focus();
+            return false;
+        }
+        else {
+            $('#txtPincode').removeClass("is-invalid");
+            $('#errtxtPincode').text("");
+        }
+       
+        const grRegisterValue = $("input[name='GrpRegister']:checked").val();
+        if (grRegisterValue === "true") {
+            const societyActNoIsValid = validateField('#txtSocietyactNo', '#errtxtSocietyactNo', 'Please Enter Society Registration Number!');
+            const societyActRegDateIsValid = validateField('#txtSocietyRegDate', '#errtxtSocietyRegDate', 'Please Enter Society Registration Date!');
+            if (!societyActNoIsValid) {
+                return false;
+            }
+            if (!societyActRegDateIsValid) {
+                return false;
+            }
+           
+            var gd = new Date($("#txtGrpCreatedOn").val().trim());
+            var rd = new Date($("#txtSocietyRegDate").val().trim());
+            if (gd > rd) {
+
+                $('#txtSocietyRegDate').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSocietyRegDate').text("Registration date should be greater than or equal to Troupe created date!");
+                $('#txtSocietyRegDate').focus();
+                return false;
+            }
+            else {
+                $('#txtSocietyRegDate').removeClass("is-invalid");
+                $('#errtxtSocietyRegDate').text("");
+            }
+            if (parseInt($("#txtSocietyactNo").val()) <= 0) {
+                $('#txtSocietyactNo').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSocietyactNo').text("Please Enter Your Valid Registration No.!");
+                $('#txtSocietyactNo').focus();
+                return false;
+            }
+            else {
+                $('#txtSocietyactNo').removeClass("is-invalid");
+                $('#errtxtSocietyactNo').text("");
+
+            }
+        }
+        if ($("#ddlCategory").val() != 0) {
+            $('#ddlCategory').removeClass("is-invalid");
+            $('#errddlCategory').text("");
+        }
+        else {
+            $('#ddlCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlCategory').text("Please Select Category!");
+            $('#ddlCategory').focus();
+            return false;
+        }
+        if ($("#ddlSubCategory").val() != 0) {
+            $('#ddlSubCategory').removeClass("is-invalid");
+            $('#errddlSubCategory').text("");
+        }
+        else {
+            $('#ddlSubCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlSubCategory').text("Please Select SubCategory!");
+            $('#ddlSubCategory').focus();
+            return false;
+        }
+       
+        return true;
+    }
+    $("#ddlmemRole").change(function () {
+        var memrole = $('#ddlmemRole').val();
+        if (memrole == 2) {
+            $("#roleintroupe").show();
+        }
+        else {
+            $("#roleintroupe").hide();
+            $("#txtRole").val("")
+            $('#txtRole').removeClass("is-invalid");
+            $('#errtxtRole').text("");
+        }
+    });
+    function getRole() {
+        var thisHtml = '<option value="0">--Select Role--</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetRole',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    if ('@Lang' == "or") {
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                        }
+                    }
+                    else {
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+                    }
+                    $('#ddlmemRole').html(thisHtml);
+                }
+                else {
+                    $('#ddlmemRole').html(thisHtml);
+                }
+            }
+        });
+    }
+
+  
+</script>

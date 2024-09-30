@@ -1,0 +1,937 @@
+﻿@model CTMS.Model.Entities.Master.M_Troupe_Registration;
+
+@{
+    ViewData["Title"] = "TroupeRegistration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+<style>
+    fieldset.scheduler-border {
+        border: 1px groove #ddd !important;
+        padding: 0 1.4em 1.4em 1.4em !important;       
+        -webkit-box-shadow: 0px 0px 0px 0px #000;
+        box-shadow: 0px 0px 0px 0px #000;
+        color: forestgreen;
+        border-radius: 20px;
+    }
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width: auto;
+        padding: 0 10px;
+        border-bottom: none;
+    }
+</style>
+
+<div class="container">
+    <div class="content-sec pb-0">
+        <div class="card">
+            <div class="card-body px-3 py-3 form-container">
+                <div id="form" class="d-flex justify-content-between border-bottom pb-2 mb-3">
+                    <h5 class="m-0">@Localizer["Cultural Troupe Management Registration"]</h5>
+                    <div class="util-group ">
+                        <span class="text-danger mandatory-text" id="indicate">(*) indicated fields are mandatory </span>
+                    </div>
+                </div>
+                @Html.AntiForgeryToken()
+                <div id="frmDiv">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["District"]<span style="color:Red">*</span></label>
+                                <select id="ddlDist" name="ddlDist" class="form-control">
+                                    <option value="0">--Select--</option>
+                                </select>
+                                <span id="errddlDist" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Block"]<span style="color:Red">*</span></label>
+
+                                <select id="ddlBlock" name="ddlBlock" class="form-control">
+                                    <option value="0">--Select--</option>
+                                </select>
+                                <span id="errddlBlock" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["GramPanchayat"]<span style="color:Red">*</span></label>
+
+                                <select id="ddlGp" name="ddlGp" class="form-control">
+                                    <option value="0">--Select--</option>
+                                </select>
+                                <span id="errddlGp" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Group Name"]<span style="color:Red">*</span></label>
+
+                                <input type="text" id="txtGroupName" name="txtGroupName" class="form-control" Onkeypress="return inputLimiter(event,'NameCharacters')" autocomplete="off" />
+                                <span id="errtxtGroupName" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Leader Name"]<span style="color:Red">*</span></label>
+
+                                <input type="text" id="txtLeaderName" name="txtLeaderName" class="form-control" Onkeypress="return inputLimiter(event,'NameCharacters')" autocomplete="off" />
+                                <span id="errtxtLeaderName" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Mobile Number"]<span style="color:Red">*</span></label>
+
+                                <input type="text" id="txtMobileNumber" name="txtMobileNumber" class="form-control" Onkeypress="return inputLimiter(event,'Numbers')" autocomplete="off" maxlength="10" pattern="[0-9]{10}" />
+                                <span id="errtxtMobileNumber" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Address"]<span style="color:Red">*</span></label>
+
+                                <input type="text" id="txtAddress" name="txtAddress" class="form-control" Onkeypress="return inputLimiter(event,'NameCharactersAndNumbers')" autocomplete="off" />
+                                <span id="errtxtAddress" class="error"></span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Group Creation Date"]</label>
+                                <div class="input-group">
+                                    <input type="text" id="txtGrpCreatedOn" name="txtGrpCreatedOn" class="form-control " placeholder="Creation Date" autocomplete="off">
+                                    <span id="errtxtGrpCreatedOn" class="error"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["No. Of Members"]<span style="color:Red">*</span></label>
+                                <input type="number" class="form-control" id="txtNoMembers" name="txtNoMembers" Onkeypress="return inputLimiter(event,'Numbers')" autocomplete="off" />
+                                <span id="errtxtNoMembers" class="error"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group mb-2">
+                                <label class="control-label scheduler-border">@Localizer["Registered Through 1860 Society Registration Act"]</label><br />
+
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="radioyes" name="GrpRegister" value="true">
+                                    <label for="radioyes" class="custom-control-label">@Localizer["Yes"]</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input" id="radiono" name="GrpRegister" value="false" checked>
+                                    <label for="radiono" class="custom-control-label">@Localizer["No"]</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 col-xl-4" id="registeractfile" style="display:none">
+                            <div class="form-group">
+                                <label class="control-label">@Localizer["Upload Photo Copy"]</label>
+                                <div class="input-group" id="fileUploadDiv11">
+                                    <input type="file" class="form-control" name="fileToUpload" id="fileToUpload">
+                                    <input type="hidden" id="hdndocument" />
+                                </div>
+                                <small class="text-danger small">Only .pdf, .jpg file and max size 1MB</small>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" id="memberdetails">
+                            <h5><span></span>@Localizer["Add Member Details"]</h5>
+                            <div class="bg-light p-3 border">
+                                <div class="row">
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["Member Name"]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtMember" name="txtMember" class="form-control" />
+                                            <span id="errtxtMember" class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["Role"]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtRole" name="txtRole" class="form-control" />
+                                            <span id="errtxtRole" class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["Aadhar No."]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtAadhar" name="txtAadhar" class="form-control" />
+                                            <span id="errtxtAadhar" class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["IFSC"]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtIFSC" name="txtIFSC" class="form-control" />
+                                            <span id="errtxtIFSC" class="error"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["Bank Name"]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtBankName" name="txtBankName" class="form-control" />
+
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["Branch Name"]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtBranch" name="txtBranch" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 col-xl-4">
+                                        <div class="form-group">
+                                            <label class="control-label">@Localizer["Bank Account No."]<span style="color:Red">*</span></label>
+
+                                            <input type="text" id="txtAccountNo" name="txtAccountNo" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="text" id="hidmemberno" name="hidmemberno" class="d-none" />
+                        <span id="errhidmemberno" class="error"></span>
+                    </div>
+                    <br />
+                    <div class="shadow">
+                        <table class="table table-bordered cus-tble-font" id="tblmembers" style="display:none;">
+                            <thead>
+                                <tr>
+                                    <th>@Localizer["SlNo"]</th>
+                                    <th>@Localizer["Member Name"]</th>
+                                    <th>@Localizer["Role"]</th>
+                                    <th>@Localizer["Aadhar No."]</th>
+                                    <th>@Localizer["IFSC"]</th>
+                                    <th>@Localizer["Bank Name"]</th>
+                                    <th>@Localizer["Branch Name"]</th>
+                                    <th>@Localizer["Bank Account No."]</th>
+                                    <th style="display:none"></th>
+                                    <th>@Localizer["Action"]</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmore">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 col-xl-4">
+                            <div class="form-group">
+                                <input type="button" width="30" class="btn btn-success btn-sm add-btn" id="btnAddLst" value="@Localizer["Add More Members"]" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="imgDiv">
+                    <input type="hidden" id="hidTroupId" />
+                    <input type="hidden" id="hidUploadFolderPath" />
+                    <div class="col-12 col-lg-6 col-xl-4">
+                        <div class="form-group">
+                            <label class="control-label">Upload Photo 1</label>
+                            <div class="input-group" id="uploadphotodiv1">
+                                <input type="file" class="form-control" name="uploadphoto1" id="uploadphoto1">
+                                <input type="hidden" id="hdndocument" />
+                            </div>
+                            <small class="text-danger small">Only .pdf, .jpg file and max size 1MB</small>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-4">
+                        <div class="form-group">
+                            <label class="control-label">Upload Photo 2</label>
+                            <div class="input-group" id="uploadphotodiv2">
+                                <input type="file" class="form-control" name="uploadphoto2" id="uploadphoto2">
+                                <input type="hidden" id="hdndocument" />
+                            </div>
+                            <small class="text-danger small">Only .pdf, .jpg file and max size 1MB</small>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-4">
+                        <div class="form-group">
+                            <label class="control-label">Upload Photo 3</label>
+                            <div class="input-group" id="uploadphotodiv3">
+                                <input type="file" class="form-control" name="uploadphoto3" id="uploadphoto3">
+                                <input type="hidden" id="hdndocument" />
+                            </div>
+                            <small class="text-danger small">Only .pdf, .jpg file and max size 1MB</small>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-4">
+                        <div class="form-group">
+                            <label class="control-label">Upload Video</label>
+                            <div class="input-group" >
+                                <input type="file" class="form-control" name="uploadvdodiv1" id="uploadvdodiv1">
+                                <input type="hidden" id="hdndocument" />
+                            </div>
+                            <small class="text-danger small">max size 20 mb</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="divsubmitreset">
+                    <div class="col-12 mt-2" id="divsubmit">
+                        <div class=" text-center bg-light py-3">
+                            <input type="submit" name="Submit" value="@Localizer["Submit"]" class="btn btn-success" id="btnSubmit" onclick="return SubmitForm();" />
+                            <input type="reset" name="Reset" value="@Localizer["Reset"]" class="btn btn-danger" onclick="window.location.reload();" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="divsubmitfinal">
+                    <div class="col-12 mt-2" id="divsubmit">
+                        <div class=" text-center bg-light py-3">
+                            <input type="submit" name="Submit" value="Save" class="btn btn-success" id="btnfinalSubmit" />
+                            <input type="reset" name="Reset" value="Previous" class="btn btn-danger" id="btnPrevious" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        var up = "@ViewBag.ButtonName";
+        if (up == "Update") {
+            EditDetails();
+            $("#btnSubmit").val(up);
+        }
+        getDistrict();
+        $('#hidmemberno').val(0);
+        $('#imgDiv').hide();
+        $('#divsubmitfinal').hide();
+    });
+    function inputLimiter(e, allow) {
+        var AllowableCharacters = '';
+
+        if (allow == 'NameCharactersymbol') {
+            AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+        }
+        if (allow == 'NameCharacters') {
+            AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+        }
+        if (allow == 'NameCharactersAndNumbers') {
+            AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\&()';
+        }
+        if (allow == 'Description') {
+            AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-,./\&(){}[]#$:';
+        }
+        if (allow == 'Numbers') {
+            AllowableCharacters = '1234567890';
+        }
+        if (allow == 'Decimal') {
+            AllowableCharacters = '1234567890.';
+        }
+        var k;
+        k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+        if (k != 13 && k != 8 && k != 0) {
+            if ((e.ctrlKey == false) && (e.altKey == false)) {
+                return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+   
+    $(document).ready(function () {
+        $('#txtGrpCreatedOn').datetimepicker({
+            format: 'DD-MMM-YYYY',
+            maxDate: new Date()
+
+        });
+        $("input[name='GrpRegister']").change(function () {
+            if ($(this).val() === "true") {
+                $("#registeractfile").show();
+            } else {
+                $("#registeractfile").hide();
+            }
+        });
+    });
+    function Validate() {
+        if ($("#ddlDist").val() != "0") {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').html("");
+
+        }
+        else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please select District name!");
+            $('#ddlDist').focus();
+            return false;
+        }
+        if ($("#ddlBlock").val() != "0") {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').html("");
+
+        }
+        else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please select Block name!");
+            $('#ddlBlock').focus();
+            return false;
+        }
+        if ($("#ddlGp").val() != "0") {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').html("");
+
+        }
+        else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please select Gram Panchayat name!");
+            $('#ddlGp').focus();
+            return false;
+        }
+
+        if ($("#txtGroupName").val().trim() != "") {
+            $('#txtGroupName').removeClass("is-invalid");
+            $('#errtxtGroupName').html("");
+
+        }
+        else {
+            $('#txtGroupName').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtGroupName').text("Please enter Troupe group  name!");
+            $('#txtGroupName').focus();
+            return false;
+        }
+        if ($("#txtLeaderName").val().trim() != "") {
+            $('#txtLeaderName').removeClass("is-invalid");
+            $('#errtxtLeaderName').html("");
+
+        }
+        else {
+            $('#txtLeaderName').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtLeaderName').text("Please enter Troupe Leader name!");
+            $('#txtLeaderName').focus();
+            return false;
+        }
+        if ($("#txtMobileNumber").val().trim() != "") {
+            $('#txtMobileNumber').removeClass("is-invalid");
+            $('#errtxtMobileNumber').html("");
+
+        }
+        else {
+            $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMobileNumber').text("Please enter Troupe Leader Conatact No!");
+            $('#txtMobileNumber').focus();
+            return false;
+        }
+        if ($("#txtMobileNumber").val().trim() != "") {
+            var filter = /^\d*(?:\.\d{1,2})?$/;
+            var mobNum = $('#txtMobileNumber').val().trim();
+            if (filter.test(mobNum)) {
+                if (mobNum.length != 10) {
+                    $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+                    $('#errtxtMobileNumber').html("Not a valid mobile number");
+                    return false;
+                }
+                else {
+                    $('#txtMobileNumber').removeClass("is-invalid");
+                    $('#errtxtMobileNumber').html("");
+                }
+            }
+            else {
+                $('#txtMobileNumber').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtMobileNumber').html("Not a valid Mobile Number");
+                return false;
+            }
+        }
+        else {
+            $('#txtMobileNumber').removeClass("is-invalid");
+            $('#errtxtMobileNumber').html("");
+        }
+        if ($("#txtAddress").val().trim() != "") {
+            $('#txtAddress').removeClass("is-invalid");
+            $('#errtxtAddress').html("");
+
+        }
+        else {
+            $('#txtAddress').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAddress').text("Please enter Troupe address!");
+            $('#txtAddress').focus();
+            return false;
+        }
+        if ($("#txtGrpCreatedOn").val().trim() != "") {
+            $('#txtGrpCreatedOn').removeClass("is-invalid");
+            $('#errtxtGrpCreatedOn').html("");
+
+        }
+        else {
+            $('#txtGrpCreatedOn').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtGrpCreatedOn').text("Please select Troupe establish date!");
+            $('#txtGrpCreatedOn').focus();
+            return false;
+        }
+        if ($("#txtNoMembers").val().trim() != "") {
+            $('#txtNoMembers').removeClass("is-invalid");
+            $('#errtxtNoMembers').html("");
+
+        }
+        else {
+            $('#txtNoMembers').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtNoMembers').text("Please enter no of Troupe member!");
+            $('#txtNoMembers').focus();
+            return false;
+        }
+        if ($("#hidmemberno").val().trim() != "0") {
+            $('#hidmemberno').removeClass("is-invalid");
+            $('#errhidmemberno').html("");
+
+        }
+        else {
+            $('#hidmemberno').addClass("form-control shadow-sm is-invalid");
+            $('#errhidmemberno').text("Please enter  member details  !");
+            return false;
+        }
+        return true;
+    }
+    
+    function SubmitForm() {
+        if (Validate()) {
+            var MemberDetails = new Array();
+            var TroupeData = new FormData();
+            var regphotoupload = document.getElementById('regphotoupload');
+            $('#tblmembers tbody tr').each(function (index) {
+                var MemberDetail = {};
+                MemberDetail.MemberName = $(this).find('td:eq(1)').text();
+                MemberDetail.Role = $(this).find('td:eq(2)').text();
+                MemberDetail.AadharNumber = $(this).find('td:eq(3)').text();
+                MemberDetail.IFSCCode = $(this).find('td:eq(4)').text();
+                MemberDetail.BankID = $(this).find('td:eq(5)').text();
+                MemberDetail.BranchID = $(this).find('td:eq(6)').text();
+                MemberDetail.BankAccountNo = $(this).find('td:eq(7)').text();
+                MemberDetail.isLeader = $(this).find('td:eq(8)').text();
+                MemberDetails.push(MemberDetail);
+            });
+            if ('@ViewBag.Troupeid' != 0) {
+                TroupeData.append("TroupeId", @ViewBag.Troupeid);
+            }
+            TroupeData.append("Elements", JSON.stringify(MemberDetails));
+            TroupeData.append("DistrictId", $('#ddlDist').val());
+            TroupeData.append("BlockId", $('#ddlBlock').val());
+            TroupeData.append("GpId", $('#ddlGp').val());
+            TroupeData.append("vchGroupName", $('#txtGroupName').val());
+            TroupeData.append("vchLeaderName", $('#txtLeaderName').val());
+            TroupeData.append("vchMobileNumber", $('#txtMobileNumber').val());
+            TroupeData.append("vchAddress", $('#txtAddress').val());
+            TroupeData.append("GrpCreatedDate", $('#txtGrpCreatedOn').val());
+            TroupeData.append("GrpRegistered", $('input[name="GrpRegister"]:checked').val());
+            TroupeData.append("TotalMembers", $('#txtNoMembers').val());
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to save to Troupe Details.",
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Submit'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    AddTroupeData(TroupeData);
+                }
+            });
+        }
+        else {
+            return;
+        }
+
+    }
+
+    function AddTroupeData(Data) {
+        $.ajax({
+            type: "post",
+            url: "../Registration/TroupeRegistrationBsso",
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: Data,
+            success: function (Response) {
+                var response=JSON.parse(Response);
+                if (response.state == "success") {
+                    if (response.data != null) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message
+                        });
+                        var data = response.data;
+                        $('#hidTroupId').val(data.TroupeId);
+                        $('#hidUploadFolderPath').val(data.FolderName);
+                        $('#imgDiv').show();
+                        $('#divsubmitfinal').show();
+                        $('#frmDiv').hide();
+                        $('#divsubmitreset').hide();
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'warning',
+                            text: response.message
+                        });
+                    }
+                }
+                else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'warning',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!!',
+                    text: error
+                });
+            }
+        });
+    }
+    $("#txtLeaderName").change(function () {
+        var leadername = $("#txtLeaderName").val();
+        $("#txtMember").val(leadername);
+        $("#txtMember").prop("readonly", true);
+    })
+</script>
+
+@*Add More Code*@
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function validateMember() {
+        if ($("#txtMember").val().trim() != "") {
+            $('#txtMember').removeClass("is-invalid");
+            $('#errtxtMember').html("");
+
+        }
+        else {
+            $('#txtMember').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtMember').text("Please enter name of Troupe member!");
+            $('#txtMember').focus();
+            return false;
+        }
+        if ($("#txtRole").val().trim() != "") {
+            $('#txtRole').removeClass("is-invalid");
+            $('#errtxtRole').html("");
+
+        }
+        else {
+            $('#txtRole').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtRole').text("Please enter role of Troupe member!");
+            $('#txtRole').focus();
+            return false;
+        }
+        if ($("#txtAadhar").val().trim() != "") {
+            $('#txtAadhar').removeClass("is-invalid");
+            $('#errtxtAadhar').html("");
+
+        }
+        else {
+            $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAadhar').text("Please enter Aadhaar no of Troupe member!");
+            $('#txtAadhar').focus();
+            return false;
+        }
+        if ($("#txtAadhar").val().trim() != "") {
+            var filter = /^\d*(?:\.\d{1,2})?$/;
+            var aadharNo = $('#txtAadhar').val().trim();
+            if (aadharNo.length == 12) {
+               
+            }
+            else {
+                $('#txtAadhar').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtAadhar').html("Not a valid Aadhaar Number");
+                return false;
+            }
+        }
+        else {
+            $('#txtAadhar').removeClass("is-invalid");
+            $('#errtxtAadhar').html("");
+        }
+
+        if ($("#txtIFSC").val().trim() != "") {
+            $('#txtIFSC').removeClass("is-invalid");
+            $('#errtxtIFSC').html("");
+
+        }
+        else {
+            $('#txtIFSC').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtIFSC').text("Please enter ifsc no of Troupe member!");
+            $('#txtIFSC').focus();
+            return false;
+        }
+        return true;
+    }
+    var rowcount = 0;
+    $(document).on('click', '#btnAddLst', function () {
+
+        var slno = $('#addmore tr').length;
+        var membername = $("#txtMember").val();
+        var role = $("#txtRole").val();
+        var aadhaar = $("#txtAadhar").val();
+        var ifsc = $("#txtIFSC").val();
+        var bankname = $("#txtBankName").val();
+        var branch = $("#txtBranch").val();
+        var accno = $("#txtAccountNo").val();
+        var leadername = $("#txtLeaderName").val();
+
+        if (!validateMember()) {
+            rowcount = 0;
+            return false;
+        }
+        else {
+            rowcount++;
+        }
+        if (rowcount > 0) {
+            $("#tblmembers").show();
+            if (slno == 0) {
+                slno = 1;
+                $('#hidmemberno').val(slno);
+            }
+            else {
+                slno = slno + 1;
+                $('#hidmemberno').val(slno);
+            }
+            var add = '<tr>'
+            add += '<td>' + slno + '</td>';
+            add += '<td>' + membername + '</td> ';
+            add += '<td>' + role + '</td>';
+            add += '<td>' + aadhaar + '</td>';
+            add += '<td>' + ifsc + '</td>';
+            add += '<td>' + bankname + '</td>';
+            add += '<td>' + branch + '</td>';
+            add += '<td>' + accno + '</td>';
+            if (membername == leadername) {
+                add += '<td style="display:none">1</td>';
+            }
+            else {
+                add += '<td style="display:none">0</td>';
+            }
+            add += '<td><a id="edit" class="btn btn-success btn-sm edit">Edit</a>';
+            add += '<a id="remove" class="btn btn-danger btn-sm remove">Remove</a></td>';
+
+            add += '</tr>';
+            $("#addmore").append(add);
+            var membername = $("#txtMember").val("");
+            var role = $("#txtRole").val("");
+            var aadhaar = $("#txtAadhar").val("");
+            var accno = $("#txtAccountNo").val("");
+            var ifsc = $("#txtIFSC").val("");
+            var branch = $("#txtBranch").val("");
+            var bankname = $("#txtBankName").val("");
+        }
+    });
+    $(document).on('click', '#remove', function () {
+        $(this).parents('tr').remove();
+        var rowno = $('#addmore tr').length;
+        $('#hidmemberno').val(rowno);
+        if (rowno == 0) {
+            $("#tblmembers").hide();
+        }
+    });
+    $(document).on('click', '#edit', function () {
+        $('#memberdetails').show();
+        var closestRow = $(this).closest("tr");
+        var membername = closestRow.find("td:eq(1)").text();
+        var role = closestRow.find("td:eq(2)").text();
+        var aadhaar = closestRow.find("td:eq(3)").text();
+        var ifsc = closestRow.find("td:eq(4)").text();
+        var bank = closestRow.find("td:eq(5)").text();
+        var branch = closestRow.find("td:eq(6)").text();
+        var accno = closestRow.find("td:eq(7)").text();
+        $("#txtMember").val(membername);
+        $("#txtRole").val(role);
+        $("#txtAadhar").val(aadhaar);
+        $("#txtAccountNo").val(accno);
+        $("#txtIFSC").val(ifsc);
+        $("#txtBranch").val(branch);
+        $("#txtBankName").val(bank);
+        $(this).parents('tr').remove();
+        updateSerialNumbers();
+    });
+    $(document).on('click', '.remove', function () {
+        $(this).closest('tr').remove();
+        updateSerialNumbers(); 
+    });
+
+   
+    function updateSerialNumbers() {
+        var rows = $('#addmore tr');
+        rows.each(function (index, row) {
+            $(row).find('td:first').text(index + 1);
+        });
+    }
+
+
+
+    function EditDetails() {
+        var Troupeid = @ViewBag.Troupeid;
+        $("#tblmembers").show();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllDetails", "Registration")',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+
+            data: { "TROUPEID": Troupeid },
+            dataType: "JSON",
+            success: function (data) {
+                $('#ddlDist').val(data[0].distId);
+                $('#ddlDist').trigger('change');
+                $('#ddlBlock').val(data[0].blockId);
+                $('#ddlBlock').trigger('change');
+                $('#ddlGp').val(data[0].gpId);
+                $('#txtLeaderName').val(data[0].leaderName);
+                $('#txtMobileNumber').val(data[0].mobileNo);
+                $('#txtAddress').val(data[0].address);
+                $('#txtNoMembers').val(data[0].noofMembers);
+                $('#txtGroupName').val(data[0].groupName);
+                $('#txtGrpCreatedOn').val(data[0].grpCreatedOn);
+                if (data[0].isSocietyReg == 1) {
+                    $('#radioyes').prop('checked', true);
+                    $("#registeractfile").show();
+                    $('#fileUploadDiv11').val(data[0].SocietyRegDoc);
+                }
+                else {
+                    $('#radiono').prop('checked', true);
+                }
+                $('#memberdetails').hide();
+                $()
+                for (i = 0; i < data.length; i++) {
+
+                    var add = '<tr>'
+                    add += '<td>' + (i + 1) + '</td>';
+                    add += '<td>' + data[i].memberName + '</td> ';
+                    add += '<td>' + data[i].role + '</td>';
+                    add += '<td>' + data[i].aadharNo + '</td>';
+                    add += '<td>' + data[i].ifsc + '</td>';
+                    add += '<td>' + data[i].bankName + '</td>';
+                    add += '<td>' + data[i].branchName + '</td>';
+                    add += '<td>' + data[i].accountNo + '</td>';
+                    if (data[i].memberName == data[0].leaderName) {
+                        add += '<td style="display:none">1</td>';
+                    }
+                    else {
+                        add += '<td style="display:none">0</td>';
+                    }
+                    add += '<td><a id="edit" class="btn btn-success btn-sm edit">Edit</a>';
+                    add += '<a id="remove" class="btn btn-danger btn-sm remove">Remove</a></td>';
+                    add += '</tr>';
+                    $("#addmore").append(add);
+
+                }
+                $('#hidmemberno').val(data.length);
+            }
+        })
+    }
+    $('#btnPrevious').click(function () {
+        $('#imgDiv').hide();
+        $('#divsubmitfinal').hide();
+        $('#frmDiv').show();
+        $('#divsubmitreset').show();
+    });
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#btnfinalSubmit').click(function () {
+        var TroupeData = new FormData();
+        var photoupload1 = document.getElementById('uploadphoto1');
+        var photoupload2 = document.getElementById('uploadphoto2');
+        var photoupload3 = document.getElementById('uploadphoto3');
+        var videoupload1 = document.getElementById('uploadvdodiv1');
+        if (photoupload1.files.length > 0) {
+            TroupeData.append("UpldPhtCopy1", photoupload1.files[0]);
+        }
+        if (photoupload2.files.length > 0) {
+            TroupeData.append("UpldPhtCopy2", photoupload2.files[0]);
+        }
+        if (photoupload3.files.length > 0) {
+            TroupeData.append("UpldPhtCopy3", photoupload3.files[0]);
+        }
+        if (videoupload1.files.length > 0) {
+            TroupeData.append("UpldVidCopy", videoupload1.files[0]);
+        }
+        if ($('#hidTroupId').val() != 0) {
+            TroupeData.append("TroupeId", $('#hidTroupId').val());
+        }
+        if ($('#hidUploadFolderPath').val() != "") {
+            TroupeData.append("UploadFolderPath", $('#hidUploadFolderPath').val());
+        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to save to Troupe media  Details.",
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Submit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                AddTroupeData(TroupeData);
+            }
+        });
+    });
+    function AddTroupeMediaDetails(Data) {
+        $.ajax({
+            type: "post",
+            url: "../Registration/TroupeRegistrationBsso",
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: Data,
+            success: function (response) {
+                if (response.state == "success") {
+                    if (response.data != 1) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'warning',
+                            text: response.message
+                        });
+                    }
+                }
+                else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'warning',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!!',
+                    text: error
+                });
+            }
+        });
+    }
+
+</script>

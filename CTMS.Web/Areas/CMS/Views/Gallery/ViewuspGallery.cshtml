@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "Gallery Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="tropue-basic-info-tab" asp-area="CMS" asp-controller="Gallery" asp-action="uspGallery">
+            Add Gallery
+        </a>
+        <a class="nav-link active" id="artist-info-tab" asp-area="CMS" asp-controller="Gallery" asp-action="ViewuspGallery">
+            Gallery Details
+        </a>
+    </div>
+            
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">Gallery Information</h5>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl#
+                            </th>
+                            <th>
+                                Gallery Name
+                            </th>
+                            <th>
+                                Gallery Name(Odia)
+                            </th>
+                            <th>
+                                Media Type
+                            </th>
+                            <th>
+                                Thumbnail Image
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+                    
+    </div>
+            
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Get_uspGallery();
+    });
+    function Get_uspGallery() {
+        $.ajax({
+            type: 'Get',
+            dataType: 'Json',
+            contentType: 'application/json; charset=utf-8',
+            data: {},
+            url: "@Url.Action("Get_uspGallery", "Gallery", new {area="CMS"})",
+            success: function (result) {
+                var data1 = JSON.parse(result);
+                if (data1.length > 0) {
+                    $('#datatable.tbody').empty();
+                    $.each(data1, function (i, data) {
+                        var origin = window.location.origin;
+                        var photopath = origin+"/" + data.Path;
+                        var trows = "<tr>";
+                        trows = trows + "<td>" + (i+1) + "</td>";
+                        trows = trows + "<td>" + data.GalleryName +"</td>";
+                        trows = trows + "<td>" + data.GalleryNameOD +"</td>";
+                        trows = trows + "<td>" + data.MediaType + "</td>";
+                        trows = trows + "<td><a href='../Banner/DownloadFile?fileName=" + data.Path + "'><img height='100px' width='100px' src='" + photopath + "' alt='Image'></a></td>";
+                        trows = trows + "<td>" + "<a href='../Gallery/uspGallery?strid=" + data.Id + "'><i class='bi bi-pencil-square' title='Edit'></i></a>&nbsp;<a onclick='Delete_uspGallery(" + data.Id +")'><i class='bi bi-trash' title='Delete' style='color: red; cursor: pointer;'></i></a>" + "</td>";
+                        trows = trows + "</tr>";
+                        $('#datatable').append(trows);
+                    });
+                }
+                Datatable();
+
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }
+
+    function Delete_uspGallery(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "Delete",
+                    dataType: "json",
+                    url: "@Url.Action("DeleteGallery", "Gallery", new {area="CMS"})",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: { "Id": id },
+                    success: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Gallery Deleted Successfully!',
+                            'success'
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                var url = '@Url.Action("ViewuspGallery", "Gallery", new { area = "CMS" })';
+                                location.href = url;
+                            }
+                            else if (result.isDenied) {
+                                Swal.fire('Changes are not saved', '', 'info')
+                            }
+                        })
+                    }
+                });
+
+            }
+            return false;
+        })
+    }
+</script>

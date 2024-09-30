@@ -1,0 +1,70 @@
+.troupe-profile__banner {
+    object-fit: cover;
+    overflow: hidden;
+    height: 160px;
+    position: relative;
+}
+.troupe-profile__banner img {
+    object-fit: cover;
+} 
+.troupe-profile__upload-btn {
+    position: absolute;
+    z-index: 11;
+    right: 0.5rem;
+    top: 1rem;
+    margin: 0;
+    font-size: .875rem;
+    color: rgb(255 255 255 / 79%);
+    opacity: 0;
+    transition: .3s;
+    cursor: pointer;
+}
+.troupe-profile__banner:hover .troupe-profile__upload-btn{
+    opacity: 1;
+}
+.troupe-profile__upload-btn .bi-camera {
+    background: #fff;
+    color: var(--bs-primary);
+    padding: 0.2rem 0.25rem;
+    border-radius: 1rem;
+}
+.troupe-profile__category {
+    position: relative;
+}
+.troupe-profile__category::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.5rem; 
+    height: 2px;
+    width: 50px;
+    border-radius: .125rem;
+    background: var(--title-border);
+ }
+.troupe-profile__contact {
+    color: var(--bs-black);
+    padding: 0;
+    margin-top: 2rem;
+}
+.troupe-profile__contact li{
+   display: flex;
+   align-items: center; 
+   line-height: 2;
+}
+.troupe-profile__contact li a{
+    text-decoration: none;
+    color: var(--bs-black);
+}
+.troupe-profile__contact li i {
+    padding-right: .5rem;
+}
+.troupe-profile .card-footer {
+    background: none;
+}
+.troupe-profile .card-footer a {
+    color: var(--bs-gray-600);
+    text-decoration: none;
+}
+.troupe-profile .card-footer a:hover {
+    color: var(--bs-primary);
+}

@@ -1,0 +1,157 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.GlobalLink.GlobalModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+
+
+
+@section Scripts{
+   
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function check_uncheck_checkbox(isChecked) {
+            if (isChecked) {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+        function ClearField() {
+            $('input[type=checkbox]').prop('checked', false);
+        }
+
+    </script>
+    <script type="text/javascript" language="javascript">
+             $(document).ready(function () {
+            $('#btnsubmit').click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                if ($('#example1 :checked').length == 0) {
+                    new swal("No record selected for Active!");
+                    return false;
+                }
+                else {
+                    var chkbox = [];
+                    $('input[name=chkbox]:checked').map(function () {
+                        chkbox.push($(this).val());
+                    });
+                    Swal.fire({
+    title: "Are you sure?",
+    text: "You want to Mark As Active",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Yes",
+    closeOnConfirm: false
+}).then((result) => {
+    if (result.isConfirmed) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("MarkAsActive", "GlobalLink")',
+            data: { chkbox: chkbox },
+            success: function (response) {
+                Swal.fire({
+                    title: "",
+                    text: response,
+                    icon: "success"
+                }).then(() => {
+                    window.location.href = window.location.origin + "@Url.Action("ViewGlobalLinkActive", "GlobalLink")";
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "",
+                    text: 'An error occurred while processing the request.',
+                    icon: "error"
+                }).then(() => {
+                    return;
+                });
+            }
+        });
+    }
+});
+
+                }
+            });
+        });
+    </script>
+
+}
+<div class="card card--lg">
+
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="GlobalLink" asp-action="AddGlobalLink">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="GlobalLink" asp-action="ViewGlobalLinkActive">
+            Active
+        </a>
+        <a class="nav-link active" id="inactive-hierarchy" asp-controller="GlobalLink" asp-action="ViewGlobalLinkInActive">
+            InActive
+        </a>
+    </div>
+    <div class="card-body">
+        @if (Model.GlobalModelList.Count != 0)
+        {
+            <form id="frmCreatePrimaryLink" data-parsley-validate novalidate method="post" asp-action="MarkAsActive"
+                    asp-controller="GlobalLink" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive">
+                        <table class="table" id="example1">
+
+                            <thead>
+                                <tr>
+                                    <th width="10px"><input type="checkbox" id="checkBoxAll" onclick="check_uncheck_checkbox(this.checked)" /></th>
+                                    <th width="10px">SL#</th>
+                                    <th width="100px">Project Link Name</th>
+                                    <th width="100px">Global Link Name</th>
+                                    <th width="100px">Global Icon Class</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.GlobalModelList.Count != 0)
+                                {
+                                    @foreach (var globallink in Model.GlobalModelList.Select((x, i) => new { Data = x, Index = i + 1 }))
+                                    {
+
+                                        <tr>
+                                            <td><input type="checkbox" name="chkbox" value="@globallink.Data.intGLinkID" /> All</td>
+                                            <td>@globallink.Index</td>
+                                            <td>@Html.DisplayFor(modelItem => globallink.Data.NVCHPROJECTLINKNAME)</td>
+                                            <td>@Html.DisplayFor(modelItem => globallink.Data.nvchGLinkName)</td>
+                                            <td>@Html.DisplayFor(modelItem => globallink.Data.VCHICONCLASS)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr style="text-align: center;font-size: x-large;font-weight: bolder;">
+                                        <td colspan='4' align='center'> No records found!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <input asp-for="updatedBy" type="hidden" id="hdnGLinkID" value="1" />
+                        <div class="mt-2">
+                            <button type="submit" name="submitButton" id="btnsubmit" title="Mark AS Active" class="btn btn-primary btn-sm" value="submit">Mark AS Active</button>
+                            <button type="button" class="btn btn-danger btn-sm" title="Reset" onclick="return ClearField();"><span class="localize" data-key="Reset">Reset</span></button>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </form>
+        }
+        else
+        {
+
+            <h4>Record Not Found</h4>
+        }
+
+
+    </div>
+</div>

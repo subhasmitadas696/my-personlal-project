@@ -1,0 +1,1135 @@
+﻿@{
+    ViewData["Title"] = "CreateAuditCalender";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 2px;
+    }
+
+    th {
+        background-color: #f0f0f0;
+    }
+
+    
+
+    #ClientName {
+        display: none;
+    }
+
+ 
+    #calendar-container td, #calendar-container th {
+        border: 1px solid #dddddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .fixed-header {
+        position: sticky;
+        top: 0;
+        background-color: #f2f2f2;
+        z-index: 1;
+    }
+
+    .scrollable-content {
+        max-height: 100px;
+        overflow: auto;
+    }
+
+    .item.form-group.mt-34 {
+        display: none;
+    }
+
+    .custom-modal {
+        border: 20px solid #000; 
+        border-radius: 1px; 
+    }
+
+   
+    .close {
+        position: absolute;
+        top: 0;
+        right: 0; 
+        padding: 10px;
+        cursor: pointer;
+        color: #1e0303;
+    }
+
+    tables {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 0px solid black;
+    }
+
+    .calendar-cell {
+        width: 50px; 
+        height: 50px; 
+        border: 1px solid #ccc; 
+        text-align: center;
+        vertical-align: middle; 
+    }
+
+
+        
+        .calendar-cell.empty {
+            background-color: #f2f2f2; 
+            color: #888; 
+            pointer-events: none; 
+        }
+
+    .button-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        margin-bottom: 20px; 
+    }
+
+    
+    #saveCancel {
+        width: 65px;
+        height: 48px;
+    }
+
+
+
+    
+    .modal-content {
+        text-align: center;
+    }
+
+       
+        .modal-content .close {
+            text-align: center;
+           
+        }
+
+
+    .calendar-cell {
+        width: 14.2857%; 
+        padding: 5px; 
+    }
+
+
+
+    .close {
+        color: #1e0303;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .modal-body {
+        text-align: center;
+        border: 0.3px solid lightgrey;
+    }
+
+    #modal-content {
+        
+        max-width: 100%;
+        margin: 0 auto;
+    }
+   
+    .modal-header {
+        
+        padding: 10px;
+        text-align: center;
+        position: relative;
+        background-color: #c59696;
+        color: #000;
+    }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+   
+    .modal-footer {
+        background-color: #f2f2f2;
+        padding: 10px;
+        text-align: center;
+    }
+
+    #tblpopup td {
+        text-align: left;
+    }
+
+    .status-cancel {
+        background-color: red;
+        color: red;
+    }
+
+    .status-audit-completed {
+        background-color: #00cc66;
+        color: #00cc66;
+    }
+
+    .status-rescheduled {
+        background-color: #ff9999;
+        color: black;
+    }
+
+
+    .status-review-completed {
+        background-color: #0000cc;
+        color: black;
+    }
+
+    .status-holiday {
+        background-color: #7030a0;
+        color: #7030a0;
+    }
+
+    .status-review {
+        background-color: #ffff00;
+        color: #ffff00;
+    }
+
+    .status-new-audit {
+        background-color: black;
+        color: white;
+    }
+
+   
+    .legend {
+        margin: 8px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+    
+    .color-bar {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .x_content {
+        padding: 0 3px 6px;
+        position: relative;
+        width: 100%;
+        float: left;
+        clear: both;
+        margin-top: 5px
+    }
+
+        .x_content h4 {
+            font-size: 16px;
+            font-weight: 500
+        }
+</style>
+@Html.AntiForgeryToken()
+<div class="right_col" role="main">
+    <div class="">
+        <div class="clearfix"></div>
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 ">
+                <div class="x_panel">
+                    <div class="search-container">
+                        <div class="search-sec" style="display: block;">
+
+                            <div class="form-group form-row">
+
+                                <div class="col-12 col-md-6 col-xl-2">
+
+                                    <label for="year-select">Select Year<span class="text-danger">*</span></label>
+                                    <select id="year-select" class="form-control"></select>
+                                </div>
+                                <div class="col-12 col-md-6 col-xl-2">
+                                    <label class="control-label" id="todateL">Select Month<span class="text-danger">*</span></label>
+                                    <select id="month-select" class="form-control">
+                                        <option value="">--select One--</option>
+                                        <option value="0">January</option>
+                                        <option value="1">February</option>
+                                        <option value="2">March</option>
+                                        <option value="3">April</option>
+                                        <option value="4">May</option>
+                                        <option value="5">June</option>
+                                        <option value="6">July</option>
+                                        <option value="7">August</option>
+                                        <option value="8">September</option>
+                                        <option value="9">October</option>
+                                        <option value="10">November</option>
+                                        <option value="11">December</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-lg-2 ">
+                                    <button class="btn btn-primary mt-xl-4 mt-2" onclick="generateCalendar()"><i class="fa fa-search"></i>Search...</button>
+
+                                </div>
+
+                                <div class="legend">
+                                    <div class="color-bar status-holiday"></div> Holiday
+                                    <div class="color-bar status-audit-completed"></div> Event Completed
+                                    <div class="color-bar status-rescheduled"></div> Event Rescheduled
+                                    <div class="color-bar status-cancel"></div> Event Canceled
+                                </div>
+                                <input type="hidden" id="SessionId" value=@ViewBag.user>
+
+                            </div>
+
+                        </div>
+                        <div class="text-center"> <a class="searchopen" title="Search" data-toggle="tooltip" data-placement="bottom"> <i class="icon-angle-arrow-down"></i> </a></div>
+                    </div>
+                    <div class="x_content">
+
+                        <div>
+                            <div id="calendar-container"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="divmodal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="divmodal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="view-form-details__title mt-0">Event Information</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlDepartment" name="ddlDepartment">
+                            <option value="0" selected>Select Department</option>
+                        </select>
+                        <label for="block">Department</label>
+                        <span class="text-danger" id="errddlDepartment"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlScheme" name="ddlScheme">
+                            <option value="0" selected>Select Scheme</option>
+
+                        </select>
+                        <label for="block">Scheme</label>
+                        <span class="text-danger" id="errddlScheme"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtTitle" name="txtTitle">
+                        <label for="tname">Event Title</label>
+                        <span class="text-danger" id="errtxtTitle"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtDescription" name="txtDescription">
+                        <label for="tname">Event Description</label>
+                        <span class="text-danger" id="errtxtDescription"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+
+                        <input type="text" name="txtStartDt" data-date-format="dd-mm-yyyy" id="txtStartDt" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="">
+
+                        <label for="tname">Event Start Date</label>
+                        <span class="text-danger" id="errtxtStartDt"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="time" id="txtStarttime" name="txtStarttime" placeholder="From Date" class="form-control" />
+                        <label for="tname">Event Start Time</label>
+                        <span class="text-danger" id="errtxtStarttime"></span>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6">
+                    <div class="form-floating">
+
+                        <input type="text" name="txtEndDt" data-date-format="dd-mm-yyyy" id="txtEndDt" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="">
+                        <label for="tname">Event End Date</label>
+                        <span class="text-danger" id="errtxtEndDt"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="time" id="txtEndtime" name="txtEndtime" class="form-control" />
+                        <label for="tname">Event End Time</label>
+                        <span class="text-danger" id="errtxtStartTime"></span>
+                    </div>
+                </div>
+            </div>
+            <h5 class="view-form-details__title mt-0"> Event Location</h5>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlDist" name="ddlDist">
+                            <option value="0" selected>Select District</option>
+                        </select>
+                        <label for="tdist">District</label>
+                        <span class="text-danger" id="errddlDist"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlBlock" name="ddlBlock">
+                            <option value="0" selected>Select Block</option>
+                        </select>
+                        <label for="block">Block</label>
+                        <span class="text-danger" id="errddlBlock"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlGp" name="ddlGp">
+                            <option value="0" selected>Select Gram Panchayat</option>
+                        </select>
+                        <label for="block"> Gram Panchayat</label>
+                        <span class="text-danger" id="errddlGp"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-4 mt-md-5">
+                <input type="button" class="rounded-pill btn btn-primary btn-lg" id="FinalSubmit" onclick="Save_ManageEvent()"
+                       title="Submit" value="Submit" />
+                <input id="hdnManageEvent" type="hidden" value="0" />
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="cancelModal" class="modal">
+    <div class="modal-content">
+
+        <div class="modal-header d-flex justify-content-center">
+            <h2>Cancel Audit</h2>
+            <input type="hidden" id="hdnAuditProjectIdCancel" name="hdnAuditIdCancel" value="" />
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table>
+                <tr>
+                    <td>
+                        <label for="reason">Reason for Cancellation:</label>
+                    </td>
+                    <td>
+                       
+
+                        <select id="txt_DescriptionCancelReason" class="form-control mb-3">
+                          
+
+                            <option value="0">--Select--</option>
+                            @if (ViewBag.Cancel != null)
+                            {
+                                foreach (var item in ViewBag.Cancel)
+                                {
+                                    <option value="@item.intCancelId"> @item.vchCancelDesc</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="reason">Remarks</label>
+                    </td>
+                    <td>
+                        <textarea id="txt_CancelRemarks" class="form-control"></textarea>
+
+
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <div class="modal-footer d-flex justify-content-center">
+                <button id="saveCancel" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        getDepartment();
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_Event(id);
+            $('#FinalSubmit').val("Update");
+            $("#hdnManageEvent").val(id);
+        }
+        $('.date-picker').datepicker({
+            format: 'dd-M-yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        getDistrict();
+    });
+    function getDepartment() {
+        var thisHtml = '<option value="0">--Select--</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDepartment',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+
+                    for (var i = 0; i < result.length; i++) {
+                        thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                    }
+
+                    $('#ddlDepartment').html(thisHtml);
+                }
+                else {
+                    $('#ddlDepartment').html(thisHtml);
+                }
+            }
+        });
+    }
+    $("#ddlDepartment").change(function () {
+        Scheme($('#ddlDepartment option:selected').val());
+    });
+    function Scheme(Department) {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlDepartment').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetSCHEME',
+                data: { Deptid: $('#ddlDepartment').val(), },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlScheme').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlScheme').html(thisHtml);
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlScheme').html(thisHtml);
+        }
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    function closeDateCellModal() {
+
+
+        const dateCellModal = document.getElementById('dateCellModal');
+        dateCellModal.style.display = 'none';
+
+        document.getElementById('txt_Description').value = '';
+        document.getElementById('txtProjectPhase').value = '';
+        document.getElementById('txt_Emailid').value = '';
+        document.getElementById('txtProjectManager').value = '';
+        $("#rw2").hide();
+        $("#rw3").hide();
+        $("#rw1").hide();
+        $("#rw5").hide()
+        $("#rwprojectphase").hide();
+        $("#hiddenAuditHead").val("0");
+        $("#ddlMeetingType").val("0");
+        $('label[for="myTextbox"]').value = '';
+
+        $("#hiddenAuditHead").hide();
+        $('label[for="lblAuditType"]').hide();
+        $('label[for="lbl_Department"]').hide();
+        $('label[for="lbl_Department"]').value = '';
+
+        $("#ddlProjectPhase").val("0");
+
+
+
+
+
+        $("#ddlProjectPhase").val(null).trigger("change");
+        
+
+        location.reload(true);
+        resett();
+
+
+
+    }
+
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    function attachClickHandlers() {
+        const allDateCells = document.querySelectorAll('#calendar-container td');
+        allDateCells.forEach(dateCell => {
+            dateCell.addEventListener('click', handleCellClick);
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    populateYearDropdown(new Date().getFullYear());
+    function populateYearDropdown(defaultYear) {
+        const yearSelect = document.getElementById('year-select');
+        const currentYear = new Date().getFullYear();
+        for (let year = 2000; year <= 3000; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            if (year === defaultYear) {
+                option.selected = true;
+            }
+            yearSelect.appendChild(option);
+        }
+        const monthSelect = document.getElementById('month-select');
+        const currentMonth = new Date().getMonth();
+        monthSelect.value = currentMonth.toString();
+
+    }
+    generateCalendar();
+    let firstDayOfCurrentMonth = null;
+    function generateCalendar() {
+
+
+        var calendarData = @Html.Raw(Json.Serialize(ViewBag.CalendarData));
+
+        const yearSelect = document.getElementById('year-select');
+        const monthSelect = document.getElementById('month-select');
+        const selectedYear = parseInt(yearSelect.value, 10);
+        const selectedMonth = parseInt(monthSelect.value, 10);
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const container = document.getElementById('calendar-container');
+        container.innerHTML = '';
+
+        const calendarTable = document.createElement('table');
+        const headerRow = document.createElement('tr');
+        const monthHeader = document.createElement('th');
+        monthHeader.setAttribute('colspan', '7');
+        monthHeader.textContent = months[selectedMonth] + ' ' + selectedYear;
+        headerRow.appendChild(monthHeader);
+        calendarTable.appendChild(headerRow);
+
+        const daysRow = document.createElement('tr');
+        const firstDay = new Date(selectedYear, selectedMonth, 1);
+        const firstDayOfWeek = firstDay.getDay();
+
+        let currentDate = new Date(firstDay);
+
+        currentDate.setDate(currentDate.getDate() - firstDayOfWeek);
+
+
+
+        for (let i = 0; i < 7; i++) {
+            const dayCell = document.createElement('td');
+            dayCell.textContent = daysOfWeek[i];
+            
+            if (i === 0 || i === 6) {
+                dayCell.style.color = '#ff0000';
+
+            }
+            daysRow.appendChild(dayCell);
+        }
+        calendarTable.appendChild(daysRow);
+
+        const holidays = [
+            { date: '2023-09-19', name: 'Ganesh Puja' },
+            { date: '2023-10-02', name: 'Gandhi Jayanti' },
+            { date: '2023-10-23', name: 'Dussehra (Maha Nabami)' },
+            { date: '2023-10-24', name: 'Dussehra(Maha Dashami)' },
+            { date: '2023-11-10', name: 'Deepawali' },
+            { date: '2023-12-25', name: 'Christmas Day' },
+
+
+        ];
+
+        while (currentDate.getMonth() === selectedMonth || currentDate < firstDay) {
+            const weekRow = document.createElement('tr');
+            for (let i = 0; i < 7; i++) {
+                const dayCell = document.createElement('td');
+
+
+
+                dayCell.style.fontWeight = 'bold';
+                dayCell.classList.add('calendar-cell');
+
+
+                if (currentDate.getMonth() === selectedMonth) {
+
+
+                    currentDate.setHours(0, 0, 0, 0);
+
+                    var year = currentDate.getFullYear();
+                    var month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); 
+                    var day = currentDate.getDate().toString().padStart(2, '0');
+                    var formattedDate = year + '-' + month + '-' + day;                   
+                    const isHoliday = holidays.some(holiday => {
+                        return holiday.date === formattedDate;
+                    });
+
+
+                    if (isHoliday) {
+                        const holidayInfo = holidays.find(holiday => holiday.date === formattedDate);
+                        const holidayName = holidayInfo.name;
+                        dayCell.style.backgroundColor = '#7030a0'; 
+                        dayCell.setAttribute('title', holidayName);
+                        dayCell.setAttribute('tooltip', holidayName);
+
+                        dayCell.style.pointerEvents = 'none';
+
+                    }
+
+
+
+
+                   
+                    dayCell.textContent = currentDate.getDate();
+                    dayCell.setAttribute('data-date', currentDate.toISOString());
+
+                   
+
+                    if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+                        dayCell.style.backgroundColor = '#7030a0';
+
+
+                        dayCell.style.pointerEvents = 'none';
+                       
+                    }
+
+                    const matchingData = calendarData.filter(item => {
+                        const dataDate = new Date(item.startDate);
+                        return (
+                            dataDate.getDate() === currentDate.getDate() &&
+                            dataDate.getMonth() === selectedMonth &&
+                            dataDate.getFullYear() === selectedYear
+                        );
+                    });
+
+
+                    if (matchingData.length > 0) {
+
+                        dayCell.style.backgroundColor = '#66ff66';
+                        const contentDiv = document.createElement('div');
+                        matchingData.forEach(data => {
+
+                            
+
+                            const projectNameSpan = document.createElement('span');
+                            projectNameSpan.style.fontWeight = 'bold';
+                            projectNameSpan.style.color = 'red';
+                            projectNameSpan.textContent = data.eventTitle;
+                            projectNameSpan.setAttribute('title', data.eventTitle + ' - ' + data.eventDescription + ' - ' + formatDate(data.startDate));
+                            contentDiv.appendChild(projectNameSpan); 
+                        });
+                        dayCell.appendChild(contentDiv);
+
+
+                        dayCell.setAttribute('title', matchingData.map(data => data.taxDetails).join('\n'));
+                       
+                    }
+
+                   
+
+
+
+
+
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    currentDate.setHours(0, 0, 0, 0);
+                    if (currentDate < today) {
+                        dayCell.style.pointerEvents = 'none'; 
+                        dayCell.style.color = '#ccc';
+                    }
+
+
+                }
+
+                else {
+                  
+                    dayCell.classList.add('empty');
+                }
+                weekRow.appendChild(dayCell);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            calendarTable.appendChild(weekRow);
+        }
+
+        container.appendChild(calendarTable);
+
+
+
+     
+        const allCells = document.querySelectorAll('#calendar-container td');
+        allCells.forEach(cell => {
+            cell.addEventListener('mouseenter', () => {
+                cell.style.cursor = 'pointer'; 
+            });
+        });
+        attachClickHandlers();
+
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+
+  
+    function createSpan(text) {
+        const span = document.createElement('span');
+        span.style.fontWeight = 'bold';
+        span.textContent = text;
+        span.style.display = 'inline-block';
+        span.style.fontSize = '16px';
+        span.style.textAlign = 'left';
+        return span;
+    }
+   
+    const yearSelect = document.getElementById('year-select');
+    const monthSelect = document.getElementById('month-select');
+
+    yearSelect.addEventListener('change', generateCalendar);
+    monthSelect.addEventListener('change', generateCalendar);
+
+    
+    populateYearDropdown(new Date().getFullYear());
+    generateCalendar();
+
+
+    
+    function handleCellClick(event) {
+        const clickedElement = event.target;
+        event.currentTarget.style.cursor = 'pointer';
+        if (clickedElement.classList.contains('calendar-cell')) {
+           
+            const date = clickedElement.getAttribute('data-date');
+
+
+
+            $("#divmodal").modal('show');
+
+
+            const dateCell = clickedElement;
+           
+            const formattedDate = date.substr(0, 10);
+            const parts = formattedDate.split('-');
+            const year = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const day = parseInt(parts[2], 10);
+            const currentDate = new Date(year, month, day);
+            currentDate.setDate(currentDate.getDate() + 1); 
+
+            const yearx = currentDate.getFullYear();
+            const monthx = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+            const dayx = String(currentDate.getDate()).padStart(2, '0');
+
+            const formattedDatexx = `${yearx}-${monthx}-${dayx}`;
+            $("#dateaudit").val(formattedDatexx);
+
+        }
+    }
+
+  
+    const allDateCells1 = document.querySelectorAll('#calendar-container td');
+    allDateCells1.forEach(dateCell => {
+        dateCell.style.userSelect = 'none';
+        dateCell.addEventListener('click', handleCellClick);
+    });
+
+</script>
+
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    
+    const allDateCells12 = document.querySelectorAll('#calendar-container td[data-date]');
+    allDateCells12.forEach(dateCell => {
+        dateCell.addEventListener('click', handleCellClick);
+    });
+
+    function Save_ManageEvent() {
+
+
+        if ($("#ddlDepartment").val() != 0) {
+            $('#ddlDepartment').removeClass("is-invalid");
+            $('#errddlDepartment').text("");
+        }
+        else {
+            $('#ddlDepartment').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDepartment').text("Please Select Department!");
+            $('#ddlDepartment').focus();
+            return false;
+        }
+
+        if ($("#ddlScheme").val() != 0) {
+            $('#ddlScheme').removeClass("is-invalid");
+            $('#errddlScheme').text("");
+        }
+        else {
+            $('#ddlScheme').addClass("form-control shadow-sm is-invalid");
+            $('#errddlScheme').text("Please Select Scheme!");
+            $('#ddlScheme').focus();
+            return false;
+        }
+        if ($("#txtTitle").val().trim() != "") {
+            $('#txtTitle').removeClass("is-invalid");
+            $('#errtxtTitle').text("");
+        }
+        else {
+            $('#txtTitle').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtTitle').text("Please Enter Event Title");
+            $('#txtTitle').focus();
+            return false;
+        }
+        if ($("#txtDescription").val().trim() != "") {
+            $('#txtDescription').removeClass("is-invalid");
+            $('#errtxtDescription').text("");
+        }
+        else {
+            $('#txtDescription').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtDescription').text("Please Enter Event Description");
+            $('#txtDescription').focus();
+            return false;
+        }
+        if ($("#txtStartDt").val().trim() != "") {
+            $('#txtStartDt').removeClass("is-invalid");
+            $('#errtxtStartDt').text("");
+        }
+        else {
+            $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStartDt').text("Please Enter Event Start Date");
+            $('#txtStartDt').focus();
+            return false;
+        }
+
+        if ($("#txtStarttime").val().trim() != "") {
+            $('#txtStarttime').removeClass("is-invalid");
+            $('#errtxtStarttime').text("");
+        }
+        else {
+            $('#txtStarttime').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStarttime').text("Please Enter Event Start Time");
+            $('#txtStarttime').focus();
+            return false;
+        }
+        if ($("#txtEndDt").val().trim() != "") {
+            $('#txtEndDt').removeClass("is-invalid");
+            $('#errtxtEndDt').text("");
+        }
+        else {
+            $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtEndDt').text("Please Enter Event End Date");
+            $('#txtEndDt').focus();
+            return false;
+        }
+        if ($("#txtEndtime").val().trim() != "") {
+            $('#txtEndtime').removeClass("is-invalid");
+            $('#errtxtStartTime').text("");
+        }
+        else {
+            $('#txtEndtime').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStartTime').text("Please Enter Event End Time");
+            $('#txtEndtime').focus();
+            return false;
+        }
+
+        if ($("#ddlDist").val() != 0) {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        }
+        else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+            return false;
+        }
+        if ($("#ddlBlock").val() != 0) {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').text("");
+        }
+        else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please Select Block!");
+            $('#ddlBlock').focus();
+            return false;
+        }
+        if ($("#ddlGp").val() != 0) {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').text("");
+        }
+        else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please Select Gram Panchayat!");
+            $('#ddlGp').focus();
+            return false;
+        }
+
+
+        var EventData = new FormData();
+        var alert;
+        if ($("#hdnManageEvent").val() != "0") {
+            EventData.append("ActionCode", "U");
+            EventData.append("EventId", $("#hdnManageEvent").val());
+            alert = "You want to Update to Event Details.";
+        }
+        else {
+            EventData.append("ActionCode", "I");
+            alert = "You want to save to Event Details.";
+        }
+
+        EventData.append("DepartmentId", $('#ddlDepartment').val());
+        EventData.append("SchemeId", $('#ddlScheme').val());
+        EventData.append("EventTitle", $('#txtTitle').val());
+        EventData.append("EventDescription", $('#txtDescription').val());
+        EventData.append("StartDate", $('#txtStartDt').val());
+        EventData.append("StartTime", $('#txtStarttime').val());
+        EventData.append("EndDate", $('#txtEndDt').val());
+        EventData.append("EndTime", $('#txtEndtime').val());
+        EventData.append("Distid", $('#ddlDist').val());
+        EventData.append("BlockId", $('#ddlBlock').val());
+        EventData.append("GPId", $('#ddlGp').val());
+
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: alert,
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Submit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Event/ManageEvent",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: EventData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (result) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/Event/ManageEventCalender";
+                            }
+                        })
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+            }
+        });
+
+
+    }
+    //#endregion
+
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function resett() {
+       
+        $("#isotype").val("0");
+        
+
+        $("#btn_Submit").html("Save");
+        $("#ddlMeetingType").val("0");       
+        $("#txtProjectId").val("");       
+        $("#dateaudit").val("");
+        $("#txtProjectManager").val("");
+        $("#txtProjectManagerId").val("");
+        $("#txt_Emailid").val("");     
+
+        $("#txtProjectPhase").val("");
+        $("#txtProjectPhaseid").val("");
+
+       
+        $("#ddlSepgValue").val("0");
+
+
+       
+        $("#txt_Description").val("");
+
+
+    }
+</script>

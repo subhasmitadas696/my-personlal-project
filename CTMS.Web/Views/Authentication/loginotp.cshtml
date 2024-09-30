@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kala Sanskruti Sangha Management System</title>
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" href="../css/icons.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/troupe-login.css">
+</head>
+
+<body>
+    <div id="header"></div>
+    <div class="innerpage-container login-container">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h3 class="section__heading">The all-in-one solution for Managing your Troupe</h3>
+                    <ul class="list-group list-group-flush instruction-list">
+                        <li class="list-group-item">
+                            <i class="bi bi-arrow-right list-group-item__icon"></i>
+                            Manage your troupe details &
+                            activities online.
+                        </li>
+
+                        <li class="list-group-item">
+                            <i class="bi bi-arrow-right list-group-item__icon"></i>
+                            Get cultural program call at your
+                            own area from Govt
+                            authority.
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-arrow-right list-group-item__icon"></i>
+                            Set your program charges online &
+                            get paid directly to your
+                            bank account.
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-arrow-right list-group-item__icon"></i>
+                            Performance rating after each
+                            program conducted.
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-5 offset-md-1">
+                    <div class="card card--login">
+                        <div class="card-body">
+                            <h4 class="card--login__title">Login</h4>
+                            <p class="text-center">OTP has been sent to your registered mobile number</p>
+                            <div class="otp-inputs">
+                                <input type="text" name="" class="otp-inputs__box" maxlength="1" id="">
+                                <input type="text" name="" class="otp-inputs__box" maxlength="1" id="">
+                                <input type="text" name="" class="otp-inputs__box" maxlength="1" id="">
+                                <input type="text" name="" class="otp-inputs__box" maxlength="1" id="">
+                            </div>
+                            <div class="text-center my-4 mt-md-5">
+                                <a href="../Home/ProfileDashboard" type="button" class="btn-primary btn w-100 rounded-pill btn-lg">
+                                    Verify &amp; Login
+                                </a>
+                            </div>
+                            <div class="text-secondary text-center">
+                                Resend OTP in <span class="text-primary ps-1">00:54</span>
+                                <br>
+                                <a href="javascript:;" title="Resend OTP" class="text-dark card--login__link">Resend OTP</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/app.js"></script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        const otpInputs = document.querySelectorAll(".otp-inputs__box");
+
+        otpInputs.forEach((input, index) => {
+            input.addEventListener("input", (event) => {
+                const currentInput = event.target;
+                if (currentInput.value.length >= currentInput.maxLength) {
+                    if (index < otpInputs.length - 1) {
+                        otpInputs[index + 1].focus();
+                    }
+                }
+            });
+        });
+    </script>
+</body>

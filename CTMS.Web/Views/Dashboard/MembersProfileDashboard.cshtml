@@ -1,0 +1,363 @@
+﻿@{
+    ViewData["Title"] = "Member Details";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var troupedetails = ViewBag.TroupeDetails;
+    var membersdetails = ViewBag.MemberDetails;
+}
+<style>
+    .vdo-fluid {
+        max-width: 500%;
+        height: auto;
+    }
+    .home-gallery {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 1rem;
+    }
+
+    .home-gallery__item {
+        overflow: hidden;
+        border-radius: 1rem;
+        text-decoration: none;
+        position: relative;
+    }
+
+    .home-gallery__item img {
+        background: var(--bs-primary);
+        height: 95px;
+        object-fit: cover;
+        width: 40%;
+        object-position: center;
+    }
+
+    .home__gallery-icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: .3s;
+        background: rgba(209, 86, 66, 0.71);
+        opacity: 0;
+    }
+
+    .home__gallery-icon .icon-gallery1-expand {
+        font-size: calc(24px + (32 - 24) * (100vw - 375px) / (1920 - 375));
+        color: var(--bs-white);
+        transform: scale(.6);
+        transition: .3s;
+    }
+
+    .home__gallery-icon:hover {
+        opacity: 1;
+    }
+
+    .home__gallery-icon:hover .icon-gallery1-expand {
+        transform: scale(1);
+    }
+</style>
+
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<main class="content-body">
+    @if (troupedetails != null)
+    {
+
+        <div class="card card--lg">
+            <div class="card-body">
+                <h6 class="view-form-details__title mt-0">Basic Information</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Cultural Troupe Information</label><strong>
+                            @troupedetails[0].GroupName
+                        </strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Troupe Created on</label><strong>
+                            @troupedetails[0].GrpCreatedOn
+                        </strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">District</label>
+                        <strong>@troupedetails[0].DistrictName</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Block/ULB</label>
+                        <strong>@troupedetails[0].BlockName</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Gram Panchayat/Ward</label>
+                        <strong>@troupedetails[0].GPName</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Address</label>
+                        <strong>@troupedetails[0].Address</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Pincode</label>
+                        <strong>@troupedetails[0].Pincode</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Group Photo</label>
+                        @if (@troupedetails[0].GroupPhoto != "NA")
+                        {
+                            <img height="100px" width="100px" src="~/TroupeDetails/@troupedetails[0].UploadBannerFolder/GroupPhoto/@troupedetails[0].GroupPhoto" class="uploaded-img">
+                        }
+                        else
+                        {
+                            <strong>@troupedetails[0].GroupPhoto</strong>
+                        }
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Uploaded Video</label>
+                        @if (@troupedetails[0].UploadVideo != "NA")
+                        {
+                            <a class="home-gallery__item vclass" id="capturedFrameLink" href="~/TroupeDetails/@troupedetails[0].UploadBannerFolder/RegVideo/@troupedetails[0].UploadVideo" target="_blank">
+                                <img class="vdo-fluid" height="100px" width="100px" id="capturedFrame" alt="KSSMS"><span class="home__gallery-icon"><span class="icon-gallery1-expand"></span></span>
+                            </a>
+                        }
+                        else
+                        {
+                            <strong>@troupedetails[0].UploadVideo</strong>
+                        }
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Registered through 1860 society act</label>
+                        <strong>@troupedetails[0].SocReg</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Registration No.</label>
+                        <strong>@troupedetails[0].RegDocNo</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Registration Date</label>
+                        <strong>@troupedetails[0].SocietyRegDate</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Uploaded Document</label>
+                        @if (@troupedetails[0].SocietyRegDoc != "NA")
+                        {
+                            <a href="~/TroupeDetails/@troupedetails[0].UploadBannerFolder/RegPhoto/@troupedetails[0].SocietyRegDoc" class="text-danger h5" target="_blank" title="View Document" data-bs-toggle="tooltip">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <strong>@troupedetails[0].SocietyRegDoc</strong>
+                        }
+                    </div>
+                </div>
+                <h6 class="view-form-details__title">Art & Performance Details</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Category</label>
+                        <strong>@troupedetails[0].CategoryName</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Sub-Category</label><strong>@troupedetails[0].SubCategoryName</strong>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="" class="control-label">Cultural Troupe Banner</label>
+                        @if (@troupedetails[0].SocietyRegDoc != "NA")
+                        {
+                            <img height="100px" width="100px" src="~/TroupeDetails/@troupedetails[0].UploadBannerFolder/Banner/@troupedetails[0].BannerImg" />
+                        }
+                        else
+                        {
+                            <strong>@troupedetails[0].BannerImg</strong>
+                        }
+                    </div>
+                </div>
+                <h6 class="view-form-details__title">Artist Information</h6>
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center" style="width: 50px;">Sl#</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Address</th>
+                                    
+                                    <th scope="col">Mobile/Email</th>
+                                    <th scope="col">Bank Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                }
+                                @foreach (var items in membersdetails)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            @count
+                                        </td>
+                                        <td>
+                                            @items.MemberName
+                                            @if (@items.IsLeader == 1)
+                                            {
+                                                <div class='text-muted'>[Leader]</div>
+                                            }
+                                            <div class='text-muted'>@items.MemberDob</div>
+                                            <div class='text-muted'>@items.MemberFatherName</div>
+                                            @if (items.RoleId == 2)
+                                            {
+                                                <div class="text-muted">
+                                                    @items.RoleName,@items.Role
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="text-muted">
+                                                    @items.RoleName
+                                                </div>
+                                            }
+                                            <div class='text-muted'>@items.Gender</div>
+                                            <div class='text-muted'>@items.AadharNo</div>
+                                        </td>
+                                        <td>
+                                            @items.DistrictName
+                                            <div class='text-muted'>@items.BlockName</div>
+                                            <div class='text-muted'>@items.GPName</div>
+                                        </td>
+                                        <td>
+                                            <div>@items.MobileNo</div>
+                                            <div>@items.EmailId</div>
+                                        </td>
+                                        <td>
+                                            @items.BankName
+                                            <div class="text-muted">
+                                                @items.IFSC
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.BranchName
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.AccountNo
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    count = count + 1;
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <input id="hdnProfileStatus" value="@membersdetails[0].ProfileStatus" type="hidden">
+                <div class="text-center" id="btnEditProfile">
+                    <a href="../Dashboard/EditProfile?TroupeId=@troupedetails[0].TroupeId" title="Edit Profile" class="btn btn-primary rounded-pill">
+                        <i class="bi bi-pencil-square pe-1"></i> Edit Profile
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <h1>No Records Found</h1>
+    }
+</main>
+<script src="~/js/highcharts.js"></script>
+<script>
+    $(document).ready(function () {
+        if ($("#hdnProfileStatus").val()!=0){
+            $("#btnEditProfile").hide();
+          
+        }
+        $('#MembersProfileDashboard').addClass('active');
+        $('#ProfileDashboard').removeClass('btn-primary');
+        $('#ProfileDashboard').addClass('btn-outline-primary');
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var anchorTags = document.querySelectorAll('a.vclass');
+        var Count = 1;
+        anchorTags.forEach(function (anchor) {
+            var hrefValue = anchor.getAttribute("href");
+            captureVideoFrame(hrefValue, Count);
+            Count += 1;
+        });
+    });
+    function captureVideoFrame(videoUrl, Count) {
+        var video = document.createElement("video");
+        video.src = videoUrl;
+        video.onloadedmetadata = function () {
+            video.currentTime = 1;
+            setTimeout(function () {
+                var imgElement = document.getElementById("capturedFrame");
+                imgElement.src = getVideoFrameAsDataURL(video);
+                var linkElement = document.getElementById("capturedFrameLink");
+                linkElement.addEventListener("click", function () {
+                    window.open(videoUrl, '_blank');
+                });
+            }, 10);
+        };
+    }
+    function getVideoFrameAsDataURL(video) {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = 100;
+        canvas.height = 100;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL("image/jpeg");
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    Highcharts.chart('eventChart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: '',
+            align: 'left'
+        },
+        credits: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                colors: ['#D15642', '#18A3DE', '#99CA3E'],
+                dataLabels: {
+                    enabled: true,
+                    distance: -50,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [
+                {
+                    name: 'Event Type',
+                    y: 40,
+                    sliced: true,
+                    selected: true
+                }, {
+                    name: 'Event Type',
+                    y: 30
+                }, {
+                    name: 'Event Type',
+                    y: 30
+                }]
+        }]
+    });
+</script>

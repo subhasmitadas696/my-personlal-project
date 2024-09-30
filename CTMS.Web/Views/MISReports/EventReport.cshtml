@@ -1,0 +1,514 @@
+﻿@model CTMS.Model.Entities.ReportMaster.EventReport
+@{
+    ViewData["Title"] = "Event Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.Detail;
+}
+@Html.AntiForgeryToken()
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="MISReports" asp-action="EventReport" asp-area="" class="nav-link active">
+            Event Report
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <form method="post" asp-controller="MISReports" asp-action="EventReport">
+                <div class="collapse" id="collapseFilter">
+                    <div class="border p-3 rounded mb-3 bg-light">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlDist" asp-for="DistId">
+                                        <option value="0" selected>Select District</option>
+                                    </select>
+                                    <label for="tdist">District</label>
+                                    <span class="text-danger" id="errddlDist"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlBlock" asp-for="BlockId">
+                                        <option value="0" selected>Select Block</option>
+                                    </select>
+                                    <label for="block">Block</label>
+                                    <span class="text-danger" id="errddlBlock"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="btn btn-primary btn-lg" id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;margin-left:10px;">
+                                <a class="btn btn-primary btn-lg" onclick="resetdata()" style="margin-top:10px;margin-left:10px;">Reset</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                <th scope="col">Districts/Blocks</th>
+                                <th scope="col">Events</th>
+                                <th scope="col">Upcoming</th>
+                                <th scope="col">Completed</th>
+                                <th scope="col">Rescheduled</th>
+                                <th scope="col">Cancelled</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                            }
+                            @foreach (var items in Data)
+                            {
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>
+                                        @if (@ViewBag.DistId == 0)
+                                        {
+                                            <a href="../MISReports/EventReportDD?DistId=@items.DistId&BlockId=@ViewBag.Blockid&GpId=@ViewBag.GPId">@items.DistrictName</a>
+                                        }
+                                        else
+                                        {
+                                            @items.DistrictName
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (@items.NoOfEvents == "0")
+                                        {
+                                            @items.NoOfEvents
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DistId == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfEventsDetails('@items.BlockId','2')">@items.NoOfEvents</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfEventsDetails('@items.DistId','1')">@items.NoOfEvents</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.UpcomingEvents == "0")
+                                        {
+                                            @items.UpcomingEvents
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DistId == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfUpcomingEvents('@items.BlockId','2')">@items.UpcomingEvents</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfUpcomingEvents('@items.DistId','1')">@items.UpcomingEvents</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.CompletedEvents == "0")
+                                        {
+                                            @items.CompletedEvents
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DistId == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfCompletedEvents('@items.BlockId','2')">@items.CompletedEvents</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfCompletedEvents('@items.DistId','1')">@items.CompletedEvents</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.RescheduledEvents == "0")
+                                        {
+                                            @items.RescheduledEvents
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DistId == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfRescheduledEvents('@items.BlockId','2')">@items.RescheduledEvents</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfRescheduledEvents('@items.DistId','1')">@items.RescheduledEvents</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.CancelledEvents == "0")
+                                        {
+                                            @items.CancelledEvents
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DistId == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfCancelledEvents('@items.BlockId','2')">@items.CancelledEvents</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfCancelledEvents('@items.DistId','1')">@items.CancelledEvents</a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModal22">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div> 
+                    <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll"> 
+                        <table class="table" id="datatable1">                           
+
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="44px">Sl#</th>
+                                    <th scope="col" width="10%">Event Title/ <br />Description</th>
+                                    <th scope="col" width="15%">District/<br />Block</th>
+                                    <th scope="col" width="20%">Department/<br />Scheme</th>
+                                    <th scope="col" width="15%">Start Date/<br />End Date</th>
+                                    <th scope="col" width="10%">Created By</th>
+                                </tr>
+                            </thead>                            
+
+                            <tbody id="addmore"></tbody>
+                        </table>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalupcoming">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Upcoming Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll"> 
+                        <table class="table" id="datatable1">
+                           <!-- ... (previous code) ... -->
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl No.</th>
+                                    <th scope="col">Event Title/Description</th>
+                                    <th scope="col">District/Block</th>
+                                    <th scope="col" style="word-wrap: break-word;">Department/Scheme</th>
+                                    <th scope="col">Start Date/End Date</th>
+                                    <th scope="col">Created By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmore"></tbody>
+                            <tbody id="addmoreupcoming"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalcompleted">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Completed Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll"> 
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl No.</th>
+                                    <th scope="col">District/Block</th>
+                                    <th scope="col">Event Title/Description</th>
+                                    <th scope="col">Department/Scheme</th>
+                                    <th scope="col">Start Date/End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmorecompleted"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalreschedule">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Rescheduled Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll"> 
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl No.</th>
+                                    <th scope="col">District/Block</th>
+                                    <th scope="col">Event Title/Description</th>
+                                    <th scope="col">Department/Scheme</th>
+                                    <th scope="col">Start Date/End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmorereschedule"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalcancel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Cancelled Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll"> 
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl No.</th>
+                                    <th scope="col">District/Block</th>
+                                    <th scope="col">Event Title/Description</th>
+                                    <th scope="col">Department/Scheme</th>
+                                    <th scope="col">Start Date/End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmorecancel"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getDistrict();
+        var type = "@ViewBag.UserType";
+        if (type == "4") {
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            document.getElementById('ddlBlock').disabled = false;
+        }
+        else if (type == "2") {
+            document.getElementById('ddlDist').disabled = false;
+            document.getElementById('ddlBlock').disabled = false;
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+        }
+        else {
+            var blockId = "@ViewBag.Blockid";
+            let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            $("#ddlBlock").css("pointer-events", "none");
+        }
+        if ("@ViewBag.Blockid" != 0) {
+            $("#ddlBlock").val("@ViewBag.Blockid");
+            $('#ddlBlock').trigger('change');
+        }
+    });
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+            data: { blockid: blockid },
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    result = data.data;
+                }
+            }
+        });
+        return result;
+    }
+    function NoOfEventsDetails(DistId,isdist) {
+        var DistId = DistId;
+        var isdist = isdist;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("EventReportPopUpDetails", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.EventTitle + "<div class='text-muted'>" + v1.EventDescription + "</div></td><td>" + v1.DistrictName + "<div class='text-muted'>" + v1.BlockName + "</div></td><td>" + v1.DEPTNAME + "<div class='text-muted'>" + v1.SCHEMENAME + "</div></td><td>" + v1.STARTDATE + "<div class='text-muted'>" + v1.ENDDATE + "</div></td><td>" + v1.CREATEDBY + "</td></tr>";
+                });
+                $("#addmore").html(List);
+                //Datatable1();
+            }
+        })
+    }
+    function NoOfUpcomingEvents(DistId,isdist) {
+        var DistId = DistId;
+        var isdist = isdist;
+        $('#successModalupcoming').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("EventUpcomingDetails", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.EventTitle + "<div class='text-muted'>" + v1.EventDescription + "</div></td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "</td><td>" + v1.DEPTNAME + "<div class=text-muted>" + v1.SCHEMENAME + "</div>" + "</td><td>" + v1.STARTDATE + "<div class=text-muted>" + v1.ENDDATE + "</div>" + "</td><td>" + v1.CREATEDBY + "</td></tr>";
+                });
+                $("#addmoreupcoming").html(List);
+            }
+        })
+    }
+    function NoOfCompletedEvents(DistId,isdist) {
+        var DistId = DistId;
+        var isdist = isdist;
+        $('#successModalcompleted').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("EventCompleteDetails", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.DistrictName + "<div class='text-muted'>" + v1.BlockName + "</div></td><td>" + v1.EventTitle + "<div class=text-muted>" + v1.EventDescription + "</div>" + "</td><td>" + v1.DEPTNAME + "<div class=text-muted>" + v1.SCHEMENAME + "</div>" + "</td><td>" + v1.STARTDATE + "<div class=text-muted>" + v1.ENDDATE + "</div>" + "</td></tr>";
+                });
+                $("#addmorecompleted").html(List);
+            }
+        })
+    }
+    function NoOfRescheduledEvents(DistId,isdist) {
+        var DistId = DistId;
+        var isdist = isdist;
+        $('#successModalreschedule').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("EventRescheduleDetails", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.DistrictName + "<div class='text-muted'>" + v1.BlockName + "</div></td><td>" + v1.EventTitle + "<div class=text-muted>" + v1.EventDescription + "</div>" + "</td><td>" + v1.DEPTNAME + "<div class=text-muted>" + v1.SCHEMENAME + "</div>" + "</td><td>" + v1.STARTDATE + "<div class=text-muted>" + v1.ENDDATE + "</div>" + "</td></tr>";
+                });
+                $("#addmorereschedule").html(List);
+            }
+        })
+    }
+    function NoOfCancelledEvents(DistId, isdist) {
+        var DistId = DistId;
+        var isdist = isdist;
+        $('#successModalcancel').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("EventCancelDetails", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.DistrictName + "<div class='text-muted'>" + v1.BlockName + "</div></td><td>" + v1.EventTitle + "<div class=text-muted>" + v1.EventDescription + "</div>" + "</td><td>" + v1.DEPTNAME + "<div class=text-muted>" + v1.SCHEMENAME + "</div>" + "</td><td>" + v1.STARTDATE + "<div class=text-muted>" + v1.ENDDATE + "</div>" + "</td></tr>";
+                });
+                $("#addmorecancel").html(List);
+            }
+        })
+    }
+</script>
+<script>
+    function resetdata(){
+        window.location.href="../MISReports/EventReport";
+    }
+</script>

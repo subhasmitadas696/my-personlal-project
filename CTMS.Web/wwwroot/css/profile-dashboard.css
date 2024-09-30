@@ -1,0 +1,158 @@
+.troupe-profile {
+   /* height: 100%;*/
+   position: sticky;
+   top: 1rem;
+}
+.troupe-profile__banner {
+    object-fit: cover;
+    overflow: hidden;
+    height: 160px;
+    position: relative;
+}
+.troupe-profile__banner img {
+    object-fit: cover;
+} 
+.troupe-profile__upload-btn {
+    position: absolute;
+    z-index: 11;
+    right: 0.5rem;
+    top: 1rem;
+    margin: 0;
+    font-size: .875rem;
+    color: rgb(255 255 255 / 79%);
+    opacity: 0;
+    transition: .3s;
+    cursor: pointer;
+}
+.troupe-profile__banner:hover .troupe-profile__upload-btn{
+    opacity: 1;
+}
+.troupe-profile__upload-btn .bi-camera {
+    background: #fff;
+    color: var(--bs-primary);
+    padding: 0.2rem 0.25rem;
+    border-radius: 1rem;
+}
+.troupe-profile__category {
+    position: relative;
+}
+.troupe-profile__category::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -.5rem; 
+    height: 2px;
+    width: 50px;
+    border-radius: .125rem;
+    background: var(--title-border);
+ }
+.troupe-profile__contact {
+    color: var(--bs-black);
+    padding: 0;
+    margin-top: 2rem;
+}
+.troupe-profile__contact li{
+   display: flex;
+   align-items: center; 
+   line-height: 2;
+}
+.troupe-profile__contact li a{
+    text-decoration: none;
+    color: var(--bs-black);
+}
+.troupe-profile__contact li i {
+    padding-right: .5rem;
+}
+.troupe-profile .card-footer {
+    background: none;
+}
+.troupe-profile .card-footer a {
+    color: var(--bs-gray-600);
+    text-decoration: none;
+}
+.troupe-profile .card-footer a:hover {
+    color: var(--bs-primary);
+}
+.top-widget {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.top-widget__card {
+    display: flex; 
+    align-items: center; 
+    padding: 1.5rem;
+    box-shadow: 0px 3px 6px var(--card-shadow);
+    border: 1px solid var(--top-widget);
+    border-radius: 1.5rem;
+}
+.top-widget__icon {
+    position: relative;
+    margin-right: 1rem;
+    font-size: 2.5rem;
+    color: var(--bs-secondary);
+}
+.top-widget__icon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-75%);
+    height: 40px;
+    width: 40px;
+    background: var(--icon-circle-bg);
+    border-radius: 50%;
+} 
+.top-widget__no {
+    font-size: 2rem; 
+    color: var(--bs-primary);
+    line-height: 1.2;
+}
+.uploaded-img-list {
+    display: grid;
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    gap: 0.4rem; 
+    flex-wrap: wrap;
+    grid-template-columns: repeat(3,1fr);
+}
+
+.uploaded-img-list li {  
+   border-radius: 0.5rem;
+    position: relative; 
+    height: 70px;
+}
+
+.uploaded-img-list li i  {
+    position: absolute;
+    right: -.5rem;
+    top: -0.7rem;
+    cursor: pointer;
+}
+.uploaded-img-list li i:hover  {
+    color: var(--bs-danger);
+}
+
+.uploaded-img-list li img  {
+    height: 100%;
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #ddd;
+    object-fit: cover;
+    object-position: center;
+}
+@media (max-width: 1599px) {
+    .troupe-profile__banner {
+        height: 90px;
+    }
+    .top-widget__card {
+        padding: 1rem;
+    }
+}
+@media (max-width: 767px) {
+    .top-widget { 
+        grid-template-columns: repeat(2,1fr); 
+    }
+}

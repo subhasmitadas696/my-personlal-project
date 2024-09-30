@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About the Department" xml:space="preserve">
+    <value>ବିଭାଗ ବିଷୟରେ</value>
+  </data>
+  <data name="About the Kala Sanskruti Sangha" xml:space="preserve">
+    <value>କଳା ସଂସ୍କୃତି ସଂଘ ବିଷୟରେ</value>
+  </data>
+  <data name="About Us" xml:space="preserve">
+    <value>ଆମ ବିଷୟରେ</value>
+  </data>
+  <data name="By introducing this innovative initiative of Govt of Odisha almost all the Folk Artists comprising of appx. 2 lakh artists in the State have been able to earn their livelihood support through this scheme." xml:space="preserve">
+    <value>ଓଡିଶା ସରକାରଙ୍କ ଏହି ଅଭିନବ ପଦକ୍ଷେପ ପ୍ରାୟ ସମସ୍ତ ଲୋକ କଳାକାରଙ୍କ ଦ୍ୱାରା ଆରମ୍ଭ ହୋଇଥିଲା। ଏହି ଯୋଜନା ମାଧ୍ୟମରେ ରାଜ୍ୟର 2 ଲକ୍ଷ କଳାକାର ନିଜର ଜୀବିକା ନିର୍ବାହ କରିବାରେ ସକ୍ଷମ ହୋଇଛନ୍ତି।</value>
+  </data>
+  <data name="During the pandemic almost many of the migrant workers who are artists  they were able to earn their livelihood, through cultural activities, staying in their own motherland around their own family and relatives with more dignity and prestige." xml:space="preserve">
+    <value>ମହାମାରୀ ସମୟରେ ପ୍ରାୟ ଅନେକ ପ୍ରବାସୀ ଶ୍ରମିକ ଯେଉଁମାନେ କଳାକାର ଅଟନ୍ତି ସେମାନେ ସାଂସ୍କୃତିକ କାର୍ଯ୍ୟକଳାପ ମାଧ୍ୟମରେ ନିଜ ପରିବାର ଏବଂ ସମ୍ପର୍କୀୟଙ୍କ ନିକଟରେ ରହି ଅଧିକ ସମ୍ମାନ ଓ ସମ୍ମାନର ସହିତ ଜୀବିକା ନିର୍ବାହ କରିବାରେ ସକ୍ଷମ ହୋଇଥିଲେ।</value>
+  </data>
+  <data name="Endangered/ dying folk arts of the State being focused, recovered, preserved, and properly documented which will lead in proper planning for its promotion." xml:space="preserve">
+    <value>ରାଜ୍ୟର ବିପଦପୂର୍ଣ୍ଣ / ହଜିଯାଉଥିବା ଲୋକକଳା ଉପରେ ଧ୍ୟାନ ଦିଆଯାଉଛି, ପୁନଃରୁଦ୍ଧାର, ସଂରକ୍ଷିତ ଏବଂ ସଠିକ୍ ଭାବେ ଦଲିଲ କରାଯାଇଛି, ଯାହାଦ୍ୱାରା ଏହାର ପ୍ରୋତ୍ସାହନ ପାଇଁ ଉପଯୁକ୍ତ ଯୋଜନା ପ୍ରସ୍ତୁତ ହୋଇପାରିବ।</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>ମୂଳପୃଷ୍ଠା</value>
+  </data>
+  <data name="Information, Education, and Communication (IEC) Activities" xml:space="preserve">
+    <value>ସୂଚନା, ଶିକ୍ଷା ଏବଂ ଯୋଗାଯୋଗ (IEC) କାର୍ଯ୍ୟକଳାପ</value>
+  </data>
+  <data name="It is unique of a programme in the country having three noble objectives: 1) livelihood support to the artist, 2) conservation &amp; promotion of rich culture, and 3) effective IEC campaign on key developmental schemes of Government. Viewing the immense success of the scheme, Initiated in Ganjam district in june 2010 by  hon’ble Chief Minister, State Government of Odisha   has implemented it  all over the state in 30 districts &amp; 314 blocks .&#xD;&#xA; Till now  Under the scheme, more than 21000 cultural troupes,  of around 200 folk art forms, from all 314 block of the state are enrolled in Kala Sanskruti Sangha. These groups, where more than two lakhs of beneficiary artists are involved, will perform cultural programme  and IEC activities in different phases.&#xD;&#xA;In the ensuing IEC campaign it is estimated that  about two and half lakh traditional folk  performing art programme will be organised, covering more than fifty one thousand villages of Odisha. Organising in a single phase this will be a  unique and largest programme of its kind." xml:space="preserve">
+    <value>ଏହା ଦେଶରେ ଏକ ନିଆରା କାର୍ଯ୍ୟକ୍ରମ ଯେଉଁଥିରେ ତିନୋଟି ମହତ୍ଵ ଉଦ୍ଦେଶ୍ୟ ରହିଛି: 1) କଳାକାରଙ୍କୁ ଜୀବିକା ସହାୟତା, 2) ସମୃଦ୍ଧ ସଂସ୍କୃତିର ସଂରକ୍ଷଣ ତଥା ପ୍ରୋତ୍ସାହନ, ଏବଂ 3) ସରକାରଙ୍କ ପ୍ରମୁଖ ବିକାଶମୂଳକ ଯୋଜନା ଉପରେ ପ୍ରଭାବଶାଳୀ IEC ଅଭିଯାନ। ମାନ୍ୟବର ମୁଖ୍ୟମନ୍ତ୍ରୀଙ୍କ ଦ୍ୱାରା ଜୁନ୍ 2010 ରେ ଗଞ୍ଜାମ ଜିଲ୍ଲାରେ ଆରମ୍ଭ ହୋଇଥିବା ଏହି ଯୋଜନାର ଅପାର ସଫଳତା ଦେଖି ଓଡିଶା ରାଜ୍ୟ ସରକାର ଏହାକୁ 30 ଟି ଜିଲ୍ଲା ଏବଂ 314 ଟି ବ୍ଲକରେ କାର୍ଯ୍ୟକାରୀ କରିଛନ୍ତି। ବର୍ତ୍ତମାନ ପର୍ଯ୍ୟନ୍ତ ଏହି ଯୋଜନା ଅଧୀନରେ, ରାଜ୍ୟର ସମସ୍ତ 314 ବ୍ଲକରୁ ପ୍ରାୟ 200 ଲୋକକଳା ଫର୍ମର 21000 ରୁ ଅଧିକ ସାଂସ୍କୃତିକ ଦଳ କଳା ସଂସ୍କୃତ ସଂଗଠନରେ ନାମ ଲେଖାଇଛନ୍ତି। ଏହି ଗୋଷ୍ଠୀ, ଯେଉଁଥିରେ ଦୁଇ ଲକ୍ଷରୁ ଅଧିକ ହିତାଧିକାରୀ କଳାକାର ଅନ୍ତର୍ଭୁକ୍ତ ବିଭିନ୍ନ ପର୍ଯ୍ୟାୟରେ ସାଂସ୍କୃତିକ କାର୍ଯ୍ୟକ୍ରମ ଏବଂ IEC କାର୍ଯ୍ୟକଳାପ କରିବେ। ଆଗାମୀ IEC ଅଭିଯାନରେ ଅନୁମାନ କରାଯାଉଛି ଯେ, ଓଡିଶାର ପଚାଶ ହଜାରରୁ ଅଧିକ ଗାଁକୁ ନେଇ ପ୍ରାୟ ଅଢେଇ ଲକ୍ଷ ପାରମ୍ପାରିକ ଲୋକକଳା କାର୍ଯ୍ୟକ୍ରମ ଆୟୋଜିତ ହେବ। ଗୋଟିଏ ମଞ୍ଚରେ ଆୟୋଜିତ ହେବାକୁ ଥିବା ଏହି ପ୍ରକାରର ଅନନ୍ୟ ଏବଂ ସବୁଠାରୁ ବଡ ଘଟଣା ହେବ।</value>
+  </data>
+  <data name="Mission" xml:space="preserve">
+    <value>ମିଶନ୍</value>
+  </data>
+  <data name="Objective" xml:space="preserve">
+    <value>ଉଦ୍ଦେଶ୍ୟ</value>
+  </data>
+  <data name="Odisha is the bastion of rich cultural heritage with its historical monuments, archaeological sites, traditional arts, sculpture, dance and music. From the time immemorial Odisha attracts a large number of scholars, artists and tourists. The Department of Culture looks forward for the systematic and comprehensive promotion in the field of art and culture in the State and the Department aims at preserving the ancient cultural tradition and antiquities with the help of its subordinate offices and autonomous organization functioning under it." xml:space="preserve">
+    <value>ଓଡ଼ିଶା ଏହାର ଐତିହାସିକ ସ୍ମାରକୀ, ପ୍ରତ୍ନତାତ୍ତ୍ୱିକ ସ୍ଥାନ, ପାରମ୍ପାରିକ କଳା, ମୂର୍ତ୍ତି, ନୃତ୍ୟ ଏବଂ ସଙ୍ଗୀତ ସହିତ ସମୃଦ୍ଧ ସାଂସ୍କୃତିକ ଐତିହ୍ୟର ମୂଳଦୁଆ ଅଟେ। ପ୍ରାଚୀନ କାଳରୁ ଓଡ଼ିଶା ବହୁ ସଂଖ୍ୟାରେ ପଣ୍ଡିତ, କଳାକାର ଏବଂ ପର୍ଯ୍ୟଟକଙ୍କୁ ଆକର୍ଷିତ କରିଥାଏ। ସଂସ୍କୃତି ବିଭାଗ ରାଜ୍ୟରେ କଳା ଏବଂ ସଂସ୍କୃତି କ୍ଷେତ୍ରକୁ ବ୍ୟବସ୍ଥିତ ତଥା ବ୍ୟାପକ ଭାବରେ ପ୍ରୋତ୍ସାହିତ କରିବାକୁ ଚେଷ୍ଟା କରେ ଏବଂ ଏହାର ଅଧୀନରେ ଥିବା କାର୍ଯ୍ୟାଳୟ ତଥା ସ୍ଵୟଂଶାସିତ ସଂଗଠନଗୁଡ଼ିକର ସହାୟତାରେ ପ୍ରାଚୀନ ସାଂସ୍କୃତିକ ପରମ୍ପରା ତଥା ପ୍ରାଚୀନତାକୁ ସଂରକ୍ଷଣ କରିବାକୁ ବିଭାଗ ଲକ୍ଷ୍ୟ ରଖିଛି।</value>
+  </data>
+  <data name="Odisha,in India, the ancient name, “Utkal” means land of fine art. Its Odissi Dance created fame in the world. But most significant and  popular is its folk culture encompassing hundreds of forms of folk dances, folk music, folk theatres, folk plays etc. They are  surviving for centuries but many of them are on the verge of dying and some losing their  originality or traditionality due to various reasons. In this context for the promotion and preservation of the rich Cultural Heritage of Odisha, a noble initiative is undertaken by Govt. of Odisha titled “Kala Sanskruti Sangha”. In Block level it is known as “Block Kala Sanskruti Sangha” (BKSS) at district level “Zilla Kala Sanskruti Sangha”(ZKSS) and at state level “Rajya Kala sanskruti Sangha”(RKSS). It is unique of a programme in the country having three noble objectives: 1) livelihood support to the artist, 2) conservation &amp; promotion of rich culture, and 3) effective IEC campaign on key developmental schemes of Government. Viewing the immense success of the scheme, Initiated in Ganjam district in june 2010 by  hon’ble Chief Minister, State Government of Odisha   has implemented it  all over the state in 30 districts &amp; 314 blocks." xml:space="preserve">
+    <value>ଭାରତରେ ଓଡିଶାର ପ୍ରାଚୀନ ନାମ "ଉତ୍କଳ" ଅର୍ଥ ସୂକ୍ଷ୍ମ କଳାର ଭୂମି। ଏହାର ଓଡ଼ିଶୀ ନୃତ୍ୟ ଦୁନିଆରେ ଖ୍ୟାତି ସୃଷ୍ଟି କରିଥିଲା। କିନ୍ତୁ ସବୁଠାରୁ ମହତ୍ୱପୂର୍ଣ୍ଣ ଏବଂ ଲୋକପ୍ରିୟ ହେଉଛି ଏହାର ଲୋକ ସଂସ୍କୃତି, ଶହ ଶହ ପ୍ରକାରର ନୃତ୍ୟ, ଲୋକ ସଂଗୀତ, ଲୋକ ପ୍ରେକ୍ଷାଳୟ, ଲୋକ ନାଟକ ଇତ୍ୟାଦି। ସେଗୁଡିକ ଶତାବ୍ଦୀ ଧରି ଜୀବିତ ରହିଛ କିନ୍ତୁ ସେଗୁଡିକ ମଧ୍ୟରୁ ଅନେକ ବିଲୁପ୍ତ ହେବାକୁ ଯାଉଛି ଏବଂ କେତେକ ବିଭିନ୍ନ କାରଣରୁ ସେଗୁଡ଼ିକର ମୂଳତା କିମ୍ବା ପରମ୍ପରାକୁ ହରାଉଛନ୍ତି। ଏହି ପରିପ୍ରେକ୍ଷୀରେ ଓଡିଶାର ସମୃଦ୍ଧ ସାଂସ୍କୃତିକ ଐତିହକୁ ପ୍ରୋତ୍ସାହିତ ତଥା ସଂରକ୍ଷଣ କରିବା ପାଇଁ ସରକାର ଏକ ଉତ୍ତମ ପଦକ୍ଷେପ ଗ୍ରହଣ କରିଛନ୍ତି। ଯାହାକୁ ଓଡିଶାର "କଳା ସଂସ୍କୃତି ସଙ୍ଗଠନ" ର ଆଖ୍ୟା ଦିଆଯାଇଅଛି। ବ୍ଲକ ସ୍ତରରେ ଏହା "ବ୍ଲକ କଳା ସଂସ୍କୃତ ସଂଗଠନ" (BKSS), ଜିଲ୍ଲା ସ୍ତରରେ "ଜିଲ୍ଲା କଳା ସଂସ୍କୃତ ସଂଗଠନ" (ZKSS) ଏବଂ ରାଜ୍ୟ ସ୍ତରରେ "ରାଜ୍ୟ କଳା ସଂସ୍କୃତ ସଂଗଠନ" (RKSS) ଭାବରେ ଜଣାଶୁଣା ଅଟେ। ଏହା ଦେଶରେ ଏକ ନିଆରା କାର୍ଯ୍ୟକ୍ରମ ଯେଉଁଥିରେ ତିନୋଟି ମହତ୍ତ୍ଵ ଉଦ୍ଦେଶ୍ୟ ରହିଛି: 1) କଳାକାରଙ୍କୁ ଜୀବିକା ସହାୟତା, 2) ସମୃଦ୍ଧ ସଂସ୍କୃତିର ସଂରକ୍ଷଣ ତଥା ପ୍ରୋତ୍ସାହନ, ଏବଂ 3) ସରକାରଙ୍କ ପ୍ରମୁଖ ବିକାଶମୂଳକ ଯୋଜନା ଉପରେ ପ୍ରଭାବଶାଳୀ IEC ଅଭିଯାନ । ମାନ୍ୟବର ମୁଖ୍ୟମନ୍ତ୍ରୀଙ୍କ ଦ୍ୱାରା ଜୁନ୍ 2010 ରେ ଗଞ୍ଜାମ ଜିଲ୍ଲାରେ ଆରମ୍ଭ ହୋଇଥିବା ଏହି ଯୋଜନାର ଅପାର ସଫଳତା ଦେଖି ଓଡିଶା ରାଜ୍ୟ ସରକାର ଏହାକୁ 30 ଟି ଜିଲ୍ଲା ଏବଂ 314 ଟି ବ୍ଲକ ରେ କାର୍ଯ୍ୟକାରୀ କରିଛନ୍ତି।</value>
+  </data>
+  <data name="Promotion and Preservation of Traditional Folk Art" xml:space="preserve">
+    <value>ପାରମ୍ପାରିକ ଲୋକକଳାର ପଦୋନ୍ନତି ଏବଂ ସଂରକ୍ଷଣ</value>
+  </data>
+  <data name="Providing livelihood support to the artists is a vital component of this initiative. By supporting the artists, the government is not only recognizing their contributions but also ensuring that they can continue their artistic pursuits and livelihoods" xml:space="preserve">
+    <value>କଳାକାରମାନଙ୍କୁ ଜୀବିକା ସହାୟତା ଯୋଗାଇବା ଏହି ପଦକ୍ଷେପର ଏକ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଉପାଦାନ।  କଳାକାରମାନଙ୍କୁ ସମର୍ଥନ କରି ସରକାର କେବଳ ସେମାନଙ୍କର ଅବଦାନକୁ ସ୍ୱୀକୃତି ଦେଉନାହାଁନ୍ତି ବରଂ ସେମାନଙ୍କର କଳାତ୍ମକ କାର୍ଯ୍ୟକଳାପ ଏବଂ ଜୀବିକା ନିର୍ବାହ କରିପାରିବେ ବୋଲି ମଧ୍ୟ ସୁନିଶ୍ଚିତ କରୁଛନ୍ତି।</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="The formation of this Folk Art Unit is  not only a unique in the state but may be  first of its kind in the country." xml:space="preserve">
+    <value>ଏହି ଲୋକକଳା ସଂଘ ଗଠନ କେବଳ ରାଜ୍ୟରେ ଅତୁଳନୀୟ ନୁହେଁ, ବରଂ ଦେଶରେ ଏହା ପ୍ରଥମ ହୋଇପାରେ ।</value>
+  </data>
+  <data name="The initiative includes raising awareness among the people and disseminating information about the government's flagship schemes through folk performing artists. The efficacy of this folk media is quite better than other since the artists  disseminate messages in their own collocal language, in their own art form, in among their own people and above all in local style which attracts and effect the people in a greater manner than other medias.   This helps in better communication and engagement with the communities." xml:space="preserve">
+    <value>ଏହି ପଦକ୍ଷେପ ଲୋକମାନଙ୍କ ମଧ୍ୟରେ ସଚେତନତା ସୃଷ୍ଟି କରିବ ଏବଂ ଅଭିନୟ କଳାକାରଙ୍କ ମାଧ୍ୟମରେ ସରକାରଙ୍କ ପ୍ରମୁଖ ଯୋଜନା ବିଷୟରେ ସୂଚନା ବିସ୍ତାର କରିବା ସହିତ ଜଡିତ । ଏହି ଲୋକକଳା  ଗଣମାଧ୍ୟମର ଫଳପ୍ରଦତା ଅନ୍ୟମାନଙ୍କ ତୁଳନାରେ ବହୁତ ଭଲ, କାରଣ କଳାକାରମାନେ ସେମାନଙ୍କ କଥିତ ଭାଷାରେ, ସେମାନଙ୍କ କଳା ରୂପରେ, ସେମାନଙ୍କ ଲୋକଙ୍କ ମଧ୍ୟରେ ଏବଂ ସର୍ବୋପରି ସ୍ଥାନୀୟ ଶୈଳୀରେ ବାର୍ତ୍ତା ବିସ୍ତାର କରନ୍ତି ଯାହା ଲୋକଙ୍କୁ ଅଧିକ ଆକର୍ଷିତ କରିଥାଏ ଏବଂ ପ୍ରଭାବିତ କରିଥାଏ।  ଏହି ମାଧ୍ୟମ ଅନ୍ୟ ସମ୍ପ୍ରଦାୟ ସହିତ ଉତ୍ତମ ଯୋଗାଯୋଗ ଏବଂ ଯୋଗଦାନରେ ସାହାଯ୍ୟ କରେ।</value>
+  </data>
+  <data name="The new generation is getting attracted to this traditional form of Folk Art as it can be a way of earning for them." xml:space="preserve">
+    <value>ନୂତନ ପିଢି ଲୋକକଳାକାର ଏହି ପାରମ୍ପାରିକ ରୂପ ପ୍ରତି ଆକର୍ଷିତ ହେଉଛନ୍ତି କାରଣ ଏହା ସେମାନଙ୍କ ପାଇଁ ରୋଜଗାରର ଏକ ମାଧ୍ୟମ ହୋଇପାରେ ।</value>
+  </data>
+  <data name="This focuses on ensuring that hundreds  of traditional folk art forms of Odisha are not only preserved but also actively promoted. This is essential for keeping these art forms alive and thriving." xml:space="preserve">
+    <value>ଏହା ନିଶ୍ଚିତ କରେ ଯେ ଓଡିଶାର ଶହ ଶହ ପାରମ୍ପାରିକ ଲୋକକଳା କେବଳ ସଂରକ୍ଷିତ ନୁହେଁ ବରଂ ସକ୍ରିୟ ଭାବରେ ପ୍ରୋତ୍ସାହିତ ହୋଇଛି।  ଏହି କଳା ଫର୍ମଗୁଡ଼ିକୁ ଜୀବନ୍ତ ଏବଂ ସମୃଦ୍ଧ ରଖିବା ପାଇଁ ଏହା ଜରୁରୀ ଅଟେ।</value>
+  </data>
+  <data name="Through this scheme most of the folk art forms and its artists hidden at grass root level could came to lime light and focused. This resulted in organization of numerous festivals, functions, seminars and workshop etc at state and national level. They could get recognisation at state and national level. Folk Art has been protected, and give way to the posterity." xml:space="preserve">
+    <value>ଏହି ଯୋଜନା ମାଧ୍ୟମରେ, ଅଧିକାଂଶ ଲୋକକଳା ଫର୍ମ ଏବଂ ତୃଣମୂଳ ସ୍ତରରେ ଲୁଚି ରହିଥିବା କଳାକାରମାନେ ସାମ୍ନାକୁ ଆସିପାରନ୍ତି ଏବଂ ସେମାନଙ୍କର ଧ୍ୟାନ କେନ୍ଦ୍ରିତ ହୋଇପାରେ । ଏହାଦ୍ୱାରା ରାଜ୍ୟ ତଥା ଜାତୀୟ ସ୍ତରରେ ଅନେକ ପର୍ବ, ଉତ୍ସବ, ସେମିନାର ଏବଂ କର୍ମଶାଳା ଆୟୋଜନ କରାଯାଇଥିଲା। ସେମାନେ ରାଜ୍ୟ ତଥା ଜାତୀୟ ସ୍ତରରେ ସ୍ୱୀକୃତି ପାଇପାରିବେ। ଲୋକକଳାକୁ ସଂରକ୍ଷିତ କରି ରଖାଯାଇଛି ଏବଂ ଭବିଷ୍ୟତ ପିଢିକୁ ପଠାଯାଇଛି ।</value>
+  </data>
+  <data name="Vision" xml:space="preserve">
+    <value>ଦର୍ଶନ</value>
+  </data>
+  <data name="Welfare of Artists" xml:space="preserve">
+    <value>କଳାକାରଙ୍କ କଲ୍ୟାଣ</value>
+  </data>
+</root>

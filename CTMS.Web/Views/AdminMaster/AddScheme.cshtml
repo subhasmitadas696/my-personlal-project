@@ -1,0 +1,229 @@
+﻿@model CTMS.Model.Entities.AdminMaster.Scheme
+@{
+    ViewData["Title"] = "Add Scheme";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+@Html.AntiForgeryToken()
+<style>
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice {
+        font-size: 0.7rem;
+    }
+</style>
+
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="javascript:;" class="nav-link active">
+            Add
+        </a>
+        <a class="nav-link" asp-controller="AdminMaster" asp-action="ViewScheme" asp-area="">
+            View
+        </a>
+    </div>
+    <div class="card-body">
+        <input id="UserId" value="@ViewBag.UserId" class="form-control" hidden />
+        <input id="SchemeId" class="form-control" type="hidden" />
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select Department" data-placeholder="Department Name" id="DepartmentId" asp-items="@(new SelectList(ViewBag.DeptList, "DepartmentId", "DepartmentName"))" asp-for="DepartmentId" multiple>
+                        <option value="0" disabled>Select Department</option>
+                    </select>
+                    <small id="error-messageDept" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" id="SchemeName" name="SchemeName" value="" class="form-control alphabetInput" placeholder="Enter Scheme Name" autocomplete="off">
+                    <label for="SchemeName">Scheme Name(EN)</label>
+                    <small id="error-messageSchemeName" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" id="OdiaSchemeName" name="OdiaSchemeName" class="form-control" placeholder="Enter Category in Odia" autocomplete="off">
+                    <label for="OdiaSchemeName">Scheme Name(ODIA)</label>
+                    <small id="error-messageOdiaSchemeName" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <button id="btnSubmit" type="button" class="btn btn-secondary btn-lg" onclick="save()">Submit</button>
+                    <button id="btnCancel" class="btn btn-danger btn-lg" type="reset" value="Reset" onclick="reset()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    // Function to get URL query parameters as an object
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+    $(document).ready(function () {
+        var vars = getUrlVars();
+        var schemeId = vars.schemeId;
+        if (schemeId !== undefined) {
+            $("#btnSubmit").html("Update");
+            $("#btnCancel").html("Cancel");
+            editScheme(schemeId);
+        }
+        $('#DepartmentId').select2({
+            theme: 'bootstrap-5',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+        });
+    });
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function save() {
+        if ($("#DepartmentId").val() == '0') {
+            $('#DepartmentId').removeClass("is-valid").addClass("is-invalid");
+            $('#error-messageDept').text("Please select a Department Name!");
+            $('#DepartmentId').focus();
+            return false;
+        } else {
+            $('#DepartmentId').removeClass("is-invalid").addClass("is-valid");
+            $('#error-messageDept').text("");
+        }
+
+        if ($("#SchemeName").val().trim() != "") {
+            $('#SchemeName').removeClass("is-invalid");
+            $('#error-messageSchemeName').text("");
+        }
+        else {
+            $('#SchemeName').addClass("form-control shadow-sm is-invalid");
+            $('#error-messageSchemeName').text("Please enter Scheme Name!");
+            $('#SchemeName').focus();
+            return false;
+        }
+        if ($("#OdiaSchemeName").val().trim() != "") {
+            $('#OdiaSchemeName').removeClass("is-invalid");
+            $('#error-messageOdiaSchemeName').text("");
+        }
+        else {
+            $('#OdiaSchemeName').addClass("form-control shadow-sm is-invalid");
+            $('#error-messageOdiaSchemeName').text("Please enter Odia Scheme name!");
+            $('#OdiaSchemeName').focus();
+            return false;
+        }
+        var formdata = new FormData();
+        formdata.append("SchemeId", $('#SchemeId').val());
+        formdata.append("DepartmentIdList", $('#DepartmentId').val().toString())
+        formdata.append("SchemeName", $('#SchemeName').val());
+        formdata.append("OdiaSchemeName", $('#OdiaSchemeName').val());
+        formdata.append("CreatedBy", $('#UserId').val());
+        let alertText="";
+        if ($('#SchemeId').val() != 0){
+            alertText = "You want to update this Scheme?"
+        }else{
+            alertText = "You want to register this Scheme?"
+        }
+        swal.fire({
+            title: "Are you sure?",
+            text: alertText,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, submit it!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Content("~/")' + 'AdminMaster/AddScheme',
+                    data: formdata,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    dataType: "json",
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        if (result.state === "success") {
+                            swal.fire({
+                                title: "Success",
+                                text: result.message,
+                                icon: "success"
+                            }).then(function () {
+                                var url = '@Url.Action("ViewScheme", "AdminMaster", new { area = "" })';
+                                location.href = url;
+                            });
+                        }
+                        else if (result.state === "warning") {
+                            swal.fire({
+                                title: "Warning",
+                                text: result.message,
+                                icon: "warning"
+                            }).then(function () {
+                                var url = '@Url.Action("AddScheme", "AdminMaster", new { area = "" })';
+                                location.href = url;
+                            });
+                            reset();
+                        } else { }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        swal.fire({
+                            title: "Error",
+                            text: "An error occurred. Please try again later.",
+                            icon: "error"
+                        });
+                    }
+                });
+            }
+        });
+
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function editScheme(schemeId) {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'AdminMaster/GetSchemeById?SchemeId=' + schemeId,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                $('#SchemeId').val(result.SchemeId);
+                $("#DepartmentId").val(result.DepartmentIdList.split(',')).change()
+                $('#SchemeName').val(result.SchemeName);
+                $('#OdiaSchemeName').val(result.OdiaSchemeName);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function reset() {
+
+        $("#DepartmentId").val(0);
+        $("#SchemeId").val(0);
+        $("#SchemeName").val("");
+        $("#OdiaSchemeName").val("");
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(".alphabetInput").on("input", function () {
+        var inputValue = $(this).val();
+        var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+
+        if (inputValue !== sanitizedValue) {
+            $(this).val(sanitizedValue);
+        }
+    });
+</script>

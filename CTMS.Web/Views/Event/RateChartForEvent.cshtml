@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Rate Chart For Event";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@Html.AntiForgeryToken()
+
+<style>
+
+
+    #Side {
+        margin-left: 100px;
+        margin-right: 1100px;
+        margin-top: 50px;
+    }
+
+    .table-responsive--rounded {
+        white-space: normal;
+    }
+</style>
+
+
+<div class="card card--lg">
+    <div class="card-body">
+        <div class="table-responsive--rounded">
+            <div class="table-responsive" id="printdata">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th colspan="7" style="text-align:center">
+                                Payment structure of cultural troupes for IEC program
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="width: 50px" rowspan="2">
+                                Sl.No
+                            </th>
+                            <th rowspan="2">
+                                Name of the art form
+                            </th>
+                            <th rowspan="2" style="width: 100px">
+                                No of artist in a troupe
+                            </th>
+                            <th colspan="3" style="text-align:center">
+                                Payment for three programs in a day
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="width: 100px">
+                                Remuneration (Rs.)
+                            </th>
+                            <th style="width: 100px">
+                                Contingency (Rs.)
+                            </th>
+                            <th style="width: 100px">
+                                Total (Rs.)
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                        <tr>                           
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        LoadData();
+    });
+
+    function LoadData() {
+        $.ajax({
+            url: "@Url.Action("RateChart", "Event", new {area=""})",
+            type: 'GET',
+            dataType: "json",
+            beforeSend: function (xhr) {
+                $("#overlay").show();
+            },
+            success: function (data) {
+                var tableBody = $('#bindtable');
+                tableBody.empty();
+                var slno = 0;
+                var trows = "";
+                var htm = '';
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        slno = slno + 1;
+
+                        htm += '<tr>';
+                        htm += '<td>' + slno + '</td>';
+                        htm += '<td>' + data[i].categoryName + '</td>';
+                        htm += '<td>' + data[i].noOfArtist + '</td>';
+                        htm += '<td>' + data[i].remuneration + '</td>';
+                        htm += '<td>' + data[i].contingency + '</td>';
+                        htm += '<td>' + data[i].total + '</td>';
+                        htm += '</tr>';
+                    }
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+                $('#bindtable').append(htm);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+</script>

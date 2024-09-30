@@ -1,0 +1,411 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model CTMS.Model.Entities.Registration.TroupeRegistrationView
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var troupedetails = ViewBag.TroupeDetails;
+    var TroupeEventDetails = ViewBag.TroupeEventDetails;
+}
+
+
+
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<link href='~/css/calendar.css' rel='stylesheet' />
+<script src='~/js/calendar.js'></script>
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<style>
+    #activeMembersCard:hover {
+        cursor: pointer;
+    }
+    #TotalPerformedcard:hover {
+        cursor: pointer;
+    }
+</style>
+
+<main class="content-body">
+    @if (troupedetails != null)
+    {
+        <input type="hidden" id="hdnProfileStatus" value="" />
+
+        <div class="top-widget">
+            <div class="top-widget__card" id="activeMembersCard">
+                <span class="icon-statistics1 top-widget__icon"></span>
+                <div>
+                    <div class="top-widget__no">@troupedetails[0].MemberCount</div>
+                    <span class="top-widget__title">Active Members</span>
+                </div>
+            </div>
+            <div class="top-widget__card" id="TotalPerformedcard">
+                <span class="icon-statistics1 top-widget__icon"></span>
+                <div>
+                    <div class="top-widget__no">@troupedetails[0].TotalPerformed</div>
+                    <span class="top-widget__title">Total Performed</span>
+                </div>
+            </div>
+            
+            </div>
+           
+        <form method="post" asp-controller="Dashboard" asp-action="ProfileDashboard">
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="ddlDist" asp-for="DistrictId">
+                                    <option value="0" selected>Select District</option>
+                                </select>
+                                <label for="tdist">District</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="ddlBlock" asp-for="BlockId">
+                                    <option value="0" selected>Select Block</option>
+                                </select>
+                                <label for="block">Block</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="ddlGp" asp-for="GPId">
+                                    <option value="0" selected>Select Gram Panchayat</option>
+                                </select>
+                                <label for="block"> Gram Panchayat</label>
+                                <span class="text-danger" id="errddlGp"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="FromDate" data-date-format="dd-mm-yyyy" id="FromDate" asp-for="FromDate" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="">
+                                <label for="tname"> From Date<span class="text-danger">*</span></label>
+                                <i class="bi bi-calendar3 form-floating__icon-right"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" name="ToDate" data-date-format="dd-mm-yyyy" id="ToDate" asp-for="ToDate" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="">
+                                <label for="tname"> To Date<span class="text-danger">*</span></label>
+                                <i class="bi bi-calendar3 form-floating__icon-right"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-primary btn-lg py-3" id="btnsrchfilter" onclick="btnsrchfilter()" type="submit" value="Search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="card card--lg">
+            <div class="card-body">
+                <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+                    Filter <i class="bi bi-filter"></i>
+                </a>
+                <h6 class="view-form-details__title mt-0">My Events</h6>
+                @if (TroupeEventDetails.Count > 0)
+                {
+                    <div class="table-responsive--rounded table-responsive--datatable">
+                        <div class="table-responsive">
+                            <table class="table table-borderless " id="datatable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                        <th scope="col">Event Name</th>
+                                        <th scope="col" style="width:80px">Address</th>
+                                        <th scope="col" style="width:60px">Event Date</th>
+                                        
+                                        <th class="no-print" scope="col">Village</th>
+                                        <th scope="col" style="width:60px">Payment Status</th>
+                                        <th scope="col" style="width:50px">Payment Amount</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int count = 1;
+                                    }
+                                    @foreach (var items in TroupeEventDetails)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@count</td>
+                                            <td>@items.EventTitle</td>
+                                            <td>
+                                                @items.DistrictName,
+                                                <span class="text-muted">@items.BlockName,</span>
+                                                <span class="text-muted">@items.GPName</span>
+                                            </td>
+                                            <td>@items.DateOfPerform</td>
+                                            
+                                            <td>
+                                                <ul>
+
+                                                    @foreach (var member in items.VLGNAME.Split(","))
+                                                    {
+                                                        <li>@member</li>
+                                                    }
+
+                                                </ul>
+                                            </td>
+                                            <td>@items.EventStatus</td>
+                                            <td>@(items.PaymentAmount == 0 ? "NA" : items.PaymentAmount.ToString())</td>
+                                        </tr>
+                                        count++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <h4>No Records Found</h4>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <h1>No Records Found</h1>
+    }
+    <div class="card card--lg">
+        <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <h5 class="text-primary mb-0">Event Information</h5>
+                <ul class="event-calender-legends">
+                    <li class="completed">Completed</li>
+                    <li class="upcoming">Upcoming</li>
+                    <li class="reschedule">Reschedule</li>
+                    <li class="cancelled">Cancelled</li>
+                </ul>
+            </div>
+            <div id='calendar'></div>
+        </div>
+    </div>
+</main>
+<div id="myModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="view-form-details__title my-0">Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="mymodalclose" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="hdnAuditProjectId" name="hdnAuditId" value="" />
+
+                <div class="row g-3 mb-4" id="tblpopup">
+                    <div class="col-md-6">
+                        <label class="control-label">Event Title</label>
+                        <strong id="lblTitle" class="text-primary"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Event Description</label>
+                        <strong id="lblEventName"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Department</label>
+                        <strong id="lblDepartment"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Scheme</label>
+                        <strong id="lblScheme"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Event Date</label>
+                        <strong id="lblEventDate"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Location</label>
+                        <strong id="lblEventLocation"></strong>
+                    </div>
+                </div>
+                <div class="text-center" id="buttondiv">
+                   
+                    <input type="hidden" id="hdnevenid" />
+                    <input type="hidden" id="hdnTroupID" value="@troupedetails[0].TroupeId" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getDistrict();
+        var DistrictId = "@ViewBag.Distid";
+        var BlockId = "@ViewBag.Blockid";
+        var GPId = "@ViewBag.Gpid";
+        var FromDate = "@ViewBag.Fromdate";
+        var ToDate = "@ViewBag.ToDate";
+        if (DistrictId != "0") {
+            $('#ddlDist').val(DistrictId);
+            $('#ddlDist').trigger('change');
+            $('#ddlBlock').val(BlockId);
+            $('#ddlBlock').trigger('change');
+            $('#ddlGp').val(GPId);
+            $('#ddlGp').trigger('change');
+            $('#FromDate').val(FromDate);
+            $('#ToDate').val(ToDate);
+        }
+        else {
+            $('#FromDate').val(FromDate);
+            $('#ToDate').val(ToDate);
+        }
+
+        $('.date-picker').datepicker({
+            format: 'dd-M-yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+      
+    });
+</script>
+<script src="~/js/moment.min-new.js"></script>
+<script src="~/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var eventss = [];
+        var TroupID = $("#hdnTroupID").val();
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Dashboard/ViewEventDetailForTroupe',
+            data: { TroupID: TroupID },
+            type: "get",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            async: false,
+            success: function (data) {
+                if (data.data != null) {
+                    $.each(data.data, function (i, item) {
+                        var date = new Date(item.startDate);
+                        var edate = new Date(item.endDate);
+
+                        var fmonth = date.getMonth() + 1;
+                        if (fmonth < 10) {
+                            fmonth = '0' + fmonth;
+                        }
+                        var emonth = edate.getMonth() + 1;
+                        if (emonth < 10) {
+                            emonth = '0' + emonth;
+                        }
+                        var fday = date.getDate();
+                        if (fday < 10) {
+                            fday = '0' + fday;
+                        }
+                        var eday = edate.getDate();
+                        if (eday < 10) {
+                            eday = '0' + eday;
+                        }
+                        var fh = date.getHours();
+                        var eh = edate.getHours();
+                        var fm = date.getMinutes();
+                        var em = edate.getMinutes();
+                        if (fh < 10) {
+                            fh = '0' + fh;
+                        }
+                        if (eh < 10) {
+                            eh = '0' + eh;
+                        }
+                        if (fm < 10) {
+                            fm = '0' + fm;
+                        }
+                        if (em < 10) {
+                            em = '0' + em;
+                        }
+
+                        var event = new Object();
+                        event.id = item.eventId;
+                        event.start = date.getFullYear() + '-' + fmonth + '-' + fday + 'T' + fh + ':' + fm;
+                        event.end = edate.getFullYear() + '-' + emonth + '-' + eday + 'T' + eh + ':' + em;
+                        event.title = item.eventTitle;
+                        event.className = item.statusColour;
+                        
+                        eventss.push(event);
+
+
+                    })
+
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+                    var yyyy = today.getFullYear();
+                    today = yyyy + '-' + mm + '-' + dd;
+
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        },
+                        initialDate: today,
+                        navLinks: true, 
+                        selectable: true,
+                        selectMirror: true,
+                        select: function (arg) {
+                            var Curdate = new Date(new Date().toDateString());
+                            if (arg.start < Curdate) {
+   
+                                    }
+                            else {
+                                $('#FinalSubmit').val("Submit");
+                                $("#divmodal").modal('show');
+                            }
+                            calendar.unselect()
+                        },
+                        eventClick: function (arg) {
+                            var evid = arg.event._def.publicId
+                            $("#hdnevenid").val(evid);
+                            ViewEvent(evid)
+                        },
+                        editable: false,
+                        dayMaxEvents: true, 
+                        events: eventss
+                    });
+                    calendar.render();
+                }
+            }
+        })
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('activeMembersCard').addEventListener('click', function () {
+        window.location.href = '../Dashboard/MembersDashboard';
+    });
+    document.getElementById('TotalPerformedcard').addEventListener('click', function () {
+        window.location.href = '../Dashboard/EventPerformedDashboard';
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function ViewEvent(id) {
+        var TroupID = $("#hdnTroupID").val();
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("GetSingleEventForTroupe", "Dashboard")',
+            data: { "Id": id, TroupID: TroupID },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+                $("#myModal").modal('show');
+                $('#lblTitle').text(data1[0].EventTitle);
+                $('#lblEventName').text(data1[0].EventDescription);
+                $('#lblEventDate').text(moment(data1[0].StartDateTime).format("DD MMM YYYY") + ' to ' + moment(data1[0].EndDateTime).format("DD MMM YYYY"));
+                $('#lblEventLocation').text('Dist : ' + data1[0].DistName + ', Block : ' + data1[0].BlockName);
+                $('#lblDepartment').text(data1[0].Department.replace(/&amp;/g, "&"));
+                $('#lblScheme').text(data1[0].Scheme);
+
+
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+
+    }
+</script>

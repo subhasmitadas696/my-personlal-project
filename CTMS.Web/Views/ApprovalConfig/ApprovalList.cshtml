@@ -1,0 +1,248 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="body-container">
+        <div class="sidebar" id="sideBar">
+            <ul class="nav pt-4 flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="../ApprovalConfig/Dashboard"><i class="bi bi-grid"></i>Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link  collapsed " href="#masterSubMenu" data-bs-toggle="collapse"
+                       aria-expanded="false" data-bs-parent="#sideBar">
+                        <i class="bi bi-file-earmark-bar-graph "></i>Master
+                    </a>
+                    <div class="collapse" id="masterSubMenu" data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/MasterAdd">
+                                    <i class="bi bi-link-45deg"></i> Add
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/MasterView">
+                                    <i class="bi bi-link-45deg"></i> View
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#approvalsSubMenu" data-bs-toggle="collapse"
+                       aria-expanded="false"><i class="bi bi-grid"></i>Approvals</a>
+                    <div class="collapse" id="approvalsSubMenu" data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/ApprovalList">
+                                    <i class="bi bi-link-45deg"></i> Take Action
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:;">
+                                    <i class="bi bi-link-45deg"></i> View
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#reportsSubMenu" data-bs-toggle="collapse"
+                       aria-expanded="false"><i class="bi bi-file-ruled"></i>Reports</a>
+                    <div class="collapse" id="reportsSubMenu" data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/ReportsAdd">
+                                    <i class="bi bi-link-45deg"></i> Add
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/ReportsView">
+                                    <i class="bi bi-link-45deg"></i> View
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <main class="content-body">
+
+            <div class="table-responsive">
+
+                <div class="table-responsive--rounded ">
+                    <h6 class="content-body__heading">District Wise Troupes & Event Details</h6>
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col">Cultural Troupe Name</th>
+                                <th scope="col">No of Members</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">Registration Date</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Gurukrupa Bhajana Sandhya
+                                </td>
+                                <td>8</td>
+                                <td>Jagatsinghapur, Balikuda</td>
+                                <td>13th Dec 2014 </td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dayal baba bhajan aradhna</td>
+                                <td>11</td>
+                                <td>Nayagarh, Ranapur</td>
+                                <td>4th Jan 2018 </td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bhajan Bhakti Arghya Troupe</td>
+                                <td>6</td>
+                                <td>Cuttack, Mahanga </td>
+                                <td>19th Sep 2022</td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Navjeevan Natya Sastra</td>
+                                <td>4</td>
+                                <td>Balasore, Baliapal</td>
+                                <td>13th Dec 2014 </td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Dayal baba bhajan aradhna </td>
+                                <td>7</td>
+                                <td>Sundargarh, Bisra</td>
+                                <td>4th Jan 2018 </td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Bhajan Bhakti Arghya Troupe </td>
+                                <td>14</td>
+                                <td>Nayagarh, Ranapur </td>
+                                <td>9th Sep 2022</td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Gurukrupa Bhajana Sandhya</td>
+                                <td>3</td>
+                                <td> Cuttack, Mahanga</td>
+                                <td>2nd Jan 2018</td>
+                                <td>
+                                    <a href="../ApprovalConfig/ApprovalTakeAction" title="Action"
+                                       class="btn btn-outline-primary btn-sm rounded-pill">Action</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal -->
+        <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-end">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
+                        </div>
+                        <h6 class="modal__title">Cultural Troupe Information</h6>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Basic Information</label><strong>
+                                    Gurukrupa
+                                    Bhajana
+                                    Sandhya
+                                </strong>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Troupe Created on</label><strong>
+                                    13th
+                                    October
+                                    2017
+                                </strong>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">District</label><strong>Nayagarh</strong>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Block</label>
+                                <strong>Khandapada</strong>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Pincode</label>
+                                <strong>752077</strong>
+                            </div>
+                        </div>
+                        <h6 class="modal__title">Art & Performance Details</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Category</label>
+                                <strong>Dasakathia</strong>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Sub-Category</label><strong>Pala</strong>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="" class="control-label">Cultural Troupe Banner</label>
+                                <img src="" alt="">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                                       value="option1">
+                                <label class="form-check-label" for="inlineRadio1">Approve</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                                       value="option2">
+                                <label class="form-check-label" for="inlineRadio2">Reject</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
+                                       value="option3">
+                                <label class="form-check-label" for="inlineRadio3">Enquiry </label>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <textarea class="form-control" placeholder="Remark" id="floatingTextarea"
+                                      style="height: 100px"></textarea>
+                            <label for="floatingTextarea">Remark</label>
+                        </div>
+                        <button type="submit" title="Submit" class="btn btn-primary rounded-pill">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

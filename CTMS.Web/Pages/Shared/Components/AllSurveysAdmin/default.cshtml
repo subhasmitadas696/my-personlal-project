@@ -1,0 +1,57 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<CTMS.Web.Areas.AdminConsole.Models.User.LinkAccess>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@using Microsoft.AspNetCore.Http
+@inject IConfiguration Configuration
+@using Microsoft.Extensions.Configuration
+
+<div class="sidebar" id="sideBar">
+    <ul class="nav pt-4 flex-column">
+        @foreach (var link in Model.Select(x => new { x.nvchglinkname, x.vchiconclass, x.intglinkid, x.Aglinkid, x.Aplinkid }).Distinct().ToList())
+        {
+            <input type="hidden" id="hdnid" value="@link.Aglinkid" />
+            var divclass = "";
+            divclass = "dropdown-menu" + link.intglinkid;
+            @if (@link.nvchglinkname == "Dashboard" || @link.nvchglinkname == "New Registration")
+            {
+                @foreach (var primarylist in Model.Where(w => w.nvchglinkname == link.nvchglinkname).Select((x, i) => new { Data = x, Index = i + 1 }))
+                {
+                    var ancclass = "";
+                    ancclass = (primarylist.Data.nvchplinkname == "Dashboard") ? "dashboard" : "NewReg";
+                    var path = @Url.Content("~/") + @primarylist.Data.vchfilename + "?Glink=" + @primarylist.Data.intglinkid + "&Plink=" + @primarylist.Data.intplinkid;
+                    <li class="nav-item">
+
+                        <a id="@ancclass" class="nav-link sidemenu" href="@path">
+                            <i class="@link.vchiconclass"></i>
+                            @primarylist.Data.nvchplinkname
+                        </a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#@divclass" data-bs-toggle="collapse" aria-expanded="false">
+                        <i class="@link.vchiconclass"></i>@link.nvchglinkname
+                    </a>
+                    <div id="@divclass" class='collapse' data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            @foreach (var primarylist in Model.Where(w => w.nvchglinkname == link.nvchglinkname).Select((x, i) => new { Data = x, Index = i + 1 }))
+                            {
+                                var ancclass = "";
+                                ancclass = "sub-menu" + primarylist.Data.intplinkid;
+                                var path = @Url.Content("~/") + @primarylist.Data.vchfilename + "?Glink=" + @primarylist.Data.intglinkid + "&Plink=" + @primarylist.Data.intplinkid;
+                                <li class="nav-item">
+                                    <a id="@ancclass" class="nav-link sidemenu" href="@path">
+                                        @primarylist.Data.nvchplinkname
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </li>
+            }
+
+        }
+    </ul>
+</div>

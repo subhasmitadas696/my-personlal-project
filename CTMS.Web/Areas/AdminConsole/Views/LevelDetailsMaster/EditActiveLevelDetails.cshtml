@@ -1,0 +1,1071 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.LevelDetailMaster.LevelDetailMaster
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "AddLevelDetailsMaster";
+
+}
+
+@section Scripts {
+    
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            $('#dvparentLevelDetailId').hide();
+            $('#dvGP').hide();
+            $('#dvlevel5').hide();
+            $('#hdndept').hide();
+            $('#hdnlinedept').hide();
+
+            $('#dvparentLevelDetailName').hide();
+
+            BindParentLevel();
+            if (@Model.INTLEVELID == '5'){
+                BindDepartment(); 
+                BindLDept();
+                BindOffice();
+                $('#lblleveldetailNAme').text("Section Level Name");
+                $('#lbltext2').text("Office");
+            }
+            else if (@Model.INTLEVELID == '4') {
+                BindDepartment();
+                BindLDept();
+                $('#lblleveldetailNAme').text("Office Level Name");
+                $('#lbltext2').text("Line Department");
+            }
+            else if (@Model.INTLEVELID == '3') {
+                BindDepartment();
+                $('#lblleveldetailNAme').text("Line Department Level Name");
+                $('#lbltext2').text("Department");
+            }
+            else if (@Model.INTLEVELID == '2') {
+                $('#lblleveldetailNAme').text("Department Level Name");
+                $('#dvparentLevelDetailName').show();
+            }
+
+            $('#ddldept').change(function () {
+                var data = {
+                    PLId: $('#ddldept').val(),
+                };
+
+                var select = document.getElementById("ddlparentlevelId");
+                    var selectedIndex = select.selectedIndex;
+                    var selectedText = select.options[selectedIndex - 1].text;
+                    var selectedTextt = select.options[selectedIndex].text;
+                    $("#lbltext2").text(sentenceCase(selectedText));
+
+                if ($('#ddlparentlevelId').val() == '5') {
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/GetLevelById")',
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+
+                            $("#ddllinedept").empty();
+                            $('#dvparentLevelDetailId').show();
+                            $("#ddllinedept").append($('<option value="0">--Select Line Department--</option>'));
+                            if (response.length > 0) {
+                                for (var i = 0; i < response.length; i++) {
+                                    $("#ddllinedept").append($('<option/>')
+                                        .val(response[i].intleveldetailid)
+                                        .html(response[i].nvchlevelname)
+                                    );
+                                }
+                            }
+                            $("#lblleveldetailNAme").text(sentenceCase(selectedTextt) + " Level Name");
+                            $("#hdnlinedept").show();
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                }
+                else{
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/GetLevelById")',
+                        data: data,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (response) {
+
+                            $("#ddlparentlevelDetailsId").empty();
+                            $("#ddllinedept").empty();
+                            $("#ddlparentlevelDetailsId").append($('<option value="0">--' + sentenceCase("Select " + selectedText) + '--</option>'));
+                            $('#dvparentLevelDetailId').show();
+
+                            if (response.length > 0) {
+                                for (var i = 0; i < response.length; i++) {
+                                    $("#ddlparentlevelDetailsId").append($('<option/>')
+                                        .val(response[i].intleveldetailid)
+                                        .html(response[i].nvchlevelname)
+                                    );
+                                }
+                            }
+                            $("#lblleveldetailNAme").text(sentenceCase(selectedTextt) + " Level Name");
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                }
+                
+            });
+
+             $('#ddllinedept').change(function () {
+                var data = {
+                    PLId: $('#ddllinedept').val(),
+                };
+
+                var select = document.getElementById("ddlparentlevelId");
+                var selectedIndex = select.selectedIndex;
+                var selectedText = select.options[selectedIndex - 1].text;
+                var selectedTextt = select.options[selectedIndex ].text;
+                $("#lbltext2").text(sentenceCase(selectedText));
+
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/GetLevelById")',
+                    data: data,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        $("#ddlparentlevelDetailsId").empty();
+                        $("#ddlparentlevelDetailsId").append($('<option value="0">--' + sentenceCase("Select " + selectedText) + '--</option>'));
+                        $('#dvparentLevelDetailId').show();
+                        if (response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                $("#ddlparentlevelDetailsId").append($('<option/>')
+                                    .val(response[i].intleveldetailid)
+                                    .html(response[i].nvchlevelname)
+                                );
+                            }
+                        }
+                        $("#lblleveldetailNAme").text(sentenceCase(selectedTextt)+ " Level Name");
+
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+
+            if (parseInt(@Model.ParentPosition) == 3) {
+                $('#dvBLOCK').show();
+                BindLevelByLevelId_Edit(@Model.INTPARENTID_block);
+            }
+            else if (parseInt(@Model.ParentPosition) == 4) {
+                $('#dvBLOCK').show();
+                BindLevelByLevelId_Edit(@Model.INTPARENTID_gp);
+                $('#dvGP').show();
+                BindGPLevelByLevelId(@Model.INTPARENTID_block);
+
+            }
+            else if (parseInt(@Model.ParentPosition) == 5) {
+                $('#dvBLOCK').show();
+                BindLevelByLevelId_Edit(@Model.INTPARENTID_level5);
+                $('#dvGP').show();
+                BindGPLevelByLevelId(@Model.INTPARENTID_gp);
+                $('#dvlevel5').show();
+                BindLevel5ByLevelId(@Model.INTPARENTID_block);
+
+            }
+            else {
+                $('#dvBLOCK').hide();
+                $('#dvGP').hide();
+                $('#dvlevel5').hide();
+            }
+
+            $('#btnsubmit').click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                var p = $('#hdfintposition').val();
+                if ($("#ddlparentlevelId").val() == '3') {
+                    if ($("#ddlparentlevelDetailsId").val() == 0) {
+                        $("#ddlparentlevelDetailsId").focus();
+                        new swal("Please Select Department Name.");
+                        return false;
+                    }
+                }
+                else if ($("#ddlparentlevelId").val() == '4') {
+                    if ($("#ddldept").val() == 0) {
+                        $("#ddldept").focus();
+                        new swal("Please Select Department Name.");
+                        return false;
+                    }
+                    else if ($("#ddlparentlevelDetailsId").val() == 0) {
+                        $("#ddlparentlevelDetailsId").focus();
+                        new swal("Please Select Line Department Name.");
+                        return false;
+                    }
+                }
+                else if ($("#ddlparentlevelId").val() == '5') {
+                    if ($("#ddldept").val() == 0) {
+                        $("#ddldept").focus();
+                        new swal("Please Select Department Name.");
+                        return false;
+                    }
+                    else if ($("#ddllinedept").val() == 0) {
+                        $("#ddllinedept").focus();
+                        new swal("Please Select Line Department Name.");
+                        return false;
+                    }
+                    else if ($("#ddlparentlevelDetailsId").val() == 0) {
+                        $("#ddlparentlevelDetailsId").focus();
+                        new swal("Please Select Office Name.");
+                        return false;
+                    }
+                }
+
+                if ($("#ddlHierarchy").val() == 0) {
+                    $("#ddlHierarchy").focus();
+                    new swal("Please Select Hierarchy Name.");
+                    return false;
+                }
+                else if ($("#ddlparentlevelId").val() == 0) {
+                    $("#ddlparentlevelId").focus();
+                    new swal("Please Select Level Name.");
+                    return false;
+                }
+                else if ((p == 1) && ($("#ddlparentlevelDetailsId").val() == 0)) {
+                    $("#ddlparentlevelDetailsId").focus();
+                    new swal("Please   " + $("#lbltext2").text());
+                    return false;
+
+                }
+                else if ((p == 3) && ($("#ddlparentlevelDetailsId").val() == 0)) {
+                    $("#ddlparentlevelDetailsId").focus();
+                    new swal("Please   " + $("#lbltext2").text());
+                    return false;
+
+                }
+                else if ((p == 3) && ($("#ddlparentlevelDetailsblockId").val() == 0)) {
+                    $("#ddlparentlevelDetailsblockId").focus();
+                    new swal("Please   " + $("#lbltext3").text());
+                    return false;
+
+                }
+                else if ((p == 4) && ($("#ddlparentlevelDetailsId").val() == 0)) {
+                    $("#ddlparentlevelDetailsId").focus();
+                    new swal("Please   " + $("#lbltext2").text());
+                    return false;
+
+                }
+                else if ((p == 4) && ($("#ddlparentlevelDetailsblockId").val() == 0)) {
+                    $("#ddlparentlevelDetailsblockId").focus();
+                    new swal("Please   " + $("#lbltext3").text());
+                    return false;
+
+                }
+                else if ((p == 4) && ($("#ddlparentlevelDetailsGpId").val() == 0)) {
+                    $("#ddlparentlevelDetailsGpId").focus();
+                    new swal("Please   " + $("#lbltext4").text());
+                    return false;
+
+                }
+                else if ((p == 5) && ($("#ddlparentlevelDetailsId").val() == 0)) {
+                    $("#ddlparentlevelDetailsId").focus();
+                    new swal("Please   " + $("#lbltext2").text());
+                    return false;
+
+                }
+                else if ((p == 5) && ($("#ddlparentlevelDetailsblockId").val() == 0)) {
+                    $("#ddlparentlevelDetailsblockId").focus();
+                    new swal("Please   " + $("#lbltext3").text());
+                    return false;
+
+                }
+                else if ((p == 5) && ($("#ddlparentlevelDetailsGpId").val() == 0)) {
+                    $("#ddlparentlevelDetailsGpId").focus();
+                    new swal("Please   " + $("#lbltext4").text());
+                    return false;
+
+                }
+                else if ((p == 5) && ($("#ddlparentlevelDetailslevel5Id").val() == 0)) {
+                    $("#ddlparentlevelDetailslevel5Id").focus();
+                    new swal("Please   " + $("#lbltext5").text());
+                    return false;
+
+                }
+                else if ($("#txtLevelName").val() == "") {
+                    $("#txtLevelName").focus();
+                    var s = $("#lblleveldetailNAme").text();
+                    new swal(s + "Can't be blank.");
+                    return false;
+                }
+                else if ($("#txtaliasname").val() == "") {
+                    $("#txtaliasname").focus();
+                    new swal("Allias Name Can't be blank.");
+                    return false;
+                }
+
+                var formData = {
+                    INTHIERARCHYID: $('#ddlHierarchy').val(),
+                    INTLEVELID: $('#ddlparentlevelId').val(),
+                    INTPARENTID: $('#ddlparentlevelDetailsId').val(),
+                    INTPARENTID_block: $('#ddlparentlevelDetailsblockId').val(),
+                    INTPARENTID_gp: $('#ddlparentlevelDetailsGpId').val(),
+                    INTPARENTID_level5: $('#ddlparentlevelDetailslevel5Id').val(),
+                    ParentPosition: $('#ParentPosition').val(),
+                    INTCREATEDBY: $('#INTCREATEDBY').val(),
+                    NVCHLEVELNAME: $('#txtLevelName').val(),
+                    VCHALIAS: $('#txtaliasname').val(),
+                    INTLEVELDETAILID: $('#INTLEVELDETAILID').val(),
+                };
+
+                swal({
+                    title: "Are you sure?",
+                    text: "You want to Update",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes",
+                    closeOnConfirm: false
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/AdminConsole/LevelDetailsMaster/EditLevelDetails', // Adjust the URL to your endpoint
+                            data: formData,
+                            success: function (response) {
+                                console.log(response);
+                                if (response === "Updated Successfully") {
+                                    swal({
+                                        title: "",
+                                        text: response,
+                                        type: "success"
+                                    }, function () {
+                                        window.location.href = "/AdminConsole/LevelDetailsMaster/ViewActiveLevelDetails";
+                                    });
+                                } else if (response == "Already Exist") {
+                                    swal({
+                                        title: "",
+                                        text: response,
+                                        type: "warning"
+                                    }, function () {
+                                        return;
+                                    });
+                                }
+                                else {
+                                    swal({
+                                        title: "",
+                                        text: response,
+                                        type: "error"
+                                    }, function () {
+                                        return;
+                                    });
+                                }
+                            },
+                            error: function () {
+                                swal({
+                                    title: "",
+                                    text: 'An error occurred while processing the request.',
+                                    type: "error"
+                                }, function () {
+                                    return;
+                                });
+                            }
+                        });
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function sentenceCase(str) {
+            str = str.toLowerCase().split(' ');
+            for (var i = 0; i < str.length; i++) {
+                str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+            }
+            var SentencecaseText = str.join(' ');
+            return SentencecaseText;
+
+        }
+
+        async function BindLDept() {
+            var data = {
+                PLId: @Model.Dept
+            };
+
+            try {
+                const response = await $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetLevelById","LevelDetailsMaster")',
+                    data: data,
+                    dataType: "json"
+                });
+
+
+                if (@Model.INTLEVELID == '5') {
+                    $("#ddllinedept").empty();
+                    $("#ddllinedept").append($('<option value="0">--Select Line Department--</option>'));
+                    for (var i = 0; i < response.length; i++) {
+                        $("#ddllinedept").append($('<option/>')
+                            .val(response[i].intleveldetailid)
+                            .html(response[i].nvchlevelname)
+                        );
+                    }
+                    $('#ddllinedept').val(@Model.LineDept);
+                    $("#hdnlinedept").show();
+                } else {
+                    $("#ddlparentlevelDetailsId").empty();
+                    $("#ddlparentlevelDetailsId").append($('<option value="0">--Select Line Department--</option>'));
+                    for (var i = 0; i < response.length; i++) {
+                        $("#ddlparentlevelDetailsId").append($('<option/>')
+                            .val(response[i].intleveldetailid)
+                            .html(response[i].nvchlevelname)
+                        );
+                    }
+                    $('#ddlparentlevelDetailsId').val(@Model.LineDept);
+                    $('#dvparentLevelDetailId').show(); 
+                    $('#dvparentLevelDetailName').show();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function BindOffice() {
+            var data = {
+                PLId: @Model.LineDept
+            };
+
+            try {
+                const response = await $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetLevelById","LevelDetailsMaster")',
+                    data: data,
+                    dataType: "json"
+                });
+
+                $("#ddlparentlevelDetailsId").empty();
+                $("#ddlparentlevelDetailsId").append($('<option value="0">--Select Office--</option>'));
+
+                if (response.length > 0) {
+                    for (var i = 0; i < response.length; i++) {
+                        $("#ddlparentlevelDetailsId").append($('<option/>')
+                            .val(response[i].intleveldetailid)
+                            .html(response[i].nvchlevelname)
+                        );
+                    }
+                    $('#ddlparentlevelDetailsId').val(@Model.Office);
+                    $('#dvparentLevelDetailId').show();
+                    $('#dvparentLevelDetailName').show();
+                }
+                
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        
+
+        function BindParentLevel() {
+            var HirerarchyId = $('#ddlHierarchy').val();
+            var data = {
+                HId: HirerarchyId
+            };
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindParentLevelByHierarchyId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    console.log(response);
+                    $('#dvBLOCK').hide();
+                    $('#dvGP').hide();
+                    $('#dvlevel5').hide();
+                    $("#ddlparentlevelId").empty();
+                    $("#ddlparentlevelId").append($('<option value="0">--Select  Level Master--</option>'));
+                    if (response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelId").append($('<option/>')
+                                .val(response[i].intlevelid)
+                                .html(response[i].nvchlabel)
+                            );
+                        }
+                        $('#ddlparentlevelId').val(@Model.INTLEVELID);
+                    }
+                    else {
+                        $('#dvGP').hide();
+                        $('#dvlevel5').hide();
+                    }
+
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+        }
+        function BindParentLevelDetail(Id, HyId) {
+            var data = {
+                PLId: Id,
+                HId: HyId
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindParentLevelDetailsByHierarchyId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var select = document.getElementById("ddlparentlevelId");
+                    var selectedIndex = select.selectedIndex;
+                    var selectedText = select.options[selectedIndex - 1].text;
+                    $("#lbltext2").text(sentenceCase(selectedText));
+
+                    $("#ddlparentlevelDetailsId").empty();
+                    $("#ddlparentlevelDetailsId").append($('<option value="0">--' + sentenceCase("Select " + selectedText) + '--</option>'));
+                    if (response.length > 0) {
+                        $('#hdfintposition').val(0);
+                        $('#hdfintposition').val(response[0].parentPosition);
+                        var s = $('#hdfintposition').val();
+                        $('#dvparentLevelDetailId').show();
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelDetailsId").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+                    }
+                    else {
+                        $('#dvparentLevelDetailId').hide();
+                        $('#dvBLOCK').hide();
+                        $('#dvGP').hide();
+                        $('#dvlevel5').hide();
+                        $('#hdfintposition').val(0);
+
+                    }
+
+                    $('#dvparentLevelDetailName').show();
+                    var selectedText = $("#ddlparentlevelId").find("option:selected").text() + "  Level Name ";
+                    $("#lblleveldetailNAme").text(sentenceCase(selectedText));
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function BindLevelByLevelId(Id) {
+
+            var data = {
+                PLId: Id
+            };
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindLevelByParentId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#ddlparentlevelDetailsblockId").empty();
+                    $("#ddlparentlevelDetailsblockId").append($('<option value="0">--Select  Level Master(Block)--</option>'));
+                    if (response.length > 0) {
+                        $("#lbltext3").text(sentenceCase("Select " + response[0].labelText));
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelDetailsblockId").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+
+                    }
+                    else {
+                        $('#dvGP').hide();
+                        $('#dvlevel5').hide();
+                    }
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+        }
+        function BindLevelByLevelId_Edit(Id) {
+
+            var data = {
+                PLId: Id
+            };
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindLevelByParentId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $('#dvBLOCK').show();
+                    console.log(response);
+                    var z = $('#hdfintposition').val();
+                    $("#ddlparentlevelDetailsblockId").empty();
+                    $("#ddlparentlevelDetailsblockId").append($('<option value="0">--Select  Level Master(Block)--</option>'));
+                    if (response.length > 0) {
+                        $("#lbltext3").text(sentenceCase("Select " + response[0].labelText));
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelDetailsblockId").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+                        if (z == 3) {
+                            $('#ddlparentlevelDetailsblockId').val(@Model.INTPARENTID);
+                        }
+                        else if (z == 4) {
+                            $('#ddlparentlevelDetailsblockId').val(@Model.INTPARENTID_block);
+                        }
+
+                        else {
+                            $('#ddlparentlevelDetailsblockId').val(@Model.INTPARENTID_gp);
+                        }
+
+                    }
+                    else {
+                        $('#dvGP').hide();
+                        $('#dvlevel5').hide();
+                    }
+
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+        }
+        function BindGPLevelByLevelId(Id) {
+
+            var data = {
+                PLId: Id
+            };
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindLevelByParentId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    var gpp = $('#hdfintposition').val();
+                    $("#ddlparentlevelDetailsGpId").empty();
+                    $("#ddlparentlevelDetailsGpId").append($('<option value="0">--Select  Level Master(GP)--</option>'));
+                    if (response.length > 0) {
+                        $("#lbltext4").text(sentenceCase("Select " + response[0].labelText));
+                        $('#dvGP').show();
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelDetailsGpId").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+                        if (gpp == 4) {
+                            $('#ddlparentlevelDetailsGpId').val(@Model.INTPARENTID);
+                        }
+                        else {
+                            $('#ddlparentlevelDetailsGpId').val(@Model.INTPARENTID_block);
+                        }
+
+
+                    }
+                    else { $('#dvlevel5').hide(); }
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+        }
+        function BindDept() {
+            var data = {
+                PLId: 3,
+                HId: 1
+            };
+            var select = document.getElementById("ddlparentlevelId");
+            var selectedIndex = select.selectedIndex;
+            var selectedText = select.options[selectedIndex - 1].text;
+            var selectedTextt = select.options[selectedIndex].text;
+            $("#lbltext2").text(sentenceCase(selectedText));
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindParentLevelDetailsByHierarchyId")',
+                data: data,
+                dataType: "json",
+                success: function (response) {
+
+                    $("#ddlparentlevelDetailsId").empty();
+                    $("#ddldept").empty();
+                    $("#ddlparentlevelDetailsId").append($('<option value="0">--' + sentenceCase("Select " + selectedText) + '--</option>'));
+                    $("#ddldept").append($('<option value="0">--Select Department--</option>'));
+
+                    if (response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddldept").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+                        $("#hdndept").show();
+                    }
+                    $("#lblleveldetailNAme").text(sentenceCase(selectedTextt)+" Level Name");
+                    $('#dvparentLevelDetailId').show();
+                    $('#dvparentLevelDetailName').show();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function BindDepartment() {
+            var data = {
+                PLId: 3,
+                HId: 1
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindParentLevelDetailsByHierarchyId")',
+                data: data,
+                dataType: "json",
+                success: function (response) {
+
+                    $("#ddldept").empty();
+                    $("#ddldept").append($('<option value="0">--Select Department--</option>'));
+
+                    if (response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddldept").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+                        $('#ddldept').val(@Model.Dept);
+                        $("#hdndept").show();
+                    }
+                    $('#dvparentLevelDetailName').show();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function BindLevel5ByLevelId(Id) {
+
+            var data = {
+                PLId: Id
+            };
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelDetailsMaster/BindLevelByParentId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#lbltext5").text(sentenceCase("Select " + response[0].labelText));
+                    $("#ddlparentlevelDetailslevel5Id").empty();
+                    $("#ddlparentlevelDetailslevel5Id").append($('<option value="0">--Select  Level Master(5)--</option>'));
+                    if (response.length > 0) {
+                        $('#dvlevel5').show();
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelDetailslevel5Id").append($('<option/>')
+                                .val(response[i].intleveldetailid)
+                                .html(response[i].nvchlevelname)
+                            );
+                        }
+                        $('#ddlparentlevelDetailslevel5Id').val(@Model.INTPARENTID);
+                    }
+                    else { $('#dvlevel5').hide(); }
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+        }
+        $('#ddlparentlevelId').change(function () {
+            $('#dvGP').hide();
+            $('#dvlevel5').hide();
+
+            if ($('#ddlparentlevelId').val() == '0') {
+                $('#dvparentLevelDetailId').hide();
+                $('#dvparentLevelDetailName').hide();
+                $('#hdndept').hide();
+                $('#hdnlinedept').hide();
+            }
+
+            if ($('#ddlparentlevelId').val() > 0) {
+                $('#hfPLId').val($('#ddlparentlevelId').val());
+                if ($('#ddlparentlevelId').val() == '4' || $('#ddlparentlevelId').val() == '5') {
+                    if ($('#ddlparentlevelId').val() == '4') {
+                        $('#hdndept').show();
+                        $('#hdnlinedept').hide();
+                    }
+                    else if ($('#ddlparentlevelId').val() == '5') {
+                        $('#hdndept').show();
+                        $('#hdnlinedept').show();
+                        $('#ddllinedept').empty();
+                        $('#ddllinedept').append('<option value ="0">-- Select Line Department --</option>');
+
+                    }
+                    BindDept();
+                }
+                else {
+                    BindParentLevelDetail($('#ddlparentlevelId').val(), $('#ddlHierarchy').val());
+                    $('#hdndept').hide();
+                    $('#hdnlinedept').hide();
+                }
+            }
+            else {
+                $('#hfPLId').val($('#ddlparentlevelId').val());
+            }
+        });
+        $('#ddlparentlevelDetailsId').change(function () {
+            if ($('#ddlparentlevelDetailsId').val() > 0) {
+
+                $('#dvparentLevelDetailName').show
+                $('#dvGP').hide();
+                $('#dvlevel5').hide();
+                var s = parseInt($('#hdfintposition').val());
+                if (s >= 3) {
+                    $('#dvBLOCK').show();
+                    BindLevelByLevelId($('#ddlparentlevelDetailsId').val());
+                }
+                else {
+                    $('#dvBLOCK').hide();
+                }
+            }
+            else { $('#dvBLOCK').hide(); }
+        });
+        $('#ddlparentlevelDetailsblockId').change(function () {
+            if ($('#ddlparentlevelDetailsblockId').val() > 0) {
+                var s = parseInt($('#hdfintposition').val());
+                // alert(s);
+                if (s >= 4) {
+                    $('#dvGP').show();
+                    BindGPLevelByLevelId($('#ddlparentlevelDetailsblockId').val());
+                }
+                else {
+                    $('#dvGP').hide();
+                    $('#dvlevel5').hide();
+                }
+
+            }
+
+        });
+        $('#ddlparentlevelDetailsGpId').change(function () {
+            if ($('#ddlparentlevelDetailsGpId').val() > 0) {
+                var s = parseInt($('#hdfintposition').val());
+                if (s >= 5) {
+                    $('#dvlevel5').show();
+                    BindLevel5ByLevelId($('#ddlparentlevelDetailsGpId').val());
+                }
+                else {
+                    $('#dvlevel5').hide();
+                }
+
+            }
+
+        });
+
+    </script>
+
+    <script type="text/javascript" language="javascript">
+        function validateForm() {
+           
+        }
+
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'Email') {
+                AllowableCharacters = '1234567890@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\'';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            if (allow == 'Filename') {
+                AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#btnReset").bind("click", function () {
+                var url = '@Url.Action("ViewActiveLevelDetails", "LevelDetailsMaster")';
+                window.location.href = url;
+
+            });
+        });
+    </script>
+
+}
+<div class="section">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="LevelDetailsMaster" asp-action="AddLevelDetailsMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="LevelDetailsMaster" asp-action="ViewActiveLevelDetails">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="LevelDetailsMaster" asp-action="ViewInActiveLevelDetails">
+            InActive
+        </a>
+    </div>
+    <div class="card-body">
+        <form id="frmCreateLevelDetailsMaster" data-parsley-validate novalidate method="post" asp-action="EditLevelDetails" asp-controller="LevelDetailsMaster" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+            <div class="row">
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Hirerarchy Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTHIERARCHYID" asp-items="@(new SelectList(Model.HierarchyList,"INTHIERARCHYID","NVCHHIERARCHYNAME"))" onchange=" return BindParentLevel();" id="ddlHierarchy" class="form-control" autofocus>
+                            <option value="0">--Select Hirerarchy Name--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Level Master<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTLEVELID" id="ddlparentlevelId" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="hdndept">
+                    <label class="control-label">Department<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="Dept" id="ddldept" class="form-control">
+                            <option value="0">--Select Department--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="hdnlinedept">
+                    <label class="control-label">Line Department<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="LineDept"  id="ddllinedept" class="form-control">
+                            <option value="0">--Select Line Department--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvparentLevelDetailId">
+                    <label class="control-label" id="lbltext2">Parent Level Details Master<span style="color:Red">*</span></label><span style="color:Red">*</span>
+                    <div class="input-group">
+                        <select asp-for="INTPARENTID" id="ddlparentlevelDetailsId" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 form-group" id="dvBLOCK">
+                    <label class="control-label" id="lbltext3">Parent Level Details Master(Block)<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTPARENTID_block" id="ddlparentlevelDetailsblockId" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvGP">
+                    <label class="control-label" id="lbltext4">Parent Level Details Master(GP)<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTPARENTID_gp" id="ddlparentlevelDetailsGpId" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvlevel5">
+                    <label class="control-label" id="lbltext5">Parent Level Details Master(level5)<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTPARENTID_level5" id="ddlparentlevelDetailslevel5Id" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvparentLevelDetailName">
+                    <label class="control-label" id="lblleveldetailNAme">Parent Level Details Master(level5)<span style="color:Red">*</span></label><span style="color:Red">*</span>
+                    <div class="input-group">
+                        <input type="hidden" id="hfPLId" />
+                        <input type="hidden" asp-for="ParentPosition" id="hdfintposition" />
+                        <input asp-for="INTCREATEDBY" type="hidden" value=@Model.INTCREATEDBY />
+                        <input type="text" asp-for="NVCHLEVELNAME" id="txtLevelName" style="text-transform:uppercase"
+                                Onkeypress="return inputLimiter(event,'NameCharactersymbol')" class="form-control" placeholder="Enter Level Name" autocomplete="off" maxlength="200" />
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvlevel5">
+                    <label class="control-label" id="lbltext5">Alias Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <input asp-for="VCHALIAS" type="text" id="txtaliasname" name="VCHALIAS"
+                                Onkeypress="return inputLimiter(event,'NameCharacters')" style="text-transform:uppercase"
+                                class="form-control" placeholder="Enter Alias Name" autocomplete="off" maxlength="5" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <div class="col-12 col-md-6 col-xl-4">
+                    <span class="colon"></span>
+                    <button type="submit" name="submit" id="btnsubmit" class="btn btn-primary mb-1t white-text" title="Submit" value="Submit">Update</button>
+                    <input type="button" id="btnReset" value="Cancel" class="btn btn-danger" title="Reset" />
+                </div>
+
+                <input asp-for="INTCREATEDBY" id="INTCREATEDBY" type="hidden" value=@Model.INTCREATEDBY />
+                <input asp-for="INTLEVELDETAILID" id="INTLEVELDETAILID" type="hidden" value=@Model.INTLEVELDETAILID />
+
+            </div>
+
+        </form>
+    </div>    
+</div>
+
+
+

@@ -1,0 +1,109 @@
+﻿.news-list .card-body a {
+  text-decoration: none;
+}
+.news-list {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(3,1fr);
+}
+.news-list .card {
+    --bs-card-border-width: 0px;
+    box-shadow: 0px .25rem .5rem var(--card-shadow); 
+    transition: .3s;
+}
+.news-list .card:hover {
+    box-shadow: 0px .25rem 1.5rem var(--card-shadow);
+}
+.news-list .card a,.text-body-secondary a {
+    color: var(--bs-body-color); 
+}
+.news-list .card:hover a,.text-body-secondary a:hover {
+    color: var(--bs-primary);
+}
+.news-list .card-img {
+    height: 200px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+.news-list .card-text {
+  color: #666666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.news-date { 
+    display: inline-block;
+}
+.news-details__img-lg {
+    height: calc(250px + (350 - 250) * (100vw - 375px) / (1920 - 375));
+    overflow: hidden;
+    border-radius: .5rem;
+    margin-bottom: 1rem;
+} 
+.news-details__img-lg img {
+    object-fit: cover;
+    object-position: center;
+    height: 100%;
+}
+.trending-news__list-item { 
+    display: grid;
+    grid-template-columns: 100px auto;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+} 
+.trending-news__list-item .card-title {
+    margin: 0;
+    font-size: .9rem;
+    text-decoration: none;
+}
+.trending-news__list-item .card-title:hover,
+.trending-news__list-item .card-title.active{
+    color: var(--bs-primary)
+} 
+.news-details img {
+  width: 100%;
+}
+
+.trending-news__list {
+    overflow-y: auto;
+    max-height: 450px;
+    padding-right: .5rem;
+}
+.trending-news__list::-webkit-scrollbar {
+  width: 6px; 
+}
+.trending-news__list::-webkit-scrollbar-track {
+    background: var(--scroll-bar-track);
+    border-radius: .5rem;
+}
+.trending-news__list::-webkit-scrollbar-thumb {
+    background: var(--scroll-bar);
+    border-radius: .5rem;
+} 
+.trending-news__list::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-bar-hover); 
+}
+@media (max-width: 1024px) {
+    .news-list {
+        gap: 1rem;
+    }
+    .news-list .card-img {
+        height: 170px;
+    }
+}
+@media (max-width: 991px) {
+    .news-list {
+        grid-template-columns: repeat(2,1fr);
+    } 
+}
+@media (max-width: 576px) {
+    .news-list {
+        grid-template-columns: repeat(1,1fr);
+    } 
+    .news-list .card-img {
+        height: auto; 
+    }
+    .news-date {
+        margin-bottom: .5rem;
+    }
+}

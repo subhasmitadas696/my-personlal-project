@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Troupe Performance Approval Pending";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var troupedetails = ViewBag.TroupeApprovalList;
+}
+
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="Report" asp-action="" asp-area="TroupeReporedApprovalList" class="nav-link active">
+            Pending
+        </a>
+        <a asp-controller="Report" asp-action="TroupeReportingApprovalList" asp-area="" class="nav-link">
+            Reported
+        </a>
+        <a class="btn btn-primary btn-sm ms-auto mb-2 " data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Report" asp-action="TroupeReporedApprovalList" asp-area="" method="get">
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="fromDate" name="fromDate" value="@ViewBag.FromDate" placeholder="" />
+                                <label for="sdate">From Date</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="toDate" name="toDate" value="@ViewBag.ToDate" placeholder="" />
+                                <label for="edate">To Date</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-primary btn-lg " id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;">
+                            <input class="btn btn-primary btn-lg" id="btnclrfilter" type="reset" value="Reset" onclick="reset()" style="margin-top:10px;margin-left:10px;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                            <th class="text-center" scope="col"> Event Name</th>
+                            <th class="text-center" scope="col">Group Name</th>
+                            <th scope="col">Date Of Perform</th>
+                            <th scope="col">Place</th>
+                            <th scope="col">ReportingTime</th>
+                            <th class="no-print" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (troupedetails.Count > 0)
+                        {
+                            int count = 1;
+                            foreach (var items in troupedetails)
+                            {
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td class="text-center">@items.EventTitle</td>
+                                    <td class="text-center">@items.GroupName</td>
+                                    <td class="text-center">@items.DateOfPerform</td>
+                                    <td>
+                                        @items.DistrictName
+                                        <div class="text-muted">@items.BlockName</div>
+                                        <div class="text-muted">@items.GPName</div>
+                                    </td>
+                                    <td class="text-center">@items.ReportingTime</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-primary rounded-pill btn-lg btn--animation" href="../Report/TroupeReportingApproval?AssignEventId=@items.AssignEventId&TroupeId=@items.TroupeId&STATUS=@items.Status">Action</a>
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#fromDate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#toDate').datetimepicker('destroy');
+            $('#toDate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#toDate').val('');
+        });
+        $('#toDate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        });
+        Datatable();
+    });
+    $('#btnclrfilter').click(function () {
+        $('#fromDate').val("");
+        $('#toDate').val("");
+        $('#sdate').datetimepicker('destroy');
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        window.location.href = '/Report/TroupeReporedApprovalList';
+    });
+</script>

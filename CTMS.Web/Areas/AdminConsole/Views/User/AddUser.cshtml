@@ -1,0 +1,602 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+
+    ViewBag.Title = "AddUser";
+}
+
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="User" asp-action="AddUser" asp-area="AdminConsole">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="User" asp-action="ViewUser" asp-area="AdminConsole">
+            View
+        </a>
+
+    </div>
+    <input type="hidden" id="binddesig" value="" />
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input id="txtName" type="text" class="form-control" autocomplete="off" maxlength="100" onkeypress="return inputLimiter(event,'NameCharactersymbol')" oninput="avoidFirstSpace(event)" autofocus>
+                    <label for="tname">Full Name<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtHirerarchyName"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDesgn" asp-items="@(new SelectList(ViewBag.Designation, "ROLEID", "ROLENAME"))">
+                        <option value="0">--Select--</option>
+                    </select>
+                    <label class="control-label" id="lblDig">User Type<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+            <div class="col-md-4" id="divDist" style="display:none">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDist" name="ddlDist">
+                        <option value="0" selected>Select District</option>
+                    </select>
+                    <label for="tdist">
+                        District<span class="text-danger">*</span>
+                    </label>
+                    <small class="text-danger" id="errddlDist"></small>
+                </div>
+            </div>
+            <div class="col-md-4" id="divBlock" style="display:none">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlBlock" name="ddlBlock">
+                        <option value="0">Select Block</option>
+                    </select>
+                    <label for="block">Block/ULB<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errddlBlock"></span>
+                </div>
+            </div>
+            <div class="col-md-4" id="divDesigName">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDesigname" name="ddlDesigname">
+                        <option value="0">--Select--</option>
+                    </select>
+                    <label for="block">Designation<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errddlBlock"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input id="txtUName" type="text" class="form-control" maxlength="45" autocomplete="off" onkeypress="return inputLimiter(event,'NameCharactersNumber')" oninput="avoidFirstSpace(event)">
+                    <label for="tname">User Name<span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errtxtnooflevel"></span>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input id="txtPwd" type="password" autocomplete="off" class="form-control" maxlength="45" oninput="avoidFirstSpace(event)">
+                    <label for="block">Password<span class="text-danger">*</span></label>
+                    <i class="bi bi-info-circle text-success" id="togglePassword"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input id="txtConPwd" type="password" class="form-control" maxlength="45" oninput="avoidFirstSpace(event)">
+                    <label for="address1">Confirm Password<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input id="txtEmail" type="text" class="form-control" maxlength="50" onkeypress="return inputLimiter(event,'NameCharactersAndNumbers')" oninput="avoidFirstSpace(event)">
+                    <label for="address1">Email<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input id="txtMob" type="text" class="form-control" maxlength="10" onkeypress="return inputLimiter(event,'Numbers')" oninput="avoidFirstSpace(event)">
+                    <label for="Mobile">Mobile<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="mt-4">
+            <div class="text-center">
+                <span class="colon"></span>
+                <button class="btn btn-primary rounded-pill btn-lg" onclick="return validate()" title="Submit" id="btnsubmit">Submit</button>
+                <button class="btn btn-secondary rounded-pill btn-lg" title="Reset" id="btnReset">Reset</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts{
+    <script src="~/js/aes.js"></script>
+    <script language="javascript" type="text/javascript">
+
+        $(document).ready(function () {
+            $('#togglePassword').tooltip({
+                title: "The 'New Password' field should accept characters, with a minimum length of 8 digits and a maximum length of 15. It must contain at least one special character, one number, one uppercase letter, and one lowercase letter.",
+                placement: 'top',
+                trigger: 'hover',
+            });
+            getDistrict();
+            //$("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $('#inputField').keypress(function (event) {
+                var inputValue = event.charCode;
+                // Allow only alphanumeric characters
+                if (!(inputValue >= 48 && inputValue <= 57) && // numeric (0-9)
+                    !(inputValue >= 65 && inputValue <= 90) && // upper alpha (A-Z)
+                    !(inputValue >= 97 && inputValue <= 122)) { // lower alpha (a-z)
+                    event.preventDefault();
+                }
+            });
+        });
+       
+        function sentenceCase(str) {
+            str = str.toLowerCase().split(' ');
+            for (var i = 0; i < str.length; i++) {
+                str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+            }
+            var SentencecaseText = str.join(' ');
+            return SentencecaseText;
+
+        }
+        function checkPassword(str) {
+            var re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+            return re.test(str);
+        }
+        function validate() {
+            if ($('#txtName').val() == '') {
+                new swal('Please enter Full Name!');
+                $('#txtName').focus();
+                return false;
+            }
+
+            if ($('#ddlDesgn').val() == 0) {
+                new swal('Please select Usertype!');
+                $('#ddlDesgn').focus();
+                return false;
+            }
+            if ($('#ddlDesigname').val() == 0) {
+                new swal('Please select Designation!');
+                $('#ddlDesgn').focus();
+                return false;
+            }
+
+            if ($('#ddlDesgn').val() == '4') {
+                if ($('#ddlDist').val() == 0) {
+                    new swal('Please select District!');
+                    $('#ddlDist').focus();
+                    return false;
+                }
+
+            }
+            if ($('#ddlDesgn').val() == '3') {
+                if ($('#ddlDist').val() == 0) {
+                    new swal('Please select District!');
+                    $('#ddlDist').focus();
+                    return false;
+                }
+                if ($('#ddlBlock').val() == 0) {
+                    new swal('Please select Block!');
+                    $('#ddlBlock').focus();
+                    return false;
+                }
+
+            }
+            if ($('#txtUName').val() == '') {
+
+                new swal('Please enter User Name!');
+                $('#txtUName').focus();
+                return false;
+            }
+            if ($('#txtPwd').val() == '') {
+                new swal('Please enter Password!');
+                $('#txtPwd').focus();
+                return false;
+            }
+            if ($('#txtConPwd').val() == '') {
+                new swal('Please enter Confirm Password!');
+                $('#txtConPwd').focus();
+                return false;
+            }
+
+            if (!checkPassword($('#txtPwd').val())) {
+                new swal('Password must contain at least one lowercase letter,one uppercase letter,one number,one special character!');
+                $('#txtPwd').focus();
+                return false;
+            }
+            if (!checkPassword($('#txtConPwd').val())) {
+                new swal('Password must contain at least one lowercase letter,one uppercase letter,one number,one special character!');
+                $('#txtConPwd').focus();
+                return false;
+            }
+            if ($('#txtPwd').val().length < 8) {
+                new swal("Password min 8 char!");
+                $('#txtPwd').focus();
+                return false;
+            }
+            if ($('#txtConPwd').val().length < 8) {
+                new swal("Password min 8 char!");
+                $('#txtConPwd').focus();
+                return false;
+            }
+            if ($('#txtPwd').val() != $('#txtConPwd').val()) {
+                new swal("Password and confirm password do not match!");
+                $('#txtConPwd').focus();
+                return false;
+            }
+
+
+            if ($('#txtEmail').val() == '') {
+                new swal('Please enter Email!');
+                $('#txtEmail').focus();
+                return false;
+            }
+            if (IsEmail($('#txtEmail').val()) == false) {
+                new swal('Please enter valid Email!');
+                $('#txtEmail').focus();
+                return false;
+            }
+            if ($('#txtMob').val() == '') {
+                new swal('Please enter Mobile No!');
+                $('#txtMob').focus();
+                return false;
+            }
+            if (MobileNumber($('#txtMob').val()) == false) {
+                new swal('Please enter valid Mobile No!');
+                $('#txtMob').focus();
+                return false;
+            }
+                return true;
+        }
+        function SubmitsEncry(strCntrol) {
+            var strData = $('#' + strCntrol).val();
+            var key = CryptoJS.enc.Utf8.parse('8080808080808080');
+            var iv = CryptoJS.enc.Utf8.parse('8080808080808080');
+            var encryptedlogin = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(strData), key,
+                {
+                    keySize: 128 / 8,
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+            $('#' + strCntrol).val(encryptedlogin);
+        }
+        $('#btnsubmit').click(function () {
+            debugger;
+            if (validate()) {
+
+                Swal.fire({
+                    title: "",
+                    text: "Are you sure you want to save?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes",
+                    closeOnConfirm: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        var fileData = new FormData();
+                        var UserID = "";
+                        var password = SubmitsEncry('txtPwd');
+                        fileData.append("FULLNAME", $('#txtName').val());
+                        fileData.append("UserType", $('#ddlDesgn').val());
+
+                        if ($('#ddlDesgn').val() == '2') {
+                            UserID = 5;
+                            fileData.append("USERID", UserID);
+                        }
+                        else if ($('#ddlDesgn').val() == '5') {
+                            UserID = 5;
+                            fileData.append("USERID", UserID);
+                        }
+                        else if ($('#ddlDesgn').val() == '4') {
+                            fileData.append("UserID", $('#ddlDist').val());
+                        }
+                        else if ($('#ddlDesgn').val() == '3') {
+
+                            fileData.append("UserID", $('#ddlBlock').val());
+                        }
+                        else
+                        {
+                            fileData.append("UserID", 1);
+                        }
+                        fileData.append("DESIGNAME", $('#ddlDesigname').val());
+                        fileData.append("USERNAME", $('#txtUName').val());
+                        fileData.append("UPASSWORD", $('#txtPwd').val());
+                        fileData.append("UEMAILID", $('#txtEmail').val());
+                        fileData.append("MOBILENO", $('#txtMob').val());
+                        AddUserData(fileData);
+                    }
+                });
+            }
+        });
+
+
+
+
+
+        function AddUserData(Data) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddUserData", "User")",
+                data: Data,
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                success: function (res) {
+                    if (res == '1') {
+                        var response = 'User created successfully!';
+                        Swal.fire({
+                            title: "",
+                            text: response,
+                            icon: "success"
+                        }).then(function () {
+                            window.location.href = window.location.origin + "@Url.Action("ViewUser", "User")";
+                        });
+                    }
+                    else if (res == '4') {
+                        var response = 'Username already exists!';
+                        Swal.fire({
+                            title: "",
+                            text: response,
+                            icon: "warning"
+                        }).then(function () {
+                            return;
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            title: "",
+                            text: res,
+                            icon: "error"
+                        }).then(function () {
+                            return;
+                        });
+                    }
+                    },
+                    failure: function (response) {
+                        console.log(response.responseText);
+                    },
+                    error: function (response) {
+                        console.log(response.responseText);
+                    }
+
+            });
+        }
+        $('#btnReset').click(function () {
+            var newUrl = "@Url.Action("AddUser", "User")";
+            window.location.href = newUrl;
+        });
+
+        function bindBlock(Id) {
+            var vdata = {
+                ParentId: Id
+            };
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/User/getLevelDetailsByParentId")',
+                data: vdata,
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+                success: function (response) {
+                    if (response.length > 0) {
+                        $('#trBlk').show();
+                        $('#lblBlk').text(sentenceCase(response[0].nvchlabel));
+                        $('#lblBlk').append('<span style="color: red">*</span>');
+                        $("#ddlBlock").empty();
+                        var item = '<option value="0">--Select--</option>';
+                        $.each(response, function (i, block) {
+                            item += '<option value="' + block.intleveldetailid + '">' + block.nvchlevelname + '</option>'
+                        });
+                        $("#ddlBlock").html(item);
+                    }
+                    else {
+                        $('#trBlk').hide();
+                    }
+
+                },
+                error: function (error) {
+                    $('#trBlk').hide();
+                    console.log(error);
+                }
+            });
+        }
+
+
+        $('#ddlDesgn').change(function () {
+            
+            if ($('#ddlDesgn').val() == '4') {
+                $('#divBlock').hide();
+                $('#ddlBlock').val('0');
+                $('#divDist').removeAttr('style');
+                $('#ddlDist').show();
+            }
+
+            else if ($('#ddlDesgn').val() == '3') {
+                $('#divDist').show();
+                $('#divBlock').show();
+                $('#ddlBlock').val('0');
+                $('#ddlDist').val('0');
+            }
+
+            else {
+                $('#divDist').hide();
+                $('#divBlock').hide();
+                $('#ddlBlock').val('0');
+                $('#ddlDist').val('0');
+            }
+        });
+        function changedrop() {
+            $('#ddlDesigname').find('option').each(function () {
+                if ($(this).val() != 0) {
+                    $(this).remove();
+                }
+            });
+        }
+        function changedropBLK() {
+            $('#ddlBlock').find('option').each(function () {
+                if ($(this).val() != 0) {
+                    $(this).remove();
+                }
+            });
+        }
+
+        $('#ddlDesgn').change(function () {
+            changedrop();
+            changedropBLK();
+            let usertype = $('#ddlDesgn').val();
+            
+            if (usertype == 2 || usertype == 5 || usertype == 1) {
+                
+                BindDesig();
+            }
+        });
+        $('#ddlDist').change(function () {
+            changedrop();
+           
+            let usertype = $('#ddlDesgn').val();
+            if (usertype == 4) {
+               
+                BindDesig();
+            }
+        });
+        $('#ddlBlock').change(function () {
+            changedrop();
+            
+            let usertype = $('#ddlDesgn').val();
+            if (usertype == 3) {
+                
+                BindDesig();
+            }
+        });
+
+
+        function BindDesig() {
+            $('#ddlDesigname').empty();
+            let usertype = $('#ddlDesgn').val();
+           if (usertype == 2 || usertype == 5 || usertype == 1) {
+                var usertypeid = usertype;
+                var Distid = 0;
+                var Blockid = 0;
+            }
+            else if (usertype == 4) {
+                var usertypeid = usertype;
+                var Distid = $('#ddlDist').val();
+                var Blockid = 0;
+            }
+            else {
+                var usertypeid = usertype;
+                var Distid = $('#ddlDist').val();
+                var Blockid = $('#ddlBlock').val();
+            }
+            var Data = {
+                USERTYPE: usertypeid,
+                DISTID: Distid,
+                BLOCKID: Blockid
+            }
+           var thisHtml = '<option value="0">--Select--</option>';
+
+            $.ajax({
+                url: '@Url.Content("~/")' + 'AdminConsole/User/BindDesg',
+                data: Data,
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    
+                    var result = data;
+
+                    if (result !== null && result.length !== 0) {
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].intdesigid + '">' + result[i].designationname + '</option>';
+                        }
+                        $('#ddlDesigname').html(thisHtml);
+                    } else {
+                        $('#ddlDesigname').html(thisHtml);
+                        console.log('Result is 0 or null');
+                     }
+               }
+            });
+        }
+
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharactersNumber') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@@-,/.\'';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-,./\&(){}[]#$:';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+
+
+        function IsEmail(email) {
+            var regex = /^([a-zA-Z0-9_\.\-\+])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!regex.test(email)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function avoidFirstSpace(event) {
+            const inputElement = event.target;
+            const inputValue = inputElement.value;
+
+            if (inputValue.length > 0 && inputValue.charCodeAt(0) === 32) {
+                inputElement.value = inputValue.slice(1);
+            }
+        }
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+

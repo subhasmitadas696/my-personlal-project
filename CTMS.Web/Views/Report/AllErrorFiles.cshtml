@@ -1,0 +1,50 @@
+﻿@using CTMS.Model.DTOs
+@{
+    ViewBag.Title = "AllErrorFiles";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="javascript:void(0)" class="nav-link active">
+            Error Log Files
+        </a>
+    </div>
+    <div class="table-responsive card-body" id="viewtable">
+        <table id="datatable" class="table table-bordered order-column datatable-fixedcolum">
+            <thead>
+                <tr>
+                    <th width="20">
+                        Sl No.
+                    </th>
+                    <th width="20">
+                        Files Name
+                    </th>
+                    <th width="20">
+                        Created On
+                    </th>
+                    <th width="20%">
+                        Download Here
+                    </th>
+
+
+                </tr>
+            </thead>
+            <tbody class="body_enulist">
+                @foreach (FileModel file in Model)
+                {
+                    <tr>
+                        <td></td>
+                        <td>@file.FileName</td>
+                        <td>@file.CreatedOn</td>
+                        <td>@Html.ActionLink("Download", "DownloadFile", new { fileName = file.FileName })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+    });
+</script>

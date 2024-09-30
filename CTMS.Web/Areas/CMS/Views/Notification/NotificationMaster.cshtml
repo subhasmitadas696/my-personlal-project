@@ -1,0 +1,314 @@
+﻿@{
+    ViewData["Title"] = "Notification Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@Html.AntiForgeryToken()
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="tropue-basic-info-tab" asp-area="CMS" asp-controller="Notification" asp-action="NotificationMaster">
+            Add Notification
+        </a>
+        <a class="nav-link" id="artist-info-tab" asp-area="CMS" asp-controller="Notification" asp-action="ViewNotificationMaster">
+            Notification Details
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">Notification Information</h5>
+        <form id="form">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="Title" name="Title" class="form-control" placeholder="Enter Title Name">
+                        <label for="Title">Title(English)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="TitleOd" name="TitleOd" class="form-control" placeholder="Enter Title Name in Odia">
+                        <label for="TitleOd">Title(Odia)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="Description" name="Description" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="Description">Description<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="DescriptionOd" name="DescriptionOd" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="DescriptionOd">Description(Odia)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="StartDate" name="StartDate" class="form-control" placeholder="Start Date">
+                        <label for="StartDate">Start Date<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="EndDate" name="EndDate" class="form-control"
+                               placeholder="End Date">
+                        <label for="EndDate">End Date<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="text-center my-4">
+                    <button type="button" class="btn btn-secondary btn-lg" id="btn_Submit" onclick="Save_ManageFAQ()">
+                        Save
+                    </button>
+                    <button type="reset" class="btn btn-danger btn-lg" onclick="Reset()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <input id="hdnManageFAQ" type="hidden" value="0" />
+        </form>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/js/moment.min-new.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#Title').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#TitleOd').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#Description').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#DescriptionOD').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(function () {
+        $('#StartDate').datetimepicker({
+            format: 'DD-MMM-YYYY hh:mm A',
+            minDate: moment(new Date())
+        }).on('dp.change', function (e) {
+            $('#EndDate').datetimepicker('destroy');
+            $('#EndDate').datetimepicker({
+                format: 'DD-MMM-YYYY hh:mm A',
+                minDate: new Date(e.date)
+            });
+            $('#EndDate').val('');
+        });
+        $('#EndDate').datetimepicker({
+            format: 'DD-MMM-YYYY hh:mm A'
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    $(document).ready(function () {
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_ManageFAQ(id);
+            $("#btn_Submit").text("Update");
+
+        }
+    });
+
+    function Edit_ManageFAQ(id) {
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: "@Url.Action("EditNotificationMaster", "Notification", new {area="CMS"})",
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+                $("#hdnManageFAQ").val(data1.Id);
+                $('#Title').val(data1.Title);
+                $('#TitleOd').val(data1.TitleOd);
+                $('#Description').val(data1.Description);
+                $('#DescriptionOd').val(data1.DescriptionOd);
+                $('#StartDate').val(data1.StartDate);
+                $('#EndDate').val(data1.EndDate);
+
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    } 
+    $("#form").validate({
+        rules: {
+            Title: {
+                required: true
+            },
+            TitleOd: {
+                required: true
+            },
+            Description: {
+                required: true
+            },
+            DescriptionOd: {
+                required: true
+            },
+            StartDate: {
+                required: true
+            },
+            EndDate: {
+                required: true
+            },
+
+
+        },
+        messages: {
+            Title: {
+                required: "Please Enter Title"
+            },
+            TitleOd: {
+                required: "Please Enter Title In Odia"
+            },
+            Description: {
+                required: "Please Enter Description"
+            },
+            DescriptionOd: {
+                required: "Please Enter Description In Odia"
+            },
+            StartDate: {
+                required: "Please Enter StartDate"
+            },
+            EndDate: {
+                required: "Please Enter EndDate"
+            },
+        },
+        errorPlacement: function (error, element) {
+            error.insertAfter(element.parent());
+        },
+        highlight: function (element) {
+            $(element).removeClass("is-valid")
+            $(element).parent().addClass('text-danger')
+            $(element).addClass("is-invalid")
+        },
+        unhighlight: function (element) {
+            $(element).parent().removeClass('text-danger')
+            $(element).removeClass("is-invalid");
+            $(element).addClass("is-valid")
+        }
+    });
+    function Save_ManageFAQ() {
+        if ($("#form").valid()) {
+
+            var ManageFAQ = {
+                Id: $('#hdnManageFAQ').val(),
+                Title: $("#Title").val(),
+                TitleOd: $("#TitleOd").val(),
+                Description: $("#Description").val(),
+                DescriptionOd: $("#DescriptionOd").val(),
+                StartDate: $("#StartDate").val(),
+                EndDate: $("#EndDate").val(),
+            };
+            var msg = "";
+            if ($('#hdnManageFAQ').val() == 0) {
+                msg = 'save';
+            } else {
+                msg = 'update';
+            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want " + msg + " this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, ' + msg + ' it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("NotificationMaster", "Notification", new {area="CMS"})",
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestVerificationToken",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        data: ManageFAQ,
+                        content: 'application/json;charset=utf-8',
+                        dataType: "json",
+                        success: function (result) {
+                            if (result.data.result != 88) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.responseText,
+                                    text: result.responseMessage,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var url = '@Url.Action("ViewNotificationMaster", "Notification", new { area = "CMS" })';
+                                        location.href = url;
+                                    }
+                                })
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'warning',
+                                    text: 'Record Already Exist!!!',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var url = '@Url.Action("NotificationMaster", "Notification", new { area = "CMS" })';
+                                        location.href = url;
+                                    }
+                                })
+                            }
+                        },
+                        error: function (result) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: result.responseText,
+                                text: result.responseMessage,
+                            });
+                        },
+                    });
+
+                }
+                return false;
+            })
+            }
+    }
+</script>
+<script>
+    function Reset() {
+        $('#Title').val("").removeClass("is-valid");
+        $('#TitleOd').val("").removeClass("is-valid");
+        $('#Description').val("").removeClass("is-valid");
+        $('#DescriptionOd').val("").removeClass("is-valid");
+        $('#StartDate').val("").removeClass("is-valid");
+        $('#EndDate').val("").removeClass("is-valid");
+    }
+   
+</script>

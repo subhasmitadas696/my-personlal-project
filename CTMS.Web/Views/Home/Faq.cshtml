@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+} 
+<style>
+    #kssmsfaq .accordion-body {
+        font-size: 1.1rem;
+        line-height: 2rem;
+    }
+    #kssmsfaq .accordion-item .accordion-button {
+        font-size: 1.25rem !important;
+    }
+    @@media (max-width: 1599px) {
+        #kssmsfaq .accordion-body {
+            font-size: 1rem;
+        }
+        #kssmsfaq .accordion-item .accordion-button {
+            font-size: 1.1rem !important;
+        }
+    }
+    .accordion-button {
+        background-color: var(--bs-accordion-bg);
+    }
+    .accordion-body {
+         background-color: rgba(246,223,219,0.27);
+    }
+    .accordion-item {
+        color: var(--bs-accordion-color);
+        background-color: var(--bs-accordion-bg);
+        border: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+    }
+</style>
+<style>
+    .links-container {
+        display: flex;
+        justify-content:space-between;
+        margin-bottom: 15px;
+        margin-top: 50px;
+        margin-left:125px;
+        margin-right:1100px;
+    }
+    #Side{
+        margin-left: 100px;
+        margin-right: 1100px;
+        margin-top: 50px;
+    }
+    link.active {
+        color: var(--bs-primary);
+    }
+</style>
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">
+            @Localizer["Frequently Asked Question"]
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">@Localizer["Home"]</a></li>
+                <li class="breadcrumb-item active">@Localizer["FAQs"]</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        <div class="nav nav-tabs card--lg__tabs mb-3" id="nav-tab">
+            <a class="nav-link active" asp-controller="Home" asp-action="FAQ" title="FAQs">@Localizer["FAQs"]</a>
+
+            <a class="nav-link" asp-controller="Home" asp-action="RateChart" title="RateChart">@Localizer["Rate Chart"]</a>
+        </div>
+        <div class="accordion" id="kssmsfaq">
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        FaqBind();
+        $("#Faq").addClass("active");
+    });
+    function FaqBind() {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Home/FaqBind',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var faqData = data.data;
+                    var accordionHtml = '';
+                    var lang = '@Lang';
+                    for (var i = 0; i < faqData.length; i++) {
+                        var faqItem = faqData[i];
+                        accordionHtml += '<div class="accordion-item">';
+                        accordionHtml += '<h2 class="accordion-header">';
+                        accordionHtml += '<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse' + i + '" aria-expanded="false" aria-controls="collapse' + i + '">';
+                        var question = (lang === 'or') ? faqItem.QuestionOD : faqItem.Question;
+                        var answer = (lang === 'or') ? faqItem.AnswerOD : faqItem.Answer;
+                        accordionHtml += '<span class="faq-question-no">Q' + (i + 1) + '</span>' + question;
+                        accordionHtml += '</button></h2>';
+                        accordionHtml += '<div id="collapse' + i + '" class="accordion-collapse collapse" data-bs-parent="#kssmsfaq">';
+                        accordionHtml += '<div class="accordion-body">' + answer + '</div>';
+                        accordionHtml += '</div></div>';
+                    }
+
+                    $('#kssmsfaq').html(accordionHtml);
+                }
+            }
+        });
+    }
+</script>

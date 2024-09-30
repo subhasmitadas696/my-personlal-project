@@ -1,0 +1,191 @@
+﻿@model CTMS.Model.Entities.AdminMaster.Category
+@{
+    ViewData["Title"] = "Add Category";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+@Html.AntiForgeryToken()
+
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="javascript:;" class="nav-link active">
+            Add
+        </a>
+        <a class="nav-link" asp-controller="AdminMaster" asp-action="ViewCategory" asp-area="">
+            View
+        </a>
+    </div>
+
+    <div class="card-body">
+        <input id="UserId" value="@ViewBag.UserId" class="form-control" hidden />
+        <input id="CategoryId" class="form-control" type="hidden" />
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" id="CategoryName" name="CategoryName" value="" class="form-control alphabetInput" placeholder="Enter Category Name">
+                    <label for="CategoryName">Category Name(EN)</label>
+                    <small id="error-messageCategory" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" id="OdiaCategoryName" name="OdiaCategoryName" class="form-control" placeholder="Enter Category in Odia">
+                    <label for="OdiaCategoryName">Category Name(ODIA)</label>
+                    <small id="error-messageOdiaCategoryName" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="">
+                    <button id="btnSubmit" type="button" class="btn btn-secondary btn-lg" onclick="save()">Submit</button>
+                    <button id="btnCancel" class="btn btn-danger btn-lg" type="reset" value="Reset" onclick="reset()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+    $(document).ready(function () {
+        var vars = getUrlVars();
+        var CategoryId = vars["CategoryId"];
+        if (CategoryId !== undefined) {
+            $("#btnSubmit").html("Update");
+            $("#btnCancel").html("Cancel");
+            editCategory(CategoryId);
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function save() {
+        if ($("#CategoryName").val().trim() != "") {
+            $('#CategoryName').removeClass("is-invalid");
+            $('#error-messageCategory').text("");
+        }
+        else {
+            $('#CategoryName').addClass("form-control shadow-sm is-invalid");
+            $('#error-messageCategory').text("Please enter Category Name!");
+            $('#CategoryName').focus();
+            return false;
+        }
+        if ($("#OdiaCategoryName").val().trim() != "") {
+            $('#OdiaCategoryName').removeClass("is-invalid");
+            $('#error-messageOdiaCategoryName').text("");
+        }
+        else {
+            $('#OdiaCategoryName').addClass("form-control shadow-sm is-invalid");
+            $('#error-messageOdiaCategoryName').text("Please enter Odia Category name!");
+            $('#OdiaCategoryName').focus();
+            return false;
+        }
+        var formdata = new FormData();
+        formdata.append("CategoryId", $('#CategoryId').val());
+        formdata.append("CategoryName", $('#CategoryName').val());
+        formdata.append("OdiaCategoryName", $('#OdiaCategoryName').val());
+        formdata.append("CreatedBy", $('#UserId').val());
+        swal.fire({
+            title: "Are you sure?",
+            text: "Do you want to submit this form?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, submit it!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Content("~/")' + 'AdminMaster/AddCategory',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: formdata,
+                    dataType: "json",
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        if (result.state === "success") {
+                            swal.fire({
+                                title: "Success",
+                                text: result.message,
+                                icon: "success"
+                            }).then(function () {
+                                var url = '@Url.Action("ViewCategory", "AdminMaster", new { area = "" })';
+                                location.href = url;
+                            });
+                        }
+                        else if (result.state === "warning") {
+                            swal.fire({
+                                title: "Warning",
+                                text: result.message,
+                                icon: "warning"
+                            }).then(function () {
+                                var url = '@Url.Action("AddCategory", "AdminMaster", new { area = "" })';
+                                location.href = url;
+                            });
+                            reset();
+                        } else { }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        swal.fire({
+                            title: "Error",
+                            text: "An error occurred. Please try again later.",
+                            icon: "error"
+                        });
+                    }
+                });
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function editCategory(CategoryId) {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'AdminMaster/Getbyid?CategoryId=' + CategoryId,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (Result) {
+                $('#CategoryId').val(Result.CategoryId);
+                $("#CategoryName").val(Result.CategoryName);
+                $('#OdiaCategoryName').val(Result.OdiaCategoryName);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+        return false;
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function reset() {
+        $("#CategoryName").val("");
+        $("#OdiaCategoryName").val("");
+    }
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(".alphabetInput").on("input", function () {
+        var inputValue = $(this).val();
+        var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+
+        if (inputValue !== sanitizedValue) {
+            $(this).val(sanitizedValue);
+        }
+    });
+</script>
+
+

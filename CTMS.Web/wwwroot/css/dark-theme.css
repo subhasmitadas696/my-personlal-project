@@ -1,0 +1,138 @@
+﻿.theme-dark {
+    --bs-body-bg: #150907;
+    --bs-body-color: var(--bs-white);
+    --bs-secondary-bg: #2a110d;
+    --bs-secondary-color: rgba(194, 194, 194,.75);
+    --announcement-bg: #3f1a14;
+    --bs-body-color-rgb: 255,255,255;
+    --bs-dark-rgb: 255,255,255;
+    --bs-tertiary-bg: #3f1a14;
+    --header-shadow: #29221c;
+    --features-card-bg: #150907;
+    --feature-card-shadow: rgba(0,0, 0, .40);
+    --card-shadow: rgba(0,0, 0, .40);
+    --bs-card-bg: #1e140b;
+    --icon-circle-bg: rgb(54,43,41);
+    --custom-card-bg: #1e140b;
+    /*--dropdown-border-color: rgba(209 ,86 ,66 .31);*/
+}
+.theme-dark .font-changer a:not(.active) {
+    background: transparent;
+}
+.theme-dark .card {
+    --bs-card-bg: var(--custom-card-bg);
+}
+.theme-dark .nav-link {
+    --bs-nav-link-color: var(--bs-white);
+}
+.theme-dark .navbar-brand__img{
+    filter: invert(1);
+}
+.theme-dark .features {
+    background: var(--custom-card-bg);
+}
+.theme-dark .features__card__imgbox {
+    background: rgba(255,255,255,.08); 
+}
+.theme-dark .features__card__imgbox img { 
+    filter: invert(0.8);
+}
+.theme-dark .features__card {
+    box-shadow: 0px 3px 25px var(--card-shadow);
+    background: var(--features-card-bg);
+}
+.theme-dark .contact-details2 a {
+    color: rgba(255,255,255,0.84);
+}
+.theme-dark .email-details2 a {
+    color: rgba(255,255,255,0.84);
+}
+/*.theme-dark .features__card span {
+    color: #150907; 
+}*/
+/*.theme-dark .card--login {
+    background: var(--bs-body-color);
+
+}
+    .theme-dark .card--login .form-floating input {
+        background: #ffffff;
+        color: #3e474b;
+    }*/
+.theme-dark .announcement__list__link,.theme-dark .header-utilities__setting a,
+.theme-dark .nav-tabs .nav-link,.theme-dark .troupe-profile__contact {
+    color: var(--bs-body-color);
+}
+.theme-dark .dropdown-menu{
+    --bs-dropdown-link-hover-bg: #3f1a14;
+    --dropdown-border-color: #150907;
+    background: var( --bs-card-bg);
+        box-shadow: 0px 4px 25px rgba(0 ,0 ,0,.75);
+}
+.theme-dark .success-checkmark .check-icon::before, 
+.theme-dark .success-checkmark .check-icon::after,
+.theme-dark .success-checkmark .check-icon .icon-fix {
+    background: transparent;
+}
+.theme-dark .btn-secondary {
+    --animation-bg: #58322c;
+}
+.theme-dark .btn-primary { 
+    --animation-bg: var(--bs-black);
+}
+.theme-dark .btn-primary:hover { 
+   background: none;
+}
+.theme-dark .table {
+    --bs-table-color-state: var(--bs-white);
+    --table-heading-color: var(--bs-white);
+} 
+.theme-dark .table>:not(caption)>*>* {
+    color: rgba(255 ,255, 255,.85);
+}
+.theme-dark .highcharts-background {
+    fill: transparent !important;
+} 
+.theme-dark .table-responsive--rounded {
+    --bs-border-color: rgb(80 ,64, 62);
+}
+.theme-dark .table-responsive--rounded .table tr:nth-child(even) td {
+        background: rgb(41, 14 ,10);
+}
+/*.theme-dark .card {
+    --bs-card-bg: #1e140b;
+}*/
+.theme-dark .card.card--lg, .theme-dark .card.card--login {
+      --bs-card-bg: var(--custom-card-bg);
+   /* --bs-card-border-color: var(--bs-border-color);
+    box-shadow: none !important;
+    --bs-card-border-width: 1px;*/
+}
+.theme-dark .media-source {
+    opacity: .8;
+}
+/*calendar*/
+.theme-dark .datepicker table tr td.today {
+    background: var(--bs-primary);
+}
+.theme-dark .datepicker table tr td span,
+.theme-dark .datepicker thead tr:first-child th,
+.theme-dark .datepicker tfoot tr th,
+.theme-dark .datepicker.dropdown-menu th,
+.theme-dark .datepicker.dropdown-menu td:not(.old,.new)
+{
+    color: var(--bs-white);
+}
+.theme-dark .datepicker table tr td span:hover,
+.theme-dark .datepicker thead tr:first-child th:hover,
+.theme-dark .datepicker tfoot tr th:hover,
+.theme-dark .datepicker.dropdown-menu th:hover,
+.theme-dark .datepicker.dropdown-menu td:hover
+{
+    background: #85615a;
+    color: var(--bs-white);
+}
+.reg-alert {
+    --bs-alert-color: var(--bs-white);
+    --bs-alert-bg: #763025;
+    --bs-alert-border-color: #932f1c;
+}

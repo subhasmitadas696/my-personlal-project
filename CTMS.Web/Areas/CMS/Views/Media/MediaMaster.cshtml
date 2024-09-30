@@ -1,0 +1,380 @@
+﻿@{
+    ViewData["Title"] = "Media Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="tropue-basic-info-tab" asp-area="CMS" asp-controller="Media" asp-action="MediaMaster">
+            Add Media
+        </a>
+        <a class="nav-link" id="artist-info-tab" asp-area="CMS" asp-controller="Media" asp-action="ViewMediaMaster">
+            Media Details
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">Media Information</h5>
+        <form id="form">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlgallery" name="ddlgallery">
+                            <option value="0" selected>Select Gallery</option>
+                        </select>
+                        <span style="color:red" id="errddlgallery"></span>
+                        <label for="gallery">Gallery<span class="text-danger">*</span></label>
+                        <input type="hidden" id="hidMediaType" />
+                    </div>
+                </div>
+                <div class="col-md-6" id="imagefile">
+                    <div class="form-floating" id="fileUploadDiv11">
+                        <input type="file" class="form-control" name="Image" id="Image">
+                        <label for="BannerImage">Image<span class="text-danger">*</span></label>
+                        <small id="errImage" class="text-danger"></small>
+                        <input type="hidden" id="hdnImage" />
+                        <div>
+                            <label class="text-info" id="hidenImage"></label><br />
+                            <small class="text-danger small">Maximum image size is 1MB and only image(.jpeg/jpg/png) files are allowed.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="Videofile">
+                    <div class="form-floating" id="fileUploadDiv12">
+                        <input type="file" class="form-control" name="Video" id="Video">
+                        <label for="BannerImage">Video<span class="text-danger">*</span></label>
+                        <small class="text-danger" id="errvideo"></small>
+                        <input type="hidden" id="hdnVideo" />
+                        <div>
+                            <label class="text-info" id="hidenVideo"></label><br />
+                            <small class="text-danger small">Maximum video size is 10MB and only video(.mp4/avi/mov/wmv) files are allowed</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="Description" name="Description" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="Description">Description<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="DescriptionOd" name="DescriptionOd" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="DescriptionOd">Description(Odia)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="text-center my-4">
+                    <button type="button" class="btn btn-secondary btn-lg" id="btn_Submit" onclick="Save_ManageFAQ()">
+                        Save
+                    </button>
+                    <button type="reset" class="btn btn-danger btn-lg" id="btn_Submit" onclick="Reset()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <input id="hdnmedia" type="hidden" value="0" />
+        </form>
+    </div>
+            
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('Image').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 1 * 1024 * 1024;
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileType = fileInput.files[0].type;
+            var validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+            if (!validTypes.includes(fileType)) {
+                document.getElementById('errImage').innerText = 'Only Image files are allowed.';
+                fileInput.value = '';
+            }
+            else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errImage').innerText = 'File size exceeds 1MB limit';
+                fileInput.value = '';
+            } else {
+                document.getElementById('errImage').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#Description').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#DescriptionOd').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
+    document.getElementById('Video').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 10 * 1024 * 1024;
+        var validExtensions = ['mp4', 'avi', 'mov', 'wmv'];
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileExtension = fileInput.files[0].name.split('.').pop().toLowerCase();
+
+            
+
+            if (!validExtensions.includes(fileExtension)) {
+                document.getElementById('errvideo').innerText = 'Only Video files are allowed.';
+                fileInput.value = '';
+            } else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errvideo').innerText = 'File size exceeds 5MB limit.';
+                fileInput.value = '';
+            } else {
+                document.getElementById('errvideo').innerText = '';
+            }
+        }
+    });
+
+    function GalleryDdlValidate() {
+        if ($('#ddlgallery').val() == 0) {
+            $('#ddlgallery').addClass("is-invalid");
+            $('#errddlgallery').text("Please select Gallery.");
+            $('#ddlgallery').focus();
+            return false;
+        }
+        else {
+            $('#ddlgallery').removeClass("is-invalid");
+            $('#errddlgallery').text("");
+            return true;
+        }
+    }
+    $('#ddlgallery').on('change', function () {
+        if ($('#ddlgallery').val() != 0) {
+            $('#ddlgallery').removeClass("is-invalid");
+            $('#errddlgallery').text("");
+        }
+    })
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_ManageFAQ(id);
+            $("#btn_Submit").text("Update");
+
+        }
+        GetGallery();
+    });
+    async function Edit_ManageFAQ(id) {
+        try {
+            var Result = await $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: '@Url.Action("EditMediaMaster", "Media", new { area = "CMS" })',
+                data: { "Id": id }
+            });
+             Result = JSON.parse(Result);
+            $("#hdnmedia").val(Result.Id);
+            $('#ddlgallery').val(Result.GalleryId);
+            $('#Description').val(Result.Description);
+            $('#DescriptionOd').val(Result.DescriptionOd);
+            if (Result.VideoName != null) {
+                $('#hidenVideo').text(Result.VideoName);
+                $('#imagefile').hide();
+            } else if (Result.ImageName != null) {
+                $('#hidenImage').text(Result.ImageName);
+                $('#Videofile').hide();
+            }
+        } catch (error) {
+            alert(error.responseText);
+        }
+    }
+    $("#form").validate({
+        rules: {
+            ddlgallery: {
+                required: true
+            },
+            Description: {
+                required: true
+            },
+            DescriptionOd: {
+                required: true
+            },
+        },
+        messages: {
+            ddlgallery: {
+                required: "Please Select Gallery"
+            },
+            Description: {
+                required: "Please Enter Description"
+            },
+            DescriptionOd: {
+                required: "Please Enter Description in Odia"
+            },
+        },
+        errorPlacement: function (error, element) {
+            error.insertAfter(element.parent());
+        },
+        highlight: function (element) {
+            $(element).removeClass("is-valid")
+            $(element).parent().addClass('text-danger')
+            $(element).addClass("is-invalid")
+        },
+        unhighlight: function (element) {
+            $(element).parent().removeClass('text-danger')
+            $(element).removeClass("is-invalid");
+            $(element).addClass("is-valid")
+        }
+    });
+    function Save_ManageFAQ() {
+        if (GalleryDdlValidate()){
+            if ($("#form").valid()) {
+
+                var formdata = new FormData();
+                formdata.append("Id", $('#hdnmedia').val());
+                formdata.append("GalleryId", $('#ddlgallery').val());
+                formdata.append("Description", $('#Description').val());
+                formdata.append("DescriptionOd", $('#DescriptionOd').val());
+                if ($('#hidMediaType').val().trim() == 1) {
+                    let Ifile = $('#Image').prop("files")[0];
+                    if (Ifile.length != 0) {
+                        formdata.append('ImageFile', Ifile);
+                    }
+                    else {
+                        formdata.append('ImageName', $('#hdnImage').val().trim());
+                    }
+                }
+                else {
+                    let Vfile = $('#Video').prop("files")[0];
+                    if (Vfile.length != 0) {
+                        formdata.append('VideoFile', Vfile);
+                    }
+                    else {
+                        formdata.append('VideoName', $('#hdnVideo').val().trim());
+                    }
+                }
+                var msg = "";
+                if ($('#hdnmedia').val() == 0) {
+                    msg = 'save';
+                } else {
+                    msg = 'update';
+                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want " + msg + " this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, ' + msg + ' it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("MediaMaster", "Media", new { area = "CMS" })',
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader("RequestVerificationToken",
+                                    $('input:hidden[name="__RequestVerificationToken"]').val());
+                            },
+                            data: formdata,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            dataType: "json",
+                            success: function (result) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.responseText,
+                                    text: result.responseMessage,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var url = '@Url.Action("ViewMediaMaster", "Media", new { area = "CMS" })';
+                                        location.href = url;
+                                    }
+                                })
+                            },
+                            error: function (result) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: result.responseText,
+                                    text: result.responseMessage,
+                                });
+                            },
+                        });
+                    }
+                    return false;
+                })
+            }
+        }
+        
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function GetGallery() {
+
+        var thisHtml = '<option value="0" data-id="">--Select--</option>';
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetGalleryMaster", "Media", new { area = "CMS" })',
+            data: {},
+            content: 'application/json;charset=utf-8',
+            dataType: "json",
+            success: function (result) {
+                result = JSON.parse(result);
+                if (result != null) {
+                    for (var i = 0; i < result.length; i++) {
+                        thisHtml += '<option value="' + result[i].KeyVal + '" data-id="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                    }
+                    $('#ddlgallery').html(thisHtml);
+                }
+                else {
+                    $('#ddlgallery').html(thisHtml);
+                }
+            },
+            error: function (result) {
+                Swal.fire({
+                    icon: 'error',
+                    title: result.responseText,
+                    text: result.responseMessage,
+                });
+            },
+        });
+    }
+    $('#ddlgallery').change(function () {
+        let mediaType = $("#ddlgallery option:selected").data("id");
+        $('#hidMediaType').val(mediaType);
+        if (mediaType == 1) {
+            $('#imagefile').show();
+            $('#Videofile').hide();
+        }
+        else {
+            $('#imagefile').hide();
+            $('#Videofile').show();
+        }
+    });
+</script>
+<script>
+    function Reset() {
+        $('#ddlgallery').val(0).removeClass("is-valid");
+        $('#Description').val("").removeClass("is-valid");
+        $('#DescriptionOd').val("").removeClass("is-valid");
+        $('#hidenImage').text("").removeClass("is-valid");
+
+    }
+</script>

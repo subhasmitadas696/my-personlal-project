@@ -1,0 +1,312 @@
+﻿@model IEnumerable<CTMS.Web.Areas.AdminConsole.Models.FunctionMaster.FunctionMasterModel>
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using CTMS.Web.Areas.AdminConsole.Repository;
+@{
+    ViewBag.Title = "ViewFunctionMasterActive";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+@using CTMS.Web.Areas.AdminConsole.Interface;
+@using X.PagedList.Mvc.Core; @*//import this so we get our HTML Helper*@
+@using X.PagedList; @*//import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@*@using X.PagedList.Mvc.Core.Common;*@
+@using CTMS.Web.Areas.AdminConsole;
+
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="FunctionMaster" asp-action="AddFunctionMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="FunctionMaster" asp-action="ViewFunctionMasterActive">
+            Active
+        </a>
+        <a class="nav-link active" id="inactive-hierarchy" asp-controller="FunctionMaster" asp-action="ViewFunctionMasterInActive">
+            InActive
+        </a>
+    </div>
+    <div class="search-container" style="display:none">
+        <div class="search-sec">
+            @if (ViewData[" result"] != "")
+            {
+                <input type="text" hidden id="hdnmsg" value="@ViewData[" result"]" />
+            }
+            <div class="form-group">
+                @using (Html.BeginForm("ViewFunctionMasterInActive", "FunctionMaster", FormMethod.Post))
+                {
+
+                    <div class="form-group row">
+
+                        <div class="col-md-4 form-group">
+                            <label class="control-label">Function Name</label>
+                            <div class="input-group">
+                                @Html.TextBox("fn", null, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 form-group">
+                            <label class="control-label"></label>
+                            <div class="input-group">
+                                <input type="submit" value="Search" class="btn btn-primary btn-sm" id="btn1" />
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                }
+            </div>
+        </div>
+    </div>
+    <div class="text-center"> <a class="searchopen" title="Search" data-toggle="tooltip" data-placement="bottom"> <i class="icon-angle-arrow-down"></i> </a></div>
+    <div class="card-body">
+        <div class="table">
+
+            <form id="formID">
+                <table class="table table-bordered cell-border" id="NoteTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="chkAll" />
+                            </th>
+                            <th>
+                                Sl No.
+                            </th>
+                            <th>
+                                Function Name
+                            </th>
+                            <th>
+                                File Name
+                            </th>
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Add
+                            </th>
+                            <th>
+                                View
+                            </th>
+                            <th>
+                                Manage
+                            </th>
+                            @*<th>
+                                Action
+                                </th>*@
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count() == 0)
+                        {
+                            <div style="color:Red;">
+                                No records found....
+                                <script type="text/javascript" language="javascript">
+                                    $('#NoteTable').hide();
+                                    $('btnDelete').hide();
+                                </script>
+                            </div>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input class="cboxDELclass" id="cboxDELclass" name="checkResp" type="checkbox" value="@item.FunctionId" />
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RowNo)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FunctionName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FileName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FAdd)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FView)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FManage)
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div style="margin-left: 15px;">
+                        <input type="button" id="btnDelete" class="btn btn-primary" value="Mark AS Active" />
+                        <button type="button" class="btn btn-danger" title="Reset" onclick="return ClearField();"><span class="localize" data-key="Reset">Reset</span></button>
+                    </div>
+                </div>
+
+                <input id="hdfPids" type="hidden" />
+            </form>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+
+    <script type="text/javascript" src="@Url.Content("~/admjs/validator.js")"></script>
+    
+    <script language="javascript" type="text/javascript">
+        $(function () {
+
+            $("#btn1").click(function () {
+                if (!WhiteSpaceValidation1st('search', 'Function')) {
+                    return false;
+                }
+            });
+        });
+        function checkBoxEvent() {
+
+            var chkCount1;
+            var chkCheckedCount1;
+            $('#NoteTable tr td input[type="checkbox"]').click(function () {
+                if ($(this).is(':checked')) {
+                    chkCount1 = $('#NoteTable tr td input[type="checkbox"]').size();
+                    chkCheckedCount1 = $('#NoteTable tr td input[type="checkbox"]:checked').size();
+                    if (chkCount1 == chkCheckedCount1) {
+                        $('#chkAll').attr('checked', true);
+                    }
+                }
+                else {
+                    $('#chkAll').attr('checked', false);
+                }
+            });
+        }
+        function ClearField() {
+            $('input[type=checkbox]').prop('checked', false);
+        }
+        function pageLoad() {
+            var SValuee = '@ViewData["Funname"]';
+            if (SValuee != "") {
+                var Fname = $('#fn');
+                Fname.val(SValuee);
+            }
+        }
+        $(document).ready(function () {
+            if ($('#hdnmsg').val()== 6){
+                swal({
+                    title: "",
+                    text: "Record InActivated successfully",
+                    type: "success"
+                }, function () {
+                    //window.location.href = window.location.origin + "@Url.Action("ViewFunctionMasterInActive", "FunctionMaster")";
+                });
+            }
+            $('#chkAll').change(function () {
+
+                if ($(this).prop('checked')) {
+                    $('tbody tr td input[type="checkbox"]').each(function () {
+                        $(this).prop('checked', true);
+                    });
+                } else {
+                    $('tbody tr td input[type="checkbox"]').each(function () {
+                        $(this).prop('checked', false);
+                    });
+                }
+            });
+
+            var tempHTML = "";
+            if (document.getElementById("NoteTable").rows.length > 1) {
+                $("#btnDelete").show();
+            }
+            else {
+                $("#btnDelete").hide();
+                tempHTML += '<tr ><td>No Records Found...</td></tr>';
+                $("#btnDelete").append(tempHTML);
+            }
+
+
+
+            checkBoxEvent();
+
+        });      
+    </script>
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+     $("#btnDelete").click(function () {
+    let selectedRecords = [];
+
+    $("#NoteTable tr").each(function () {
+        let cb = $(this).find('input.cboxDELclass');
+        if (cb.is(':checked')) {
+            selectedRecords.push(cb.val());
+        }
+    });
+
+    if (selectedRecords.length === 0) {
+        swal('No record selected for Active!');
+        return;
+    }
+
+    Swal.fire({
+        title: "",
+        text: "Are you sure to make Active the selected record?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes",
+        closeOnConfirm: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#hdfPids').val(selectedRecords.join(','));
+            let activePage = $('ul.pagination li.active').find("a").html();
+            $('#hdfPidss').val(activePage);
+            let formData = new FormData();
+            formData.append("Resp", selectedRecords.join(','));
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ActiveFunctionMaster", "FunctionMaster")",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken", $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    let res = JSON.parse(data);
+                    if (res.status === "success") {
+                        Swal.fire({
+                            title: "",
+                            text: "Record Activated successfully",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.href = `${window.location.origin}@Url.Action("ViewFunctionMasterActive", "FunctionMaster")`;
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Warning",
+                            text: res.message,
+                            icon: "error"
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Request Error:", status, error);
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to process the request. Please try again later.",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+    });
+});
+
+
+    </script>
+}
+

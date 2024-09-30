@@ -1,0 +1,367 @@
+@{
+
+    ViewData["Title"] = "Banner Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/styles.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="tropue-basic-info-tab" asp-area="CMS" asp-controller="Banner" asp-action="ManageBanner">
+            Add Banner
+        </a>
+        <a class="nav-link " id="artist-info-tab" asp-area="CMS" asp-controller="Banner" asp-action="ViewManageBanner">
+            Banner Details
+        </a>
+    </div>            
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">Banner Information</h5>
+        <form id="form">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="BannerTitle" name="BannerTitle" class="form-control" placeholder="enter banner name">
+                        <label for="BannerTitle">Banner Title (English)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="BannerTitleOD" name="BannerTitleOD" class="form-control" placeholder="enter banner name ">
+                        <label for="BannerTitle">Banner Title (Odia)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="BannerDescription" name="BannerDescription" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="BannerDescription">Banner Description<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="BannerDescriptionOD" name="BannerDescriptionOD" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="BannerDescriptionOD">Banner Description Odia<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-4" id="registeractfile">
+                    <div class="form-floating" id="fileUploadDiv11">
+                        <input type="file" class="form-control" name="BannerImage" id="BannerImage">
+                        <label for="BannerImage">Banner Image<span class="text-danger">*</span></label>
+                        <small id="errbannerupload" class="text-danger"></small>
+                        <input type="hidden" id="hdndocument" />
+                        <div>
+                            <label class="text-info" id="hdnImage"></label><br />
+                            <small class="text-danger small">Maximum banner image size is 1MB and only image(.jpeg/jpg/png) files are allowed</small>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text"  id="StartDate" name="StartDate" class="form-control" placeholder="Start Date">
+                        <label for="StartDate">Start Date<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text"  id="EndDate" name="EndDate" class="form-control" 
+                          placeholder="End Date">
+                        <label for="EndDate">End Date<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="text-center my-4">
+                    <button type="button" class="btn btn-secondary btn-lg" id="btn_Submit" onclick="Save_ManageBanner()">
+                        Save
+                    </button>
+                    <button type="reset" class="btn btn-danger btn-lg" onclick="Reset()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <input id="hdnManageBanner" type="hidden" value="0" />
+            <input id="hdnpath" type="hidden" value="0" />
+        </form>
+    </div>    
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#BannerTitle').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#BannerTitleOD').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#BannerDescription').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#BannerDescriptionOD').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+</script> 
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('BannerImage').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 1 * 1024 * 1024; 
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileType = fileInput.files[0].type;
+            var validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+            if (!validTypes.includes(fileType)) {
+                document.getElementById('errbannerupload').innerText = 'Only Image files are allowed.';
+                fileInput.value = '';
+            }
+            else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errbannerupload').innerText = 'File size exceeds 1MB limit.';
+                fileInput.value = '';
+            } else {
+                document.getElementById('errbannerupload').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_ManageBanner(id);
+            $("#btn_Submit").text("Update");
+        }
+        var validationRules = {
+            BannerTitle: {
+                required: true
+            },
+            BannerTitleOD: {
+                required: true
+            },
+            BannerDescription: {
+                required: true
+            },
+            BannerDescriptionOD: {
+                required: true
+            },
+            BannerImage: {
+                required: id === undefined
+            },
+            StartDate: {
+                required: true
+            },
+            EndDate: {
+                required: true
+            },
+        };
+        var validationMessages = {
+            BannerTitle: {
+                required: "Please enter Banner Title"
+            },
+            BannerTitleOD: {
+                required: "Please enter Banner Title Odia"
+            },
+            BannerDescription: {
+                required: "Please enter Banner Description"
+            },
+            BannerDescriptionOD: {
+                required: "Please enter Banner Description Odia"
+            },
+            BannerImage: {
+                required: "Please enter Banner Image"
+            },
+            StartDate: {
+                required: "Please enter Start Date"
+            },
+            EndDate: {
+                required: "Please enter End Date"
+            },
+        };
+        $("#form").validate({
+            rules: validationRules,
+            messages: validationMessages,
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            },
+            highlight: function (element) {
+                $(element).removeClass("is-valid")
+                $(element).parent().addClass('text-danger')
+                $(element).addClass("is-invalid")
+            },
+            unhighlight: function (element) {
+                $(element).parent().removeClass('text-danger')
+                $(element).removeClass("is-invalid");
+                $(element).addClass("is-valid")
+            }
+        });
+        $('#StartDate').datetimepicker({
+            format: 'DD-MMM-YYYY',
+            minDate: moment(new Date())
+        }).on('dp.change', function (e) {
+            $('#EndDate').datetimepicker('destroy');
+            $('#EndDate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#EndDate').val('');
+        });
+        $('#EndDate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        });
+    });
+    function Edit_ManageBanner(id) {
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("RO_ManageBanner", "Banner", new { area = "CMS" })',
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+                $("#hdnManageBanner").val(data1.Id);
+                $('#BannerTitle').val(data1.BannerTitle);
+                $('#BannerTitleOD').val(data1.BannerTitleOD);
+                $('#BannerDescription').val(data1.BannerDescription);
+                $('#BannerDescriptionOD').val(data1.BannerDescriptionOD);
+                $('#hdnImage').text(data1.BannerImage);
+                $('#hdndocument').val(data1.BannerImage);
+                $('#hdnpath').val(data1.BannerPath);
+                $('#StartDate').val(data1.StartDate);
+                $('#EndDate').val(data1.EndDate);
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }
+    
+    function Save_ManageBanner() {
+        if ($("#form").valid()) {
+            var id = getUrlVars()["strid"];
+            var formdata = new FormData();
+            formdata.append("Id", $('#hdnManageBanner').val());
+            formdata.append("BannerTitle", $("#BannerTitle").val());
+            formdata.append("BannerTitleOD", $("#BannerTitleOD").val());
+            formdata.append("BannerDescription", $("#BannerDescription").val());
+            formdata.append("BannerDescriptionOD", $("#BannerDescriptionOD").val());
+            let file = $('#BannerImage').prop("files")[0];
+            if (file != undefined) {
+                formdata.append('BannerImageFile', file);
+            }
+            if (id != undefined) {
+                formdata.append("BannerPath", $('#hdnpath').val());
+                formdata.append("BannerImage", $('#hdndocument').val());
+            }
+
+            formdata.append("StartDate", $("#StartDate").val());
+            formdata.append("EndDate", $("#EndDate").val());
+
+            var msg="";
+            if ($('#hdnManageBanner').val() == 0) {
+                msg = 'save';
+            } else {
+                msg = 'update';
+            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want " + msg + " this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, ' + msg + ' it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ManageBanner", "Banner", new { area = "CMS" })',
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestVerificationToken",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        data: formdata,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        dataType: "json",
+                        success: function (result) {
+                            if (result.data.result != 88) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.responseText,
+                                    text: result.responseMessage,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var url = '@Url.Action("ViewManageBanner", "Banner", new { area = "CMS" })';
+                                        location.href = url;
+                                    }
+                                })
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'warning',
+                                    text: 'Record Already Exist!!!',
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var url = '@Url.Action("ManageBanner", "Banner", new { area = "CMS" })';
+                                        location.href = url;
+                                    }
+                                })
+                            }
+
+                        },
+                        error: function (result) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: result.responseText,
+                                text: result.responseMessage,
+                            });
+                        },
+                    });
+
+                }
+                return false;
+            })
+            
+        }
+    }
+</script>
+<script>
+    function Reset() {
+        $('#BannerTitle').val("").removeClass("is-valid");
+        $('#BannerTitleOD').val("").removeClass("is-valid");
+        $('#BannerDescription').val("").removeClass("is-valid");
+        $('#BannerDescriptionOD').val("").removeClass("is-valid");
+        $('#hdnImage').text("").removeClass("is-valid");
+        $('#StartDate').val("").removeClass("is-valid");
+        $('#EndDate').val("").removeClass("is-valid");
+    }
+</script>

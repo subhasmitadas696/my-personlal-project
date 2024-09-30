@@ -1,0 +1,319 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.FunctionMaster.FunctionMasterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewBag.Title = "EditActiveFunction";
+
+}
+
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="FunctionMaster" asp-action="AddFunctionMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="FunctionMaster" asp-action="ViewFunctionMasterActive">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="FunctionMaster" asp-action="ViewFunctionMasterInActive">
+            InActive
+        </a>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.ValidationSummary(true)
+        <div class="card-body">
+            <div class="form-group row">
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Function Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.FunctionName, new { @class = "form-control", maxlength = 150, autofocus = "true", Onkeypress = "return inputLimiter(event,'NameCharactersymbol')" })
+                        @Html.ValidationMessageFor(model => model.FunctionName)
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">File Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.FileName, new { @class = "form-control", maxlength = 150, Onkeypress = "return inputLimiter(event,'Filename')" })
+                        @Html.ValidationMessageFor(model => model.FileName)
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Description<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        @Html.TextArea("Description", (string)ViewData["Description"], new { @class = "form-control", maxlength = 98, Onkeypress = "return inputLimiter(event,'Description')" })
+                        @Html.ValidationMessageFor(model => model.Description)
+                    </div>
+                    <span class="mandatory" id="SpanLbl1">Maximum <span class="mandatory" id="SpanLbl">@ViewData["DescriptionLen"] </span> Character Allowed</span>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Permission<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <div class=" custom-checkbox">
+                            <input type="checkbox" name="CheckBoxAdd" id="Add" class="custom-control-input" value="@ViewData["FAdd"]">
+                            <label class="custom-control-label" for="Add">Add</label>
+                        </div>&nbsp;
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="View" name="CheckBoxView" class="custom-control-input" value="@ViewData["FView"]" />
+                            <label class="custom-control-label" for="View">View</label>
+                        </div>&nbsp;
+                        <div class="custom-checkbox">
+                            <input type="checkbox" id="Manage" name="CheckBoxManage" class="custom-control-input" value="@ViewData["FManage"]" />
+                            <label class="custom-control-label" for="Manage">Manage</label>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" style="display:none">
+                    <label class="control-label">External Mail Required<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        @Html.RadioButtonFor(model => model.MailR, "1") Yes
+                        @Html.RadioButtonFor(model => model.MailR, "0")No
+                        <span class="mandatory">@Html.ValidationMessageFor(model => model.MailR)</span>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" style="display:none">
+                    <label class="control-label">Freebees<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        @Html.RadioButtonFor(model => model.FreeBees, "1") Yes
+                        @Html.RadioButtonFor(model => model.FreeBees, "2") No
+                        <span class="mandatory">@Html.ValidationMessageFor(model => model.FreeBees)</span>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" style="display:none">
+                    <label class="control-label">Portlet File Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.PortletFile, new { @class = "form-control", maxlength = 150, Onkeypress = "return inputLimiter(event,'Filename')" })
+                        @Html.ValidationMessageFor(model => model.PortletFile)
+                    </div>
+                </div>
+
+            </div>
+
+            <input type="hidden" id="fID" value="@ViewBag.id" />
+            <div class="form-group row">
+                <div class="text-center">
+                    <span class="colon"></span>
+                    <input type="submit" value="Update" class="btn btn-success " id="btn1" name="Command" />
+                    <input type="submit" value="Cancel" class="btn btn-success btn-danger" id="btn2" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section Scripts {
+
+    <script type="text/javascript" src="@Url.Content("~/admjs/validator.js")"></script>
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function () {
+
+            window.history.forward();  //Disable back button after logout
+
+            if ($('#Add').val()=="Y"){
+                $('#Add').attr('checked', true);
+            }
+            else{
+                $('#Add').attr('checked', false);
+            }
+
+            if ($('#View').val() == "Y") {
+                $('#View').attr('checked', true);
+            }
+            else{
+                $('#View').attr('checked', false);
+            }
+
+            if ($('#Manage').val() == "Y") {
+                $('#Manage').attr('checked', true);
+            }
+            else {
+                $('#Manage').attr('checked', false);
+            }
+
+            $('#Description').keyup(function () {
+                var left = 500 - $(this).val().length;
+                if (left < 0) {
+                    left = 0;
+                }
+                $('#SpanLbl').text(left);
+            });
+
+            $("#btn2").click(function (event) {
+                event.preventDefault();
+                var url = '@Url.Action("ViewFunctionMasterActive", "FunctionMaster")';
+                window.location.href = url;
+            });
+        });
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            $("#btn1").click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                if ($("#ddlProjectLink").val() == 0) {
+                    $("#ddlProjectLink").focus();
+                    new swal("", "Please Select Project Link  Name.", "error");
+
+                    return false;
+                }
+                else if ($("#txtGLinkName").val() == "") {
+                    $("#txtGLinkName").focus();
+                    new swal("", " Global Link Name Can't be blank.", "error");
+
+                    return false;
+
+                }
+                else if ($("#txtIconClass").val() == "") {
+                    $("#txtIconClass").focus();
+                    new swal("", "Icon Class Can't be blank.", "error");
+
+                    return false;
+                }
+                else if ($("#txtsortnum").val() == "") {
+                    $("#txtsortnum").focus();
+                    new swal("", " Global Link Sort No Can't be blank.", "error");
+
+                    return false;
+
+                }
+                if ((document.getElementById('Add').checked == false) && (document.getElementById('View').checked == false) && (document.getElementById('Manage').checked == false)) {
+                    swal('', 'Please choose Permission', 'error');
+                    $("#Add").focus();
+                    return false;
+                }
+                // Get the form data
+                var formData = {
+                    FunctionId: $("#fID").val(),
+                    FunctionName: $("#FunctionName").val(),
+                    FileName: $("#FileName").val(),
+                    Description: $("#Description").val(),
+                    FAdd: $("#Add").is(":checked") ? "Y" : "N",
+                    FView: $("#View").is(":checked") ? "Y" : "N",
+                    FManage: $("#Manage").is(":checked") ? "Y" : "N",
+                    MailR: $("#rbYes").is(":checked") ? "1" : "0",
+                    FreeBees: $("#Yes").is(":checked") ? "1" : "2",
+                    PortletFile: $("#PortletName").val(),
+                };
+              Swal.fire({
+    title: "",
+    text: "Are you sure you want to Update this?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Yes",
+    closeOnConfirm: false
+}).then((result) => {
+    if (result.isConfirmed) {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("EditActiveFunction", "FunctionMaster")", // Replace with your controller and action URL
+            data: formData,
+            success: function (response) {
+                if (response == '2') {
+                    Swal.fire({
+                        title: "",
+                        text: "Record Updated successfully",
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = window.location.origin + "@Url.Action("ViewFunctionMasterActive", "FunctionMaster")";
+                    });
+                } else {
+                    Swal.fire({
+                        title: "",
+                        text: response,
+                        icon: "error"
+                    }).then(() => {
+                        return false;
+                    });
+                }
+            },
+            error: function (error) {
+                Swal.fire({
+                    title: "",
+                    text: error,
+                    icon: "success"
+                }).then(() => {
+                    window.location.href = window.location.origin + "@Url.Action("ViewFunctionMasterActive", "FunctionMaster")";
+                });
+            }
+        });
+    }
+});
+
+
+            });
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\'';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            if (allow == 'Filename') {
+                AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+
+
+}
+
+@{
+    if (ViewData["result"] != null)
+    {
+        ViewData["result"] = null;
+        <script type="text/javascript" language="javascript">
+            alert("Function updated Successfully");
+        </script>
+    }
+
+}
+@{
+    if (ViewData["result1"] != null)
+    {
+        ViewData["result1"] = null;
+        <script type="text/javascript" language="javascript">
+            alert("Function already exists");
+        </script>
+    }
+
+}

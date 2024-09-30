@@ -1,0 +1,419 @@
+﻿@{
+    ViewData["Title"] = "Troupe Registration Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<style>
+    .urgentBox {
+        background-image: url(../images/urgentBg.png);
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        font-size: 12px;
+        color: #555;
+        padding: 7px;
+        display: block;
+        right: 0;
+        margin: 0;
+        line-height: .5em;
+        width: 60px;
+    }
+
+        .urgentBox label {
+            color: #fff;
+            bottom: 0;
+            text-align: center;
+            margin: 2px;
+        }
+
+    .modal-lg, .modal-xl {
+        max-width: 1077px;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="../ApprovalConfig/AdminTroupeRegistration" class="nav-link">
+            Add
+        </a>
+        <a href="javascript:;" class="nav-link active">
+            View
+        </a>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="collapse" id="collapseFilter">
+            <div class="border p-3 rounded mb-3 bg-light">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="txtGroupName" placeholder=" ">
+                            <label for="tname">Cultural Troupe Name</label>
+                            <span class="text-danger" id="errtxtGroupName"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlDist" name="ddlDist">
+                                <option value="0" selected>Select District</option>
+                            </select>
+                            <label for="tdist">District</label>
+                            <span class="text-danger" id="errddlDist"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlBlock" name="ddlBlock">
+                                <option value="0" selected>Select Block</option>
+                            </select>
+                            <label for="block">Block</label>
+                            <span class="text-danger" id="errddlBlock"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlGp" name="ddlGp">
+                                <option value="0" selected>Select Gram Panchayat</option>
+                            </select>
+                            <label for="block"> Gram Panchayat</label>
+                            <span class="text-danger" id="errddlGp"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <a class="btn btn-primary btn-lg" id="btnsrchfilter" role="button" style="margin-top:10px;margin-left:10px;">
+                            Search
+                        </a>
+                        <input class="btn btn-primary btn-lg" id="reset" type="reset" value="Reset" onclick="reset()" style="margin-top:10px;margin-left:10px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table table-borderless" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 40px;">Sl#</th>
+                            <th scope="col">Cultural Troupe Name</th>
+                            <th scope="col">Troupe Created On</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Registered Through<br> 1860 Society Act</th>
+                            <th scope="col" style="width: 80px;">Members</th>
+                            <th class="no-print" scope="col" style="width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModal22">
+    <div class="modal-dialog modal-lg">
+        <!-- Change modal size class to modal-lg -->
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Members</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Role in Troupe</th>
+                                    <th scope="col">Aadhaar Number</th>
+                                    <th scope="col">Bank Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmore"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+    $.ajax({
+        url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+        data: { blockid: blockid },
+        type: "get",
+        dataType: "json",
+        async: false,
+        success: function (data) {
+            if (data.state == "success") {
+                result = data.data;
+            }
+        }
+    });
+    return result;
+}
+
+    $('#btnsrchfilter').on('click', function () {
+       
+        LoadDataTable($("#ddlDist").val(), $("#ddlBlock").val(), $('#ddlGp').val());
+    });
+    $(document).ready(function () {
+       
+        
+        getDistrict();
+         var type = "@ViewBag.urtype";
+        if (type =="DSSO") {
+            var blockId = "@ViewBag.Blockid";
+            $("#ddlDist").val(blockId);
+            $("#ddlDist").val(blockId).prop('disabled', true);
+            $('#ddlDist').trigger('change');
+            LoadDataTable(blockId,0,0);
+        }
+        var id="@ViewBag.Blockid";
+        if (id != "" && id !=null && type=="BSSO")
+        {
+        var blockId = "@ViewBag.Blockid";
+        let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $("#ddlDist").val(distid).prop('disabled', true);
+        $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $("#ddlBlock").val(blockId).prop('disabled', true);
+            $('#ddlBlock').trigger('change');
+            LoadDataTable(distid, blockId, 0);
+        }
+    });
+    function LoadData() {
+        var record = new Object();
+        record.Status = 0;
+        record.DistrictId = $('#ddlDist').val();
+        record.BlockId = $('#ddlBlock').val();
+        record.GPId = $('#ddlGp').val();
+        record.TroupeName = $('#txtGroupName').val();
+        $.ajax({
+            data: record,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("ViewNewRegistration", "ApprovalConfig")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#datatable').html('');
+                var slno = 0;
+                var htm = '';
+                var objAyyList = data.data;
+                alert(objAyyList.length);
+                if (objAyyList != null) {
+                    for (var i = 0; i < objAyyList.length; i++) {
+                        slno = slno + 1;
+                        htm += '<tr>';
+                        htm += '<td class="text-center">' + slno + '</td>';
+                        htm += '<td>' + objAyyList[i].GroupName + '</td>';
+                        htm += '<td>' + objAyyList[i].GrpCreatedOn + '</td>';
+                        htm += '<td>' + objAyyList[i].GPName + '</div>' + '<div class="text-muted">[' + objAyyList[i].pincode + ']</div>' + '</td>';
+                        if (objAyyList[i].IsSocietyReg === 1) {
+
+                            htm += '<td>' + 'Yes' + '</td>';
+                        }
+                        else {
+                            htm += '<td>' + 'No' + '</td>';
+                        }
+                        htm += '<td><a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return MemberDetails(' + objAyyList[i].TroupeId + ')">' + objAyyList[i].MemberCount + '</a></td>';
+
+                        htm += '<td><a class="edit-btn" data-bs-toggle="tooltip" data-bs-title="Edit" href="@Url.Action("AdminTroupeRegistration", "ApprovalConfig")?TroupeId=' + objAyyList[i].TroupeId + '"><i class="bi bi-pencil-square"></i></a></td>';
+                        htm += '</tr>';
+                    }
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+                $('#datatable').html(htm);
+
+
+            }
+
+        });
+        setTimeout(function () {
+            Datatable();
+        },3000);
+    }
+    function MemberDetails(Troupeid) {
+        var TROUPEID = Troupeid;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("GetMemberDetails", "ApprovalConfig")',
+            data: { "TROUPEID": TROUPEID },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    if (v1.IsLeader == 1) {
+                        List += "<tr><td>" + v1.MemberName + "<div class='text-muted'>[Leader]</div></td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td></tr>";
+                    }
+                    else {
+                        List += "<tr><td>" + v1.MemberName + "</td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td></tr>";
+                    }
+                });
+                $("#addmore").html(List)
+            }
+        })
+    }
+    function LoadDataTable(distid, blockId, defaultValue=0) {
+        var record = new Object();
+        record.Status = 0;
+        record.DistrictId = distid;
+        record.BlockId = blockId;
+        record.GPId = $('#ddlGp').val();
+        record.TroupeName = $('#txtGroupName').val();
+        let dtable = $('#datatable').DataTable({
+                "destroy": true,
+                "language": {
+                    "emptyTable": 'No  Record Found.!',
+                    "zeroRecords": 'No  Record Found.!',
+                    "processing": false,
+                },
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "dom": '<"row"<"col-sm-12 col-md-6 text-right"lB><"col-sm-12 col-md-6 text-right"f>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                "deferRender": true,
+                "processing": false,
+                "searching": true,
+               "bSort": false,
+            "ajax": {
+                data: record,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                url: '@Url.Action("ViewNewRegistration", "ApprovalConfig")',
+                type: "POST",
+                dataType: "json"
+                },
+                "columnDefs": [{
+                    "targets": [0],
+                    "visible": true,
+                    "searchable": false
+                }],
+             
+                columnDefs: [{
+                    targets: 0,
+                    autoWidth: true,
+                    searchable: true,
+                    orderable: false,
+                    render: function (data, type, row, info) {
+                        return parseInt(info.row) + 1;
+                    }
+            }],
+            columns:[
+                { "data":"TroupeId","name":"Slno"},
+                { "data": "GroupName", "name": "GroupName" },
+                { "data": "GrpCreatedOn", "name": "Troupe Created On" },
+                {
+                    "data": null, "name": "Address",
+                    render: function (data) {
+                        return '<label>' + data.GPName + '<div class="text-muted">' + data.pincode + '</div></label>';
+                    }
+                },
+                {
+                    "data": null, "name": "Registered Through<br> 1860 Society Act",
+                    render: function (data) {
+                        if (data.IsSocietyReg === 1) {
+
+                            return '<label>' + 'Yes' + '</label>';
+                        }
+                        else {
+                            return '<label>' + 'No' + '</label>';
+                        }
+                    }
+                },
+                {
+                    "data": null, "name": "Members",
+                    render: function (data) {
+                        return '<a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return MemberDetails(' + data.TroupeId + ')">' + data.MemberCount + '</a>';
+                    }
+                },
+                {
+                    "data": null, "name": "Action",
+                    render: function (data) {
+                        return '<a class="edit-btn" data-id="' + data.TroupeId +'" data-bs-toggle="tooltip" data-bs-title="Edit" onclick="Edit(this)"><i class="bi bi-pencil-square"></i></a>';
+                    }
+                }
+            ],
+                buttons:
+                    [{
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i> Print',
+                        title: $('h1').text(),
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        footer: true,
+                        className: 'buttons-print btn-ps btn-sm',
+                        customize: function (win) {
+                            $(win.document.head).append("<link href='/css/styles.css' rel='stylesheet'><link href='/css/Print.css' rel='stylesheet'><link rel='stylesheet' href='/css/bootstrap.min.css'>");
+                            let datetime = moment().format('DD MMM YYYY hh:mm');
+                            let createdby = '@User.FindFirst("FULLNAME")?.Value.ToString()  ' + ',' + ' @User.FindFirst("URTYPE")?.Value.ToString()';
+                          
+                            $(win.document.body).prepend("<header><nav class='navbar navbar-expand-xl'><div class='container-fluid'><h1><a class='navbar-brand' title='Government of Odisha'><img src='/images/logo.png' alt='Government of Odisha' class='navbar-brand__img'></a></h1><h5 class='page-name'>@ViewData["Title"]</h5></div></nav><div class='row'><div class='col-sm-6 float-start'><label><span class='font-bold'>Created On:</span>" + datetime + "</label></div><div class='col-sm-6 float-end'><label><span class='font-bold'>Created By:</span>" + createdby + "</label></div></div></header>");
+                            $(win.document.body).find('table').addClass('table-bordered');
+                        },
+                        autoPrint: true
+                    },
+                    {
+                        extend: 'excel',
+                        title: '@ViewData["Title"]',
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        className: 'btn btn-success btn-sm mx-1',
+                        text: '<i class="icon-excel"></i> Excel',
+                        className: 'buttons-excel  btn-cs btn-sm',
+                    }, 'pdf']
+                ,
+                initComplete: function () {
+                    $('.buttons-csv').html('<i class="bi bi-filetype-csv"></i>');
+                    $('.buttons-excel').html('<i class="bi bi-file-earmark-excel-fill"></i>');
+                    $('.buttons-pdf').html('<i class="bi bi-filetype-pdf"></i>');
+                    $('.buttons-print').html('<i class="bi bi-file-earmark-text-fill"></i>');
+                    $('.buttons-print').attr('data-toggle', 'tooltip');
+                    $('.buttons-excel').attr('data-toggle', 'tooltip');
+                    $('.buttons-print').attr('title', 'print table');
+                    $('.buttons-excel').attr('title', 'export to excel');
+                    $('.buttons-print').attr('data-placement', 'right');
+                    $('.buttons-excel').attr('data-placement', 'right');
+                    $('.buttons-print').tooltip({
+                        placement: 'bottom',
+                        title: function () {
+                            return "Print";
+                        }
+                    });
+                    $('.buttons-excel').tooltip({
+                        placement: 'right',
+                        title: function () {
+                            return "Export To Excel";
+                        }
+                    });
+                }
+            });
+    }
+    function Edit(obj) {
+        let id = $(obj).data('id');
+        window.location.href = '@Url.Action("AdminTroupeRegistration", "ApprovalConfig")?TroupeId=' + id;
+    }
+</script>
+<script>
+    function reset(){
+        location.reload();
+    }
+</script>

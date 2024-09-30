@@ -1,0 +1,192 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.User.User
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "ViewUser";
+    var listData = ViewBag.UserDetails as IList<CTMS.Web.Areas.AdminConsole.Models.User.User>;
+}
+
+<div class="card card--lg">
+
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="User" asp-action="AddUser" asp-area="AdminConsole">
+            Add
+        </a>
+        <a class="nav-link active" id="active-hierarchy" asp-controller="User" asp-action="ViewUser" asp-area="AdminConsole">
+            View
+        </a>
+
+    </div>
+
+
+
+    <div class="card-body">
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table" id="UserTable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl No.
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                User Name
+                            </th>
+
+                            <th>
+                                Designation
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Mobile
+                            </th>
+                            @*<th>Image</th>*@
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in listData)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SLNo)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.vchfullname)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.vchusername)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.nvchdesigname)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.vchemail)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.vchmobile)
+                                </td>
+                                @*<td><img src="~/UserImage/@item.UserImage" alt="No Image" style="width: 60px;height:70px;" id="showPhoto" /> <a href="~/UserImage/@item.UserImage" target="_blank">@item.UserImage</a></td>*@
+                                <td>
+
+                                    <a class="btn btn-info btn-sm" data-toggle="tooltip" asp-controller="User" asp-action="EditUser" asp-area="AdminConsole" asp-route-id="@item.intuserid">
+                                        <i class="icon-edit1">Edit</i>
+                                    </a>
+
+                                    <a class="btn btn-danger btn-sm btnDelete" id="" onclick="return Delete(@item.intuserid)">
+                                        <i class="icon-edit1">Delete</i>
+                                    </a>
+
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+       
+    </div>
+
+
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function Reset() {
+            window.location.href = '@Url.Content("~/AdminConsole/User/ViewUser")';
+        }
+        function Delete(Id) {
+           swal.fire({
+    title: "Are you sure?",
+    text: "Click Yes to Delete the Record!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Yes, Delete it!",
+    closeOnConfirm: false
+}).then((isConfirmed) => {
+    if (isConfirmed) {
+        $.ajax({
+            url: '@Url.Content("~/AdminConsole/User/DeleteUser")',
+            type: 'GET',
+            data: { Id: Id },
+            success: function (data) {
+                if (data == '3') {
+                    swal.fire({
+                        title: "",
+                        text: "Deleted Successfully",
+                        icon: "success",
+                        showConfirmButton: true,
+                        closeOnConfirm: false
+                    }).then(() => {
+                        window.location.href = '@Url.Content("~/AdminConsole/User/ViewUser")';
+                    });
+                }
+            },
+            error: function (error) {
+                window.location.reload();
+            }
+        });
+    }
+});
+
+        }
+
+        function Validation(){
+            if ($("#ddlDesgn").val() == '--All--' || $("#ddlDesgn").val() == '') {
+                swal("", "Please Select Designation", "error");
+                $("#ddlDesgn").focus();
+                return false;
+            }
+            else if ($("#ddlPhyLoc").val() == '--All--' || $("#ddlPhyLoc").val() == '') {
+                swal("", "Please Select Physical Location", "error");
+                $("#ddlPhyLoc").focus();
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+
+    </script>
+
+}
+@{
+    if (TempData["userResult"] != null)
+    {
+        if ((TempData["userResult"].ToString()) == "3")
+        {
+            <script type="text/javascript" language="javascript">
+                new swal("User deleted Successfully !");
+            </script>
+        }
+        else if ((TempData["userResult"].ToString()) == "7")
+        {
+            <script type="text/javascript" language="javascript">
+                new swal("User Already in use !");
+            </script>
+        }
+        else
+        {
+            <script type="text/javascript" language="javascript">
+                new swal('@TempData["userResult"]');
+            </script>
+        }
+        TempData["Result"] = null;
+    }
+
+}

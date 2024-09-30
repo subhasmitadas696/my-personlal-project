@@ -1,0 +1,178 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.DesignationMaster.DesignationMasterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "View InActive Designation";
+}
+
+@section Scripts {
+}
+
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="DesignationMaster" asp-action="AddDesignationMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="DesignationMaster" asp-action="ViewActiveDesignation">
+            Active
+        </a>
+        <a class="nav-link active" id="inactive-hierarchy" asp-controller="DesignationMaster" asp-action="ViewInActiveDesignation">
+            InActive
+        </a>
+    </div>
+
+    <div class="card-body">
+        @if (Model.DesignationMasterList.Count != 0)
+        {
+            <form id="frmMarkInactive" data-parsley-validate novalidate method="post" asp-action="MarkAsActive"
+                  asp-controller="DesignationMaster" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateInactiveForm()">
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive">
+                        <table  class="table" id="example1">
+
+                            <thead>
+                                <tr>
+                                    <th width="10px"><input type="checkbox" id="checkBoxAll" onclick="check_uncheck_checkbox_Inactive(this.checked)" /></th>
+                                    <th width="10px">SL#</th>
+                                    <th width="100px">Usertype</th>
+                                    <th width="20px">Designamtion Name</th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DesignationMasterList.Count != 0)
+                                {
+                                    @foreach (var Designation in Model.DesignationMasterList.Select((x, i) => new { Data = x, Index = i + 1 }))
+                                    {
+
+                                        <tr>
+                                            <td><input type="checkbox" name="chkbox" value="@Designation.Data.INTDESIGID" /></td>
+                                            <td>@Designation.Index</td>
+                                            <td>@Html.DisplayFor(modelItem => Designation.Data.UsertypeName)</td>
+                                            <td>@Html.DisplayFor(modelItem => Designation.Data.VCHDESIGNAME)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr style="text-align: center;font-size: x-large;font-weight: bolder;">
+                                        <td colspan='6' align='center'> No records found!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <button type="submit" id="btnsubmit" name="submitButton" class="btn btn-primary mb-1t white-text" title="Mark AS Active" value="submit">Mark AS Active</button>
+                        <button type="button" value="Reset" class="btn btn-danger" title="Reset" onclick="return chkClearField_Inactive();"><span>Reset</span></button>
+                    </div>
+                </div>
+                
+            </form>
+        }
+        else
+
+        {
+
+            <h4>Record Not Found</h4>
+        }
+
+        <div class="table-responsive">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#btnsubmit').click(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            if ($('#example1 :checked').length == 0) {
+                swal("", "No record selected for Active!", "error");
+                return false;
+            }
+
+            var chkbox = [];
+            $('input[name=chkbox]:checked').map(function () {
+                chkbox.push($(this).val());
+            });        
+
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to Mark As Active",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                closeOnConfirm: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/AdminConsole/DesignationMaster/MarkAsActive',
+                        data: { chkbox: chkbox },
+                        success: function (response) {
+                            console.log(response);
+                            if (response === "Marked As Active Successfully") {
+                                Swal.fire({
+                                    title: "",
+                                    text: response,
+                                    icon: "success"
+                                }).then(() => {
+                                    window.location.href = "/AdminConsole/DesignationMaster/ViewActiveDesignation";
+                                });
+                            } else if (response === "Already Exist") {
+                                Swal.fire({
+                                    title: "",
+                                    text: response,
+                                    icon: "warning"
+                                }).then(() => {
+                                    return;
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "",
+                                    text: response,
+                                    icon: "error"
+                                }).then(() => {
+                                    return;
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "",
+                                text: 'An error occurred while processing the request.',
+                                icon: "error"
+                            }).then(() => {
+                                return;
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+    });
+
+    function check_uncheck_checkbox_Inactive(isChecked) {
+        if (isChecked) {
+            $('input[name="chkbox"]').each(function () {
+                this.checked = true;
+            });
+        }
+        else {
+            $('input[name="chkbox"]').each(function () {
+                this.checked = false;
+            });
+        }
+    }
+    function chkClearField_Inactive() {
+        $('input[type=checkbox]').prop('checked', false);
+    }
+
+</script>
+

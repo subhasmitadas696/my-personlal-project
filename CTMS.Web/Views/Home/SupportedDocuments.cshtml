@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+} 
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">Supported Documents</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">Home</a></li>
+                <li class="breadcrumb-item active">Supported Documents</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        <div class="table-responsive">
+            <div class="table-responsive--rounded">
+                <table id="dataTable" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 40px">Sl#</th>  
+                            <th scope="col" >Document Title</th>
+                            <th scope="col" style="width:100px;">Date</th>
+                            <th scope="col" style="width:100px;">Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td >
+                                Lorem ipsum dolor sit amet.
+                            </td>
+                            <td>11-Oct-2023</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm">Download<i class="bi bi-download ps-2"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>02</td>
+                            <td>
+                                Lorem ipsum dolor sit amet.
+                            </td>
+                            <td>21-Nov-2023</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm">Download<i class="bi bi-download ps-2"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>03</td>
+                            <td>
+                                Lorem ipsum dolor sit amet.
+                            </td>
+                            <td>18-Dec-2023</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-sm">Download<i class="bi bi-download ps-2"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

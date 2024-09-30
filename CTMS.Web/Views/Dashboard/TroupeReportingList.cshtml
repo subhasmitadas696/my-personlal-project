@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Troupe Report Pending";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var troupedetails = ViewBag.TroupeReportingDetails;
+}
+
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<main class="content-body">
+    <div class="card card--lg main-card">
+        <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+            <a asp-controller="Dashboard" asp-action="TroupeReportingList" asp-area="" class="nav-link active">
+                Pending
+            </a>
+            <a asp-controller="Dashboard" asp-action="TroupeReported" asp-area="" class="nav-link">
+                Reported
+            </a>
+        </div>
+        <div class="card-body">
+            @if (troupedetails.Count > 0)
+            {
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive">
+                        <table class="table" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                    <th scope="col"> Event Name</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Place</th>
+                                    <th class="dip no-print" scope="col">Report</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                }
+                                @foreach (var items in troupedetails)
+                                {
+                                    <tr>
+                                        <td class="text-center">@count</td>
+                                        <td class="text-center">@items.EventTitle</td>
+                                        <td>@items.StartDate</td>
+                                        <td>@items.EndDate</td>
+                                        <td>
+                                            @items.DistrictName
+                                            <div class="text-muted">@items.BlockName</div>
+                                            <div class="text-muted">@items.GPName</div>
+                                        </td>
+                                        @if (items.Status == 4)
+                                        {
+                                            <td><a class="btn btn-sm btn-primary rounded-pill" href="../Dashboard/TroupeReportingNew?AssignEventId=@items.AssignEventId&Status=@items.Status">Report</a></td>
+                                        }
+                                        else
+                                        {
+                                            <td><a class="btn btn-sm btn-warning rounded-pill" href="../Dashboard/ReportRevertingNew?AssignEventId=@items.AssignEventId&Status=@items.Status">Report</a></td>
+                                        }
+
+                                    </tr>
+                                    count++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="norecord"><strong>No Record Found</strong></div>
+            }
+        </div>
+    </div>
+</main>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        $('#TroupeReportingList').addClass('active');
+        $('#ProfileDashboard').removeClass('btn-primary');
+        $('#ProfileDashboard').addClass('btn-outline-primary');
+    });
+</script>
+

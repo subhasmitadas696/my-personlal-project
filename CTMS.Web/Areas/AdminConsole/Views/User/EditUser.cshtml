@@ -1,0 +1,351 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "EditUser";
+    var listData = ViewBag.UserDetails as IList<CTMS.Web.Areas.AdminConsole.Models.User.User>;
+}
+
+@section Scripts{
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            getDistrict();
+            $('#ddlDesgn').trigger("change");
+            $('#ddlDist').val(@listData[0].DistorBlockId);
+
+            if (@listData[0].DistId != 0) {
+                $('#ddlDist').val(@listData[0].DistId);
+                $('#ddlDist').trigger("change");
+                $('#ddlBlock').val(@listData[0].DistorBlockId);
+            }
+           
+        });
+        $('#ddlDesgn').change(function () {
+            if ($('#ddlDesgn').val() == '4') {
+                $('#divBlock').hide();
+                $('#ddlBlock').val('0');
+                $('#divDist').removeAttr('style');
+                $('#ddlDist').show();
+            }
+
+            else if ($('#ddlDesgn').val() == '3') {
+                $('#divDist').show();
+                $('#divBlock').show();
+            }
+
+            else {
+                $('#divDist').hide();
+                $('#divBlock').hide();
+                $('#ddlBlock').val('0');
+                $('#ddlDist').val('0');
+            }
+        });
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+      
+       
+        
+       
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@@-,/.\'';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-,./\&(){}[]#$:';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+</script>
+<script>
+        $('#btnReset').click(function () {
+            var newUrl = "@Url.Action("EditUser", "User")";
+            window.location.href = newUrl;
+
+        });
+        function validate() {
+
+            if ($('#txtName').val() == '') {
+                new swal('Please enter Full Name!');
+                $('#txtName').focus();
+                return false;
+            }
+
+            if ($('#ddlDesgn').val() == 0) {
+                new swal('Please select Designation!');
+                $('#ddlDesgn').focus();
+                return false;
+            }
+            if ($('#ddlDesgn option:selected').text() == 'DistrictUser') {
+                if ($('#ddlDist').val() == 0) {
+                    new swal('Please select District!');
+                    $('#ddlDist').focus();
+                    return false;
+                }
+
+            }
+            if ($('#ddlDesgn option:selected').text() == 'BlockUser') {
+                if ($('#ddlDist').val() == 0) {
+                    new swal('Please select District!');
+                    $('#ddlDist').focus();
+                    return false;
+                }
+                if ($('#ddlBlock').val() == 0) {
+                    new swal('Please select Block!');
+                    $('#ddlBlock').focus();
+                    return false;
+                }
+
+            }
+            if ($('#txtUName').val() == '') {
+                new swal('Please enter User Name!');
+                $('#txtUName').focus();
+                return false;
+            }
+            if ($('#txtPwd').val() == '') {
+                new swal('Please enter Password!');
+                $('#txtPwd').focus();
+                return false;
+            }
+            if ($('#txtConPwd').val() == '') {
+                new swal('Please enter Confirm Password!');
+                $('#txtConPwd').focus();
+                return false;
+            }
+
+            if ($('#txtEmail').val() == '') {
+                new swal('Please enter Email!');
+                $('#txtEmail').focus();
+                return false;
+            }
+            if (IsEmail($('#txtEmail').val()) == false) {
+                new swal('Please enter valid Email!');
+                $('#txtEmail').focus();
+                return false;
+            }
+            if ($('#txtMob').val() == '') {
+                new swal('Please enter Mobile No!');
+                $('#txtMob').focus();
+                return false;
+            }
+            if (MobileNumber($('#txtMob').val()) == false) {
+                new swal('Please enter valid Mobile No!');
+                $('#txtMob').focus();
+                return false;
+            }
+            return true;
+        }
+        function IsEmail(email) {
+            var regex = /^([a-zA-Z0-9_\.\-\+])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (!regex.test(email)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        $('#btnUpdate').click(function () {
+            
+            if (validate()) {
+                Swal.fire({
+                    title: "",
+                    text: "Are you sure you want to update?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes",
+                    closeOnConfirm: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var fileData = new FormData();
+                        fileData.append("FullName", $('#txtName').val());
+                        fileData.append("UserType", $('#ddlDesgn').val());
+                        fileData.append("UserName", $('#txtUName').val());
+                        fileData.append("intuserid", $('#hfUserId').val());
+                        fileData.append("UEMAILID", $('#txtEmail').val());
+                        fileData.append("MOBILENO", $('#txtMob').val());
+
+                        if ($('#ddlDesgn option:selected').text() == 'DepartmentUser') {
+                            fileData.append("DistorBlockId", 5);
+                        }
+                        else if ($('#ddlDesgn option:selected').text() == 'StateUser') {
+                            fileData.append("DistorBlockId", 5);
+                        }
+                        else if ($('#ddlDesgn option:selected').text() == 'SuperAdmin') {
+                            fileData.append("DistorBlockId", 1);
+                        }
+                        else if (@listData[0].DistId == 0) {
+                            fileData.append("DistorBlockId", $('#ddlBlock').val());
+                        }
+                        else {
+                            fileData.append("DistorBlockId", $('#ddlDist').val());
+                        }
+                        
+                        UpdateUserData(fileData);
+                    }
+                });
+
+            }
+        });
+
+
+        function UpdateUserData(Data) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("EditUserData", "User")",
+                data: Data,
+                contentType: false, // Not to set any content header
+                processData: false, // Not to process data
+                success: function (res) {
+                    if (res == '2') {
+                        Swal.fire({
+                            title: "",
+                            text: "User updated successfully!",
+                            icon: "success"
+                        }).then(function () {
+                            window.location.href = window.location.origin + "@Url.Action("ViewUser", "User")";
+                        });
+                    }
+                    else if (res == '4') {
+                        Swal.fire({
+                            title: "",
+                            text: "Username already exists!",
+                            icon: "warning"
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            title: "",
+                            text: res,
+                            icon: res
+                        });
+                    }
+                },               
+                error: function (res) {
+                    console.log(res.responseText);
+                }
+            });
+        }
+
+      
+</script>
+    <script type="text/javascript">
+        $(function () {
+            $("#btnReset").bind("click", function () {
+                var url = '@Url.Action("ViewUser", "User")';
+                window.location.href = url;
+
+            });
+        });
+    </script>
+
+}
+
+<div class="card card--lg">
+        <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="User" asp-action="AddUser" asp-area="AdminConsole">
+            Add
+        </a>
+        <a class="nav-link " id="active-hierarchy" asp-controller="User" asp-action="ViewUser" asp-area="AdminConsole">
+            View
+        </a>
+        
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                        <input id="txtName" type="text" value="@listData[0].vchfullname" class="form-control" autocomplete="off" maxlength="100" onkeypress="return inputLimiter(event,'NameCharactersymbol')" oninput="avoidFirstSpace(event)" autofocus>
+                    <label for="tname">Full Name<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtHirerarchyName"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                        <select class="form-select" id="ddlDesgn" asp-items="@(new SelectList(ViewBag.Designation, "ROLEID", "ROLENAME",listData[0].intdesignationid))">
+                        <option value="0">--select--</option>
+                    </select>
+                    <label class="control-label" id="lblDig">Designation</label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+            <div class="col-md-4" id="divDist" style="display:none">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDist" name="ddlDist">
+                        <option value="0" selected>Select District</option>
+                    </select>
+                    <label for="tdist">
+                        District<span class="text-danger">*</span>
+                    </label>
+                    <small class="text-danger" id="errddlDist"></small>
+                </div>
+            </div>
+            <div class="col-md-4" id="divBlock" style="display:none">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlBlock" name="ddlBlock">
+                        <option value="0">Select Block</option>
+                    </select>
+                    <label for="block">Block/ULB<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errddlBlock"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                        <input type="hidden" value="@listData[0].intuserid" id="hfUserId" />
+                        <input id="txtUName" type="text" value="@listData[0].vchusername" class="form-control" maxlength="45" autocomplete="off" onkeypress="return inputLimiter(event,'NameCharactersymbol')" oninput="avoidFirstSpace(event)">
+                    <label for="tname">User Name<span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errtxtnooflevel"></span>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating">
+                        <input id="txtEmail" type="text" value="@listData[0].vchemail" class="form-control" maxlength="50" onkeypress="return inputLimiter(event,'NameCharactersAndNumbers')" oninput="avoidFirstSpace(event)">
+                    <label for="address1">Email<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                        <input id="txtMob" type="text" value="@listData[0].vchmobile" class="form-control" maxlength="10" onkeypress="return inputLimiter(event,'Numbers')" oninput="avoidFirstSpace(event)">
+                    <label for="Mobile">Mobile<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAddress"></span>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="mt-4">
+            <div class="text-center">
+                <a class="btn btn-primary rounded-pill btn-lg" title="Submit" id="btnUpdate">Update</a>
+                <a class="btn btn-secondary rounded-pill btn-lg" title="Reset" id="btnReset">Cancel</a>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,19 @@
+
+.card-header{
+display: flex;
+justify-content: space-between;
+background-color:var(--dark-grey);
+color: var(--bs-secondary-bg);
+}
+.view-form-details-edit a{
+    text-decoration: none;
+    color: var(--bs-secondary-bg);
+    display: flex;
+    gap: 0.5rem;
+}
+.card-footer{
+    display: flex;
+    justify-content: space-between;
+    background-color:var(--dark-grey);
+    color: var(--bs-secondary-bg);
+}

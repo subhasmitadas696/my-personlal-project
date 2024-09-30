@@ -1,0 +1,375 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.GlobalLink.GlobalModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+
+@section Scripts{
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function check_uncheck_checkbox(isChecked) {
+            if (isChecked) {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+        function ClearField() {
+            $('input[type=checkbox]').prop('checked', false);
+        }
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'Email') {
+                AllowableCharacters = '1234567890@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\'';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            if (allow == 'Filename') {
+                AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            $('#btnsubmit').click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                if ($('#example1 :checked').length == 0) {
+                    new swal("No record selected for Inactive!");
+                    return false;
+                }
+                else {
+                    var chkbox = [];
+                    $('input[name=chkbox]:checked').map(function () {
+                        chkbox.push($(this).val());
+                    });
+                    Swal.fire({
+    title: "Are you sure?",
+    text: "You want to Mark As In-Active",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Yes",
+    closeOnConfirm: false
+}).then((result) => {
+    if (result.isConfirmed) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("MarkAsInActive", "GlobalLink")',
+            data: { chkbox: chkbox },
+
+            success: function (response) {
+                if (response == "Marked As InActive Successfully") {
+                     Swal.fire({
+                    title: "",
+                    text: response,
+                    icon: "success"
+                }).then(() => {
+                    window.location.href = window.location.origin + "@Url.Action("ViewGlobalLinkInActive", "GlobalLink")";
+                });
+                } else if (response === "Already Exist") {
+                    Swal.fire({
+                        title: "",
+                        text: response,
+                        icon: "warning"
+                    }).then(() => {
+                        return;
+                    });
+                } else {
+                    Swal.fire({
+                        title: "",
+                        text: response,
+                        icon: "error"
+                    }).then(() => {
+                        return;
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "",
+                    text: 'An error occurred while processing the request.',
+                    icon: "error"
+                }).then(() => {
+                    return;
+                });
+            }
+        });
+    }
+});
+
+                }
+            });
+
+            @*-------------------------------------------------Modify s--------------------------------------------*@
+            $("#Modify").click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                if ($('#example1 :checked').length == 0) {
+                    new swal("No record selected for Update Sl No.");
+                    return false;
+                }
+                var len = $("#example1 tr").length;
+                var strSelecteds = '';
+
+                $("#example1 tr").each(function () {
+                    var row = $(this);
+                    var cb = row.find('input.cboxDELclass');
+                    var checked = cb.is(':checked');
+                    var pkno = cb.val();
+                    var txtSLNO = row.find('input#SLNO'); // Corrected this line
+                    var NewSLNO = txtSLNO.val();
+
+                    if (checked) {
+                        strSelecteds += pkno + '|' + NewSLNO + '^';
+                    }
+                });
+
+                if (strSelecteds.length > 0) {
+                    strSelecteds = strSelecteds.substring(0, strSelecteds.length - 1);
+                }
+
+                if (strSelecteds.length > 0) {
+                    Swal.fire({
+    title: "",
+    text: "Are you sure you want to modify Sl no?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Yes",
+    closeOnConfirm: false
+}).then((result) => {
+    if (result.isConfirmed) {
+        var datastring = {
+            slnomodifyList: strSelecteds
+        };
+
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("SlnoModifyData", "GlobalLink")',
+            data: datastring,
+            success: function (data) {
+                Swal.fire({
+                    title: "",
+                    text: data,
+                    icon: "success"
+                }).then(() => {
+                    window.location.href = '@Url.Action("ViewGlobalLinkActive", "GlobalLink")';
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    title: "",
+                    text: "Something went wrong while processing the data.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+});
+
+                } else {
+                    return false;
+                }
+            });
+        });
+    </script>
+
+}
+
+<div class="card card--lg">
+
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="GlobalLink" asp-action="AddGlobalLink">
+            Add
+        </a>
+        <a class="nav-link active" id="active-hierarchy" asp-controller="GlobalLink" asp-action="ViewGlobalLinkActive">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="GlobalLink" asp-action="ViewGlobalLinkInActive">
+            InActive
+        </a>
+    </div>
+    <div class="card-body">
+
+        <form id="frmCreatePrimaryLink" data-parsley-validate novalidate method="post" asp-action="MarkAsInActive"
+                asp-controller="GlobalLink" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="example1">
+
+                        <thead>
+                            <tr>
+                                <th width="10px"><input type="checkbox" id="checkBoxAll" onclick="check_uncheck_checkbox(this.checked)" /> All</th>
+                                <th width="1px">
+                                    Global Serial #
+                                </th>
+                                <th width="100px">Project Link Name</th>
+                                <th width="100px">Global Link Name</th>
+                                <th width="100px">Global Icon Class</th>
+                                <th width="20px">Edit</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.GlobalModelList.Count != 0)
+                            {
+                                @foreach (var globallink in Model.GlobalModelList.Select((x, i) => new { Data = x, Index = i + 1 }))
+                                {
+
+                                    <tr>
+
+                                        <td>
+                                            <input class="cboxDELclass form-check-input" id="cboxDELclass" type="checkbox" name="chkbox" value="@globallink.Data.intGLinkID" />
+                                        </td>
+                                        <td>
+                                            <input type="text" id="SLNO" value="@globallink.Data.intSortNum" Onkeypress="return inputLimiter(event,'Numbers')" placeholder="Enter Serial no" autocomplete="off" maxlength="3" class="form-control" />
+                                        </td>
+
+                                        <td>@Html.DisplayFor(modelItem => globallink.Data.NVCHPROJECTLINKNAME)</td>
+                                        <td>@Html.DisplayFor(modelItem => globallink.Data.nvchGLinkName)</td>
+                                        <td>@Html.DisplayFor(modelItem => globallink.Data.VCHICONCLASS)</td>
+
+                                        <td>
+                                            <a class="btn btn-info btn-sm" data-toggle="tooltip" data-original-title="Edit" asp-area="AdminConsole" asp-controller="GlobalLink" asp-action="EditActiveGlobalLink" asp-route-id="@globallink.Data.intGLinkID">
+                                                <i class="icon-edit1">Edit</i>
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr style="text-align: center;font-size: x-large;font-weight: bolder;">
+                                    <td colspan='6' align='center'> No records found!</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <input asp-for="updatedBy" type="hidden" id="hdnGLinkID" value="1" />
+
+                    <div class="mt-2">
+                        <button type="submit" name="submitButton" id="btnsubmit" class="btn btn-primary btn-sm" title="Mark AS Inactive" value="submit">Mark AS Inactive</button>
+
+                        <input type="submit" id="Modify" class="btn btn-success btn-sm" title="Modify" value="Modify Global Serial #" />
+                        <button type="button" class="btn btn-danger btn-sm" title="Reset" onclick="return ClearField();"><span class="localize" data-key="Reset">Reset</span></button>
+
+                    </div>
+
+
+                </div>
+            </div>
+            
+        </form>
+        <div class="form-group row"></div>
+
+
+
+
+        <div style="float: right;">
+            @{
+                if (TempData["CommandStatus_S"] != null)
+                {
+                    TempData["CommandStatus_S"] = null;
+                    <script type="text/javascript" language="javascript">
+                        swal("", "Record Saved Successfully", "success");
+                    </script>
+                }
+
+            }
+            @{
+                if (TempData["CommandStatus_A"] != null)
+                {
+                    TempData["CommandStatus_A"] = null;
+                    <script type="text/javascript" language="javascript">
+                        swal("", "Record Already Exist", "warning");
+                    </script>
+                }
+
+            }
+            @{
+                if (TempData["CommandStatus_U"] != null)
+                {
+                    TempData["CommandStatus_U"] = null;
+                    <script type="text/javascript" language="javascript">
+                        swal("", "Record Updated Successfully", "success");
+                    </script>
+                }
+
+            }
+            @{
+                if (TempData["CommandStatus_AC"] != null)
+                {
+                    TempData["CommandStatus_AC"] = null;
+                    <script type="text/javascript" language="javascript">
+                        swal("", "Record Marked As Active Successfully", "success");
+                    </script>
+                }
+
+            }
+            @{
+                if (TempData["CommandStatus_INA"] != null)
+                {
+                    TempData["CommandStatus_INA"] = null;
+                    <script type="text/javascript" language="javascript">
+                        alert("Record Marked As InActive Successfully", "success");
+                    </script>
+                }
+
+            }
+            @{
+                if (TempData["CommandStatus_AU"] != null)
+                {
+                    TempData["CommandStatus_AU"] = null;
+                    <script type="text/javascript" language="javascript">
+                        swal("", "Record Already in Use","error");
+                    </script>
+                }
+
+            }
+        </div>
+    </div>
+</div>
+
+     
+
+
+
+
+
+

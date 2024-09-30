@@ -1,0 +1,490 @@
+﻿@model CTMS.Model.Entities.ReportMaster.ArtWiseReport
+@{
+    ViewData["Title"] = "District wise Troupe Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.Detail;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="MISReports" asp-action="ArtFormWiseTroupe" asp-area="" class="nav-link active">
+            District wise Troupe Report
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <form method="get" asp-controller="MISReports" asp-action="ArtFormWiseTroupe">
+                <div class="collapse" id="collapseFilter">
+                    <div class="border p-3 rounded mb-3 bg-light">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlCategory" asp-for="CatId">
+                                        <option value="0">Select Category</option>
+                                    </select>
+                                    <label for="category">Category</label>
+                                    <span class="text-danger" id="errddlCategory"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlSubCategory" asp-for="SubCatId">
+                                        <option value="0">Select Sub-Category</option>
+                                    </select>
+                                    <label for="scategory">Sub-Category</label>
+                                    <span class="text-danger" id="errddlSubCategory"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="btn btn-primary btn-lg" id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;margin-left:10px;">
+                                <a class="btn btn-primary btn-lg" id="reset" onclick="reset()" style="margin-top:10px;margin-left:10px;">Reset</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                <th scope="col">District/Block</th>
+                                <th scope="col">Registered</th>
+                                <th scope="col">Members</th>
+                                <th scope="col">Pending</th>
+                                <th scope="col">Approved</th>
+                                <th scope="col">Rejected</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                            }
+                            @foreach (var items in Data)
+                            {
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>
+                                        @if (@ViewBag.DistId == 0)
+                                        {
+                                            @if (@ViewBag.UserType == "BSSO")
+                                            {
+                                                @items.DistrictName
+                                            }
+                                            else
+                                            {
+                                                <a href="../MISReports/ArtFormWiseTroupeC?DistId=@items.DISTCODE&CatId=@ViewBag.CatId&SubCatId=@ViewBag.SubCatId">@items.DistrictName</a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @items.DistrictName
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.TTotalReg == 0)
+                                        {
+                                            @items.TTotalReg
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DISTCODE == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalReg('@items.BlockId','2')">@items.TTotalReg</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalReg('@items.DISTCODE','1')">@items.TTotalReg</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.TTotalMembers == 0)
+                                        {
+                                            @items.TTotalMembers
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DISTCODE == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalMembers('@items.BlockId','2')">@items.TTotalMembers</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalMembers('@items.DISTCODE','1')">@items.TTotalMembers</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.TTotalRegPending == 0)
+                                        {
+                                            @items.TTotalRegPending
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DISTCODE == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalPending('@items.BlockId','2')">@items.TTotalRegPending</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalPending('@items.DISTCODE','1')">@items.TTotalRegPending</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.TTotalRegApproved == 0)
+                                        {
+                                            @items.TTotalRegApproved
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DISTCODE == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalApproved('@items.BlockId','2')">@items.TTotalRegApproved</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalApproved('@items.DISTCODE','1')">@items.TTotalRegApproved</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.TTotalRegRejected == 0)
+                                        {
+                                            @items.TTotalRegRejected
+                                        }
+                                        else
+                                        {
+                                            @if (@items.DISTCODE == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalRejected('@items.BlockId','2')">@items.TTotalRegRejected</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalRejected('@items.DISTCODE','1')">@items.TTotalRegRejected</a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalTotalReg">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Troupe Registration Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                            <table class="table" id="datatable1">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center">Sl.No</th>
+                                        <th scope="col">Cultural Troupe Name</th>
+                                        <th scope="col">Troupe Created On</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Total Members</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="addmoreTotlReg"></tbody>
+                            </table>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalTotalMembers">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Member Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Role in Troupe</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Aadhaar Number</th>
+                                    <th scope="col">Bank Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreTotlmembers"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalTotalPending">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Pending Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreTotlTotalPending"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalTotalApproved">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Approved Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreTotlTotalApproved"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalTotalrejecteded">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Rejected Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreTotlTotalrejecteded"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getCategory();
+        var CatId = "@ViewBag.CatId";
+        var SubCatId = "@ViewBag.SubCatId";
+        $("#ddlCategory").val(CatId);
+        $("#ddlCategory").trigger('change');
+        $("#ddlSubCategory").val(SubCatId);
+    });
+    function NoOfTotalReg(DistId, isdist) {
+        var DistId = DistId;
+        var isdist = isdist;
+        $('#successModalTotalReg').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("TotalRegistrationpopup", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPName + "</div>" + "</td><td>" + v1.MemberCount + "</td></tr>";
+                });
+                $("#addmoreTotlReg").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+    function NoOfTotalMembers(DISTCODE, isdist) {
+        var DistId = DISTCODE;
+        var isdist = isdist;
+        $('#successModalTotalMembers').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("Totalmemberpopup", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    if (v1.IsLeader == 1) {
+                        List += "<tr><td>" + Count + "</td><td>" + v1.MemberName + "<div class='text-muted'>[Leader]</div></td><td>" + v1.Role + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPName + "</div>" + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td></tr>";
+                    }
+                    else {
+                        List += "<tr><td>" + Count + "</td><td>" + v1.MemberName + "</td><td>" + v1.Role + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPName + "</div>" + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td></tr>";
+                    }
+                });
+                $("#addmoreTotlmembers").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+    function NoOfTotalPending(DISTCODE, isdist) {
+        var DistId = DISTCODE;
+        var isdist = isdist;
+        $('#successModalTotalPending').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("TotalmemberPendingpopup", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPName + "</div>" + "</td><td>" + v1.MemberCount + "</td></tr>";
+                });
+                $("#addmoreTotlTotalPending").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+    function NoOfTotalApproved(DISTCODE, isdist) {
+        var DistId = DISTCODE;
+        var isdist = isdist;
+        $('#successModalTotalApproved').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("TotalmemberApprovedpopup", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPName + "</div>" + "</td><td>" + v1.MemberCount + "</td></tr>";
+                });
+                $("#addmoreTotlTotalApproved").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+    function NoOfTotalRejected(DISTCODE, isdist) {
+        var DistId = DISTCODE;
+        var isdist = isdist;
+        $('#successModalTotalrejecteded').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("TotalRejectededpopup", "MISReports")',
+            data: { "DistId": DistId, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPName + "</div>" + "</td><td>" + v1.MemberCount + "</td></tr>";
+                });
+                $("#addmoreTotlTotalrejecteded").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script>
+    function reset(){
+        window.location.href = '@Url.Action("ArtFormWiseTroupe", "MISReports")?CatId=' + 0 + '&SubCatId=' + 0;
+    }
+</script>

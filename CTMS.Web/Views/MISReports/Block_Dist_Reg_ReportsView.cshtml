@@ -1,0 +1,189 @@
+﻿@model CTMS.Model.Entities.ReportMaster.BlockWiseRegistration
+@{
+    ViewData["Title"] = "Troupe Registration Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.Detail;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="MISReports" asp-action="Block_Dist_Reg_ReportsView" asp-area="" class="nav-link active">
+            Troupe Registration Report
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="ddlDist" disabled>
+                                    <option value="0" selected>Select District</option>
+                                </select>
+                                <label for="tdist">District</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                            <select class="form-select" id="ddlBlock" disabled>
+                                    <option value="0" selected>Select Block</option>
+                                </select>
+                                <label for="block">Block</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="ddlGp">
+                                    <option value="0" selected>Select Gram Panchayat</option>
+                                </select>
+                                <label for="block"> Gram Panchayat</label>
+                                <span class="text-danger" id="errddlGp"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        <input class="btn btn-primary btn-lg" id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;margin-left:10px;">
+                        <input class="btn btn-primary btn-lg" id="reset" type="reset" value="Reset" onclick="reset()" style="margin-top:10px;margin-left:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                <th scope="col">Troupe Address</th>
+                                <th scope="col">Troupe Name</th>
+                                <th scope="col">Troupe Created On</th>
+                                <th scope="col">Troupe Members</th>                                
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                                string cclass = "";
+                            }
+                            @foreach (var items in Data)
+                            {
+                                cclass = (@items.ApprovedStatus == 0) ? "text-danger" : "text-success";
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>
+                                        @items.DistrictName
+                                        <div class="text-muted">@items.BlockName</div>
+                                        <div class="text-muted">@items.GPName</div>
+                                        <div class="text-muted">@items.Address</div>
+                                        <div class="text-muted">[@items.pincode]</div>
+                                    </td>
+                                    <td>@items.GroupName</td>
+                                    <td>@items.GrpCreatedOn</td>
+                                    <td>
+                                        <ul>
+
+                                            @foreach (var member in items.MemberName.Split(","))
+                                            {
+                                                <li>@member</li>
+                                            }
+
+                                        </ul>
+                                    </td>
+                                    <td class="@cclass"><b>@items.TStatus</b></td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getDistrict();
+        var type = "@ViewBag.UserType";
+        if (type == "4") {
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            document.getElementById('ddlBlock').disabled = false;
+        }
+        else if(type=="2"){
+            document.getElementById('ddlDist').disabled = false;
+            document.getElementById('ddlBlock').disabled = false;
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(0);
+            $('#ddlBlock').trigger('change');
+        }
+        else {
+            var blockId = "@ViewBag.Blockid";
+            let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            $("#ddlBlock").css("pointer-events", "none");
+        }
+        if ("@ViewBag.Blockid" != 0) {
+            $("#ddlBlock").val("@ViewBag.Blockid");
+            $('#ddlBlock').trigger('change');
+        }
+        if ("@ViewBag.GPId" != 0) {
+            $("#ddlGp").val("@ViewBag.GPId");
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+            data: { blockid: blockid },
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    result = data.data;
+                }
+            }
+        });
+        return result;
+    }
+</script>
+<script>
+    $('#btnsrchfilter').click(function () {
+        var GPId = $("#ddlGp").val();
+        var DistId = $("#ddlDist").val();
+        var BlockId = $("#ddlBlock").val();
+        window.location.href = '@Url.Action("Block_Dist_Reg_ReportsView1", "MISReports")?DistId=' + DistId + '&BlockId=' + BlockId + '&GPId=' + GPId;
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function reset() {
+        window.location.href = '@Url.Action("Block_Dist_Reg_ReportsView", "MISReports")?Glink=' + 17 + '&Plink=' + 23;
+    }
+</script>

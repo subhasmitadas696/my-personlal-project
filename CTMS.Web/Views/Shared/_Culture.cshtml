@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@inject Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.RequestLocalizationOptions> locoptions
+@{
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
+    var cultureList = locoptions.Value.SupportedCultures!.Select(x => new { Value = x.Name, Text = localizer.GetString(x.NativeName) }).ToList();
+    var returnUrl = string.IsNullOrWhiteSpace(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+}
+
+<div>
+    @foreach (var cultureItem in cultureList)
+    {
+        <a class="lang-changer small-border header-utilities__setting-item" asp-action="CultureManagement" asp-controller="Home" asp-route-culture="@cultureItem.Value" asp-route-returnUrl="@returnUrl">
+            <span class="icon-lang"></span>
+            @cultureItem.Text
+        </a>
+    }
+</div>
+

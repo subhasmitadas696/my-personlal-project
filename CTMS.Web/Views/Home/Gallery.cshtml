@@ -1,0 +1,155 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    var Data = ViewBag.Gallery;
+}
+<style>
+    .img-card-list {
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    } 
+    .img-card-list .card {
+        overflow: hidden;
+        transition: .3s;
+    } 
+    .img-card-list .card a {
+        color: var(--bs-body-color);
+    } 
+    .img-card-list .card:hover a {
+        color: var(--bs-primary);
+    }
+    .card-img {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+    .img-card-list .card-img__icon {
+        color: var(--bs-white);
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+    } 
+    .nav-tabs .nav-link {
+        font-size: 1.25rem;
+    }
+    @@media (max-width: 576px) {
+        .img-card-list {
+            grid-template-columns: repeat(2,1fr);
+        }
+        .card-img {
+            height: 110px;
+        }
+    }
+    @@media (max-width: 320px) {
+        .img-card-list {
+            grid-template-columns: repeat(1,1fr);
+        }
+        .card-img {
+            height: 140px;
+        }
+    }
+</style>
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">Gallery</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">Home</a></li>
+                <li class="breadcrumb-item active">Gallery</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        <ul class="nav nav-tabs" id="galleryTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="fb-tab" data-bs-toggle="tab" data-bs-target="#fb-tab-pane" type="button" role="tab" aria-controls="fb-tab-pane" aria-selected="true" onclick="return GalleryBind(1, this.id)">Photos</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="twiter-tab" data-bs-toggle="tab" data-bs-target="#twiter-tab-pane" type="button" role="tab" aria-controls="twiter-tab-pane" aria-selected="false" onclick="GalleryBind(2,this.id)">Videos</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="galleryTabContent">
+            @if (Data != null)
+            {
+                <div class="img-card-list" id="Photo">
+                    @foreach (var list in Data)
+                    {
+                        @if (list.MediaType == 1)
+                        {
+                            <div class="card">
+                                <div class="card-img">
+                                    <div class="card-img__icon"> 
+                                        <i class="bi bi-images"></i>
+                                    </div>
+                                    <img src="@Url.Content("~/")@list.Path" class="d-block img-fluid w-100" alt="Gallery Image" />
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <a onclick="PhotoGallery(@list.Id,@list.MediaType,'@list.GalleryName')" href="javascript:;" class="stretched-link text-decoration-none">@list.GalleryName   (<small>@list.ImageCount</small> Photos)</a>
+                                      
+                                    </h6>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="card">
+                                <div class="card-img">
+                                    <div class="card-img__icon">
+                                        <small>@list.VideoCount</small>
+                                        <i class="bi bi-file-play"></i>
+                                    </div>
+                                    <img src="@Url.Content("~/")@list.Path" class="d-block img-fluid w-100" alt="Gallery Image" />
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a onclick="PhotoGallery(@list.Id,@list.MediaType,'@list.GalleryName')" href="javascript:;" class="stretched-link text-decoration-none">@list.GalleryName  (<small>@list.VideoCount</small> Videos) </a>
+                                       
+                                    </h5>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        var id = sessionStorage.getItem("TabActiveid")
+        if (id == null) {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.getElementById("fb-tab").classList.add('active');
+        }
+        else {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+    });
+    function GalleryBind(id, activeid) {
+        sessionStorage.setItem("TabActiveid", activeid)
+        var actionUrl = '@Url.Content("~/")' + 'Home/Gallery?Id=' + id;
+        window.location.href = actionUrl;
+    }
+    function PhotoGallery(id, MediaType,GalleryName) {
+        if (MediaType == 1) {
+            var actionUrl = '@Url.Content("~/")' + 'Home/PhotoGallery?Id=' + id + '&MediaType=' + MediaType + '&GalleryName=' + GalleryName;
+        }
+        else {
+            var actionUrl = '@Url.Content("~/")' + 'Home/VideoGallery?Id=' + id + '&MediaType=' + MediaType + '&GalleryName=' + GalleryName;
+        }
+        window.location.href = actionUrl;
+    }
+</script>
+

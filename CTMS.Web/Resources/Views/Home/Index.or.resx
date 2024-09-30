@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About us" xml:space="preserve">
+    <value>ଆମ ବିଷୟରେ</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>ଠିକଣା</value>
+  </data>
+  <data name="Audience Engagement" xml:space="preserve">
+    <value>ଦର୍ଶକଙ୍କ ଯୋଗଦାନ</value>
+  </data>
+  <data name="Awards/ Honors" xml:space="preserve">
+    <value>ପୁରସ୍କାର / ସମ୍ମାନ</value>
+  </data>
+  <data name="Contact Us" xml:space="preserve">
+    <value>ଆମ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ</value>
+  </data>
+  <data name="Copyright Policy" xml:space="preserve">
+    <value>କପିରାଇଟ୍ ନିୟମ</value>
+  </data>
+  <data name="CTMS elaborates &amp; provides a clear picture for all details of intends to be a repository of all cultural activities with deputation of respective cultural troupe to the respective organization with access to relevant stakeholders which fulfils the requirement." xml:space="preserve">
+    <value>ସମସ୍ତ ସାଂସ୍କୃତିକ କାର୍ଯ୍ୟକଳାପର ସଂଗ୍ରହାଳୟ ହେବାକୁ ଇଚ୍ଛା କରୁଥିବା ସମସ୍ତ ବିବରଣୀ ପାଇଁ CTMS ବିସ୍ତୃତ ଏବଂ ଏକ ସ୍ପଷ୍ଟ ଚିତ୍ର ପ୍ରଦାନ କରେ ଯାହା ସମ୍ପୃକ୍ତ ହିତାଧିକାରୀଙ୍କ ସହ ସମ୍ପୃକ୍ତ ସଂସ୍ଥାକୁ ସମ୍ପୃକ୍ତ ସାଂସ୍କୃତିକ ସଂଘ ପ୍ରତିନିଧିତ୍। କରେ ଯାହା ଆବଶ୍ୟକତା ପୂରଣ କରେ |</value>
+  </data>
+  <data name="Cultivating Success: Navigating the Features and Benefits of Kala Sanskruti Sangha Management System for Organizational Harmony" xml:space="preserve">
+    <value>ସଫଳତା ବୃଦ୍ଧି: ସାଂଗଠନିକ ସୌହାର୍ଦ୍ଦ୍ୟ ପାଇଁ କଳା ସଂସ୍କୃତି ସଂଘ ପରିଚାଳନା ବ୍ୟବସ୍ଥାର ବୈଶିଷ୍ଟ୍ୟ ଓ ଉପକାରିତା</value>
+  </data>
+  <data name="Effective IEC campaign on key developmental schemes of the Government" xml:space="preserve">
+    <value>ସରକାରଙ୍କ ପ୍ରମୁଖ ବିକାଶମୂଳକ ଯୋଜନା ଉପରେ ପ୍ରଭାବଶାଳୀ IEC ଅଭିଯାନ </value>
+  </data>
+  <data name="Empowering Creativity and  Navigating Artistic Excellence: A Statistical Overview of Kala Sanskruti Sangha" xml:space="preserve">
+    <value>ସୃଜନଶୀଳତାକୁ ସଶକ୍ତ କରିବା ଏବଂ କଳାତ୍ମକ ଉତ୍କର୍ଷକୁ ନେଭିଗେଟ୍ କରିବା: କଳା ସଂସ୍କୃତି ସାଙ୍ଗର ଏକ ପରିସଂଖ୍ୟାନ ସମୀକ୍ଷା</value>
+  </data>
+  <data name="Enter Acknowledgement number" xml:space="preserve">
+    <value>ସ୍ୱୀକୃତି ସଂଖ୍ୟା ପୂରଣ କରନ୍ତୁ</value>
+  </data>
+  <data name="Facebook" xml:space="preserve">
+    <value>ଫେସବୁକ୍</value>
+  </data>
+  <data name="Faq" xml:space="preserve">
+    <value>ଏଫଏକ୍ୟୁ</value>
+  </data>
+  <data name="Features &amp;amp; Benefits" xml:space="preserve">
+    <value>ବୈଶିଷ୍ଟ୍ୟ ଏବଂ ଲାଭ</value>
+  </data>
+  <data name="Following are the benefits of Kala Sanskruti Sangha Management System" xml:space="preserve">
+    <value>କଳା ସଂସ୍କୃତି ସଂଘ ମ୍ୟାନେଜମେଣ୍ଟ ସିଷ୍ଟମର ଲାଭଗୁଡ଼ିକ ନିମ୍ନରେ ଦିଆଯାଇଛି |</value>
+  </data>
+  <data name="Get cultural program call at your own area from Govt authority." xml:space="preserve">
+    <value>ସରକାରୀ କର୍ତ୍ତୃପକ୍ଷଙ୍କ ଠାରୁ ନିଜ ଅଞ୍ଚଳରେ ସାଂସ୍କୃତିକ କାର୍ଯ୍ୟକ୍ରମ କଲ୍ ପାଆନ୍ତୁ |</value>
+  </data>
+  <data name="Help &amp; Support" xml:space="preserve">
+    <value>ସହାୟତା ଏବଂ ସମର୍ଥନ</value>
+  </data>
+  <data name="Hyperlinking Policy" xml:space="preserve">
+    <value>ହାଇପର୍ ଲିଙ୍କ୍ ନିୟମ</value>
+  </data>
+  <data name="Important Links" xml:space="preserve">
+    <value>ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ ଲିଙ୍କ୍</value>
+  </data>
+  <data name="Integration and unity among artiste and cultural troupes" xml:space="preserve">
+    <value>କଳାକାର ଏବଂ ସାଂସ୍କୃତିକ ସଂଘ ମଧ୍ୟରେ ଏକତା ଏବଂ ଏକତା |</value>
+  </data>
+  <data name="Kala Sanskruti Sangha" xml:space="preserve">
+    <value>କଳା ସଂସ୍କୃତି ସଂଘ</value>
+  </data>
+  <data name="Kala Sanskruti Sangha Management System" xml:space="preserve">
+    <value>କଳା ସଂସ୍କୃତି ସଂଘ ପରିଚାଳନା ବ୍ୟବସ୍ଥା</value>
+  </data>
+  <data name="Know More" xml:space="preserve">
+    <value>ଅଧିକ ଜାଣନ୍ତୁ</value>
+  </data>
+  <data name="Know your Status" xml:space="preserve">
+    <value>ଆପଣଙ୍କର ସ୍ଥିତି ଜାଣନ୍ତୁ</value>
+  </data>
+  <data name="KSSMS elaborates and provides a clear picture of the cultural troupe repository, details of troupe registration at BKSS, IEC programming, and payments of Cultural Troupes at BKSS level. Provides information on activities of Artiste Federation at Block, District &amp; State level." xml:space="preserve">
+    <value>KSSMS ବିସ୍ତୃତ ସୂଚନା ଏବଂ ସାଂସ୍କୃତିକ ସଂଘ  ସଂଗ୍ରହାଳୟର ସ୍ପଷ୍ଟ ଚିତ୍ର, BKSS ରେ ସଂଘ  ପଞ୍ଜୀକରଣର ବିବରଣୀ, IEC ପ୍ରୋଗ୍ରାମିଂ ଏବଂ BKSS ସ୍ତରରେ ସାଂସ୍କୃତିକ ସଂଘ ଦେୟ ପ୍ରଦାନ କରିଥାଏ | ବ୍ଲକ, ଜିଲ୍ଲା ଏବଂ ରାଜ୍ୟ ସ୍ତରରେ କଳାକାର ସଂଘର କାର୍ଯ୍ୟକଳାପ ବିଷୟରେ ସୂଚନା ପ୍ରଦାନ କରେ |</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>ଲଗଇନ</value>
+  </data>
+  <data name="Manage your troupe details &amp; activities online." xml:space="preserve">
+    <value>ଅନଲାଇନ୍ ରେ ଆପଣଙ୍କର ଗୋଷ୍ଠୀ ବିବରଣୀ ଏବଂ କାର୍ଯ୍ୟକଳାପ ପରିଚାଳନା କରନ୍ତୁ |</value>
+  </data>
+  <data name="Media Gallery" xml:space="preserve">
+    <value>ମିଡିଆ ଗ୍ୟାଲେରୀ</value>
+  </data>
+  <data name="News &amp; Update" xml:space="preserve">
+    <value>ସମ୍ବାଦ ଏବଂ ଅପଡେଟ</value>
+  </data>
+  <data name="No. of artists" xml:space="preserve">
+    <value>କଳାକାରଙ୍କ ସଂଖ୍ୟା</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>ବିଜ୍ଞପ୍ତି</value>
+  </data>
+  <data name="Performance rating after each program conducted." xml:space="preserve">
+    <value>ପ୍ରତ୍ୟେକ ପ୍ରୋଗ୍ରାମ ପରେ କାର୍ଯ୍ୟଦକ୍ଷତା ମୂଲ୍ୟାୟନ |</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>ଫୋନ</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>ଫଟୋ</value>
+  </data>
+  <data name="Please Provide Your Acknowledgement no. to know your application status" xml:space="preserve">
+    <value>ଦୟାକରି ଆପଣଙ୍କର ସ୍ୱୀକୃତି ନମ୍ବର ପ୍ରଦାନ କରନ୍ତୁ | ଆପଣଙ୍କର ଅନୁପ୍ରୟୋଗର ସ୍ଥିତି ଜାଣିବା ପାଇଁ </value>
+  </data>
+  <data name="Privacy Policy" xml:space="preserve">
+    <value>ଗୋପନୀୟତା ନିୟମ</value>
+  </data>
+  <data name="Programs Conducted" xml:space="preserve">
+    <value>କାର୍ଯ୍ୟକ୍ରମ ପରିଚାଳିତ</value>
+  </data>
+  <data name="Promotion and Preservation of Traditional Folk Art" xml:space="preserve">
+    <value>ପାରମ୍ପାରିକ ଲୋକକଳାର ପ୍ରଚାର ଏବଂ ସଂରକ୍ଷଣ </value>
+  </data>
+  <data name="Registration" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ</value>
+  </data>
+  <data name="Set your program charges online and get paid directly to your bank account." xml:space="preserve">
+    <value>ଅନଲାଇନ୍ ରେ ଆପଣଙ୍କର ପ୍ରୋଗ୍ରାମ୍ ଚାର୍ଜ ସେଟ୍ କରନ୍ତୁ ଏବଂ ସିଧାସଳଖ ଆପଣଙ୍କର ବ୍ୟାଙ୍କ ଆକାଉଣ୍ଟକୁ ଦେୟ ଦିଅନ୍ତୁ |</value>
+  </data>
+  <data name="Social Media" xml:space="preserve">
+    <value>ସମାଜିକ ଗଣ ମାଧ୍ୟମ</value>
+  </data>
+  <data name="Statistics" xml:space="preserve">
+    <value>ପରିସଂଖ୍ୟାନ</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Supported Documents" xml:space="preserve">
+    <value>ସମର୍ଥିତ ଦସ୍ତାବିଜ</value>
+  </data>
+  <data name="Terms &amp; Conditions" xml:space="preserve">
+    <value>ସର୍ତ୍ତାବଳୀ ଏବଂ ସର୍ତ୍ତଗୁଡିକ</value>
+  </data>
+  <data name="The all-in-one solution for Managing Kala Sanskruti Sangha" xml:space="preserve">
+    <value>କଳା ସଂସ୍କୃତି ସଙ୍ଗଠନ ପରିଚାଳନା ପାଇଁ ସର୍ବ-ଅନ୍ତର୍ଭୂକ୍ତ ସମାଧାନ </value>
+  </data>
+  <data name="The all-in-one solution for Managing your Troupe" xml:space="preserve">
+    <value>ତୁମର ସଂଘ  ପରିଚାଳନା ପାଇଁ ସର୍ବ-ସମାଧାନ </value>
+  </data>
+  <data name="Total Art Forms" xml:space="preserve">
+    <value>ସମୁଦାୟ କଳା ଫର୍ମ</value>
+  </data>
+  <data name="Troupe Registered" xml:space="preserve">
+    <value>ସଂଘ ପଞ୍ଜିକରଣ</value>
+  </data>
+  <data name="Troupe Registration" xml:space="preserve">
+    <value>ସଂଘ  ପଞ୍ଜିକରଣ</value>
+  </data>
+  <data name="Twitter" xml:space="preserve">
+    <value>ଟ୍ୱିଟର</value>
+  </data>
+  <data name="Videos" xml:space="preserve">
+    <value>ଭିଡିଓ</value>
+  </data>
+  <data name="View All" xml:space="preserve">
+    <value>ସମସ୍ତ ଦେଖନ୍ତୁ </value>
+  </data>
+  <data name="View Status" xml:space="preserve">
+    <value>ସ୍ଥିତି ଦେଖନ୍ତୁ</value>
+  </data>
+  <data name="Welfare of Artists by providing livelihood support" xml:space="preserve">
+    <value>ଜୀବିକା ସହାୟତା ଯୋଗାଇ କଳାକାରଙ୍କ କଲ୍ୟାଣ </value>
+  </data>
+</root>

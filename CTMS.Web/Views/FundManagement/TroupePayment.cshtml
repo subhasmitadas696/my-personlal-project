@@ -1,0 +1,460 @@
+﻿@{
+    ViewData["Title"] = "Payment";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.TroupeReportingDetails;
+    var Data1 = ViewBag.TroupeDetails;
+    var Payment = ViewBag.PaymentConfirmation;
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@Html.AntiForgeryToken()
+<div class="back-profile mb-3">
+    <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left "></i>Back </a>
+</div>
+<div class="card card--lg">
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <h6 class="view-form-details__title mt-0">Event Details</h6>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <input type="hidden" id="hdntroupeids" value="@Data[0].TroupeId" />
+                    <input type="hidden" id="hdnassigneventid" value="@Data[0].AssignEventId" />
+                    <label for="" class="control-label">
+                        Event Title
+                    </label>
+                    <strong>
+                        @Data[0].EventTitle
+                    </strong>
+                </div>
+                <div class="col-md-4">
+                    <label for="" class="control-label">
+                        Event Date
+                    </label>
+                    <strong>
+                        @Data[0].DateOfPerform
+                    </strong>
+                </div>
+                <div class="col-md-4">
+                    <label for="" class="control-label">
+                        Address
+                    </label>
+                    <strong>
+                        @Data[0].DistrictName
+                    </strong>
+                    <div class="text-muted">@Data[0].BlockName</div>
+                    <div class="text-muted">@Data[0].GPName</div>
+
+                </div>
+            </div>
+            <h6 class="view-form-details__title">Place of Perfromance</h6>
+            <div class="table-responsive--rounded">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">Sl#</th>
+                                <th scope="col"> Village Name</th>
+                                <th scope="col">Start Time</th>
+                                <th scope="col">End Time</th>
+                                <th scope="col">Assigned Officer</th>
+                                <th scope="col">Mobile No.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                            }
+                            @foreach (var items in Data1)
+                            {
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>@items.VLGNAME</td>
+                                    <td>@items.StartTime</td>
+                                    <td>@items.EndTime</td>
+                                    <td>@items.AssignOfficerName</td>
+                                    <td>@items.AssignOfficerMobNo</td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <h6 class="view-form-details__title mt-0">Payment</h6>
+            <div class="row g-4 mb-4">
+                <div class="row g-md-4 g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlpaymenttype" name="ddlpaymenttype">
+                                <option value="0">Select Payment Type</option>
+                            </select>
+                            <label for="tdist">Payment Type<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlpaymenttype"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4" id="divpaymentmode">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlpaymentmode" name="ddlpaymentmode">
+                                <option value="0">Select Payment Mode</option>
+                            </select>
+                            <label for="tdist">Payment Mode<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlpaymentmode"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="number" name="txtAmount" id="txtAmount" class="form-control" autocomplete="off" onkeypress=" return IsNumber(event)" placeholder="Payment Amount">
+                            <label for="tdist">Payment Amount<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtAmount"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-floating">
+                            <input type="text" name="txtTransctionId" id="txtTransctionId" class="form-control " autocomplete="off" oninput="avoidFirstSpace(event)" placeholder="Transction ID">
+                            <label for="tdist">Transaction ID<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtTransctionId"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-4" id="fileUploadDiv11">
+                        <div class="form-floating">
+                            <input type="file" class="form-control" id="transctionproof" placeholder="Upload Proof" accept=".pdf, .jpg, .png, .jpeg">
+                            <label for="lbltransctionproof" id="lblsocdoc">Upload Proof<span class="text-danger">*</span></label>
+                            <span id="fileSizeNote" class="text-danger">(Recommended file size: up to 2 MB)</span><br>
+                            <span id="fileSizeNote1" class="text-danger">(Only PDF and Image files are allowed.)</span>
+                            <span class="text-danger" id="errtransctionproof"></span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button class="rounded-pill btn btn-primary btn-lg btn--animation" id="submitButton">Save</button>
+                    <button class="rounded-pill btn btn-secondary btn-lg btn--animation" id="cancelButton">Cancel</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('transctionproof').addEventListener('change', function () {
+        var fileInput = this;
+        var maxSizeInBytes = 2 * 1024 * 1024;
+
+        if (fileInput.files.length > 0) {
+            var fileSize = fileInput.files[0].size;
+            var fileType = fileInput.files[0].type;
+            var validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+            if (!validTypes.includes(fileType)) {
+                document.getElementById('errtransctionproof').innerText = 'Only PDF and Image files are allowed.';
+                fileInput.value = '';
+            }
+            else if (fileSize > maxSizeInBytes) {
+                document.getElementById('errtransctionproof').innerText = 'File size should not exceed 2 MB.';
+                fileInput.value = '';
+            }
+            else {
+                document.getElementById('errtransctionproof').innerText = '';
+            }
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('txtAmount').addEventListener('keydown', function (event) {
+        if (event.key === '.') {
+            event.preventDefault();
+        }
+    });
+    $('#txtTransctionId').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+
+        $('#ddlpaymenttype').change(function () {
+            $('#ddlpaymenttype').removeClass("is-invalid");
+            $('#errddlpaymenttype').text("");
+        });
+
+        $('#ddlpaymentmode').change(function () {
+            $('#ddlpaymentmode').removeClass("is-invalid");
+            $('#errddlpaymentmode').text("");
+        });
+
+        $('#txtAmount').change(function () {
+            $('#txtAmount').removeClass("is-invalid");
+            $('#errtxtAmount').text("");
+        });
+
+        $('#txtTransctionId').change(function () {
+            $('#txtTransctionId').removeClass("is-invalid");
+            $('#errtxtTransctionId').text("");
+        });
+
+        $('#transctionproof').change(function () {
+            $('#transctionproof').removeClass("is-invalid");
+            $('#errtransctionproof').text("");
+        });
+
+        getPaymentType();
+        $('#divpaymentmode').hide();
+    });
+    $("#ddlpaymenttype").change(function () {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlpaymenttype').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/getPaymentTypeForUpi',
+                data: { ID: $('#ddlpaymenttype').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if (result.length > 0) {
+                            $('#divpaymentmode').show();
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                            $('#ddlpaymentmode').html(thisHtml);
+                        }
+
+                        else {
+                            $('#divpaymentmode').hide();
+                        }
+                    }
+                    else {
+                        $('#ddlpaymentmode').html(thisHtml);
+                    }
+                }
+            });
+        }
+        else {
+            $('#divpaymentmode').hide();
+        }
+    });
+    $('#cancelButton').click(function () {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to cancel the Payment .",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Payment cancelled Successfully",
+                    icon: "success"
+                });
+                clear();
+            }
+        });
+    });
+    function getPaymentType() {
+        var thisHtml = '<option value="0">--Select--</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/getPaymentType',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    for (var i = 0; i < result.length; i++) {
+                        thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                    }
+                    $('#ddlpaymenttype').html(thisHtml);
+                }
+                else {
+                    $('#ddlpaymenttype').html(thisHtml);
+                }
+            }
+        });
+    }
+    $("#submitButton").on("click", function () {
+        var PaymentData = new FormData();
+        PaymentData.append("PaymentType", $('#ddlpaymenttype').val());
+        PaymentData.append("PaymentMode", $('#ddlpaymentmode').val());
+        PaymentData.append("PaymentAmount", $('#txtAmount').val());
+        PaymentData.append("TransctionID", $('#txtTransctionId').val());
+        PaymentData.append("TroupeId", $('#hdntroupeids').val());
+        PaymentData.append("AssignEventId", $('#hdnassigneventid').val());
+        PaymentData.append("STATUS", "10");
+        var transctionproof = $("#transctionproof").get(0);
+        var transctionprooffile = transctionproof.files;
+        if (transctionprooffile.length > 0) {
+            PaymentData.append("UploadProof", transctionprooffile[0]);
+        }
+        if (!PaymentValidation()) {
+            return true;
+        }
+        else {
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to save payment details.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Submit'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    AddPaymentDetails(PaymentData);
+                }
+                else {
+                    Swal.fire({
+                        title: "Payment cancelled Successfully",
+                        icon: "success"
+                    });
+                    clear();
+                }
+            });
+        }
+    });
+    function clear() {
+        $("#ddlpaymenttype").val(0);
+        $("#ddlpaymentmode").val(0);
+        $('#errddlpaymenttype').text("");
+        $("#txtAmount").val('');
+        $('#errtxtAmount').text("");
+        $("#transctionproof").val('');
+        $('#errtransctionproof').text("");
+        $('#txtTransctionId').val('');
+        $('#errtxtTransctionId').text("");
+    }
+    function PaymentValidation() {
+        if ($("#ddlpaymenttype").val() != 0) {
+            $('#ddlpaymenttype').removeClass("is-invalid");
+            $('#errddlpaymenttype').text("");
+        }
+        else {
+            $('#ddlpaymenttype').addClass("form-control shadow-sm is-invalid");
+            $('#errddlpaymenttype').text("Please Select Payment Type!");
+            $('#ddlpaymenttype').focus();
+            return false;
+        }
+        var ddlpaymenttype = $("#ddlpaymenttype").val();
+        if (ddlpaymenttype == 2) {
+            if ($("#ddlpaymentmode").val() != 0) {
+                $('#ddlpaymentmode').removeClass("is-invalid");
+                $('#errddlpaymentmode').text("");
+            }
+            else {
+                $('#ddlpaymentmode').addClass("form-control shadow-sm is-invalid");
+                $('#errddlpaymentmode').text("Please Select Payment Mode!");
+                $('#ddlpaymentmode').focus();
+                return false;
+            }
+        }
+        if ($("#txtAmount").val().trim() != "") {
+            if (parseInt($("#txtAmount").val().trim()) > 0) {
+                $('#txtAmount').removeClass("is-invalid");
+                $('#errtxtAmount').text("");
+            }
+            else {
+                $('#txtAmount').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtAmount').text("Entered Payment Amount cannot be Negative Value or 0!");
+                $('#txtAmount').focus();
+                return false;
+            }
+        }
+        else {
+            $('#txtAmount').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAmount').text("Please Enter Payment Amount!");
+            $('#txtAmount').focus();
+            return false;
+        }
+        if ($("#txtTransctionId").val().trim() != "") {
+            var input = $("#txtTransctionId").val().trim();
+            if (input.length < 5 || input.length > 30) {
+                $('#txtTransctionId').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtTransctionId').text("Transaction ID must be between 5 and 30 characters.");
+                $('#txtTransctionId').focus();
+                return false;
+            }
+            else if (input.match(/^[0]+$/)) {
+                $('#txtTransctionId').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtTransctionId').text("Transaction ID cannot contain only zeros.");
+                $('#txtTransctionId').focus();
+                return false;
+            }
+            else {
+                $('#txtTransctionId').removeClass("is-invalid");
+                $('#errtxtTransctionId').text("");
+            }
+        }
+        else {
+            $('#txtTransctionId').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtTransctionId').text("Please Enter Transaction ID!");
+            $('#txtTransctionId').focus();
+            return false;
+        }
+        if ($("#transctionproof").val().trim() != "") {
+            $('#transctionproof').removeClass("is-invalid");
+            $('#errtransctionproof').text("");
+        }
+        else {
+            $('#transctionproof').addClass("form-control shadow-sm is-invalid");
+            $('#errtransctionproof').text("Please Upload Transaction Proof!");
+            $('#transctionproof').focus();
+            return false;
+        }
+        return true;
+    }
+    function AddPaymentDetails(Data) {
+        $.ajax({
+            type: "POST",
+            url: "../FundManagement/TroupePaymentADD",
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: Data,
+            success: function (response) {
+                response = JSON.parse(response);
+                if (response.data == 1) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.message
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var url = '@Url.Action("SuccessPayment", "FundManagement", new { area = "" })';
+                            location.href = url;
+                        }
+                        else if (result.isDenied) {
+                            Swal.fire('Changes are not saved', '', 'info')
+                        }
+                    });
+                }
+                else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'waring',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!!',
+                    text: error
+                });
+            }
+        });
+    }
+</script>
+

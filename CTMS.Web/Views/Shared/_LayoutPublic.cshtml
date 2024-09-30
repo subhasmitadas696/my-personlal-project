@@ -1,0 +1,452 @@
+@using System.Security.Claims
+@{
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kala Sanskruti Sangha Management System</title>
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="">
+    <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
+    <link rel="stylesheet" href="~/css/icons.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    @*<link href="~/css/datepicker.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="~/css/styles.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+    <link href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/css/dataTables.bootstrap.min.css")" />
+    <link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+    <style>
+        .navbar {
+            box-shadow: 0px 2px 26px #e2e2e2;
+        }
+
+        #overlay-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* You can adjust the background color and opacity */
+            display: none;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- header -->
+    <header>
+        <nav class="navbar navbar-expand-xl">
+            <div class="container justify-content-end">
+                <h1>
+                    <a class="navbar-brand" href="javascript:;" title="Government of Odisha">
+                        <img src="~/images/logo.png" alt="Government of Odisha" class="navbar-brand__img">
+                    </a>
+                </h1>
+                <h5 class="page-name">
+                    @ViewData["Title"]
+                </h5>
+                <button class="navbar-toggler me-3 sidebar-toggler" type="button">
+                    <i class="bi bi-list"></i>
+                </button>
+                
+                <a href="javascript:void(0);" title="Logout" data-bs-toggle="modal" data-bs-target="#signOutModal" class="rounded-pill btn btn-primary btn-lg btn--animation">
+                    <i class="bi bi-box-arrow-right pe-1"></i> Logout
+                </a>
+
+            </div>
+        </nav>
+    </header>
+    <!-- header end-->
+    @if (@User.FindFirst("TroupeId")?.Value != null)
+    {
+        <div class="body-container container">
+
+            <div class="sidebar">
+                <div class="card troupe-profile">
+                    <div class="troupe-profile__banner">
+                        <img src="@Url.Content("~/")@ViewBag.Img" class="card-img-top" alt="profile banner">
+                    </div>
+                    <div class="card-body">
+                        <div class="text-primary">@User.FindFirst("TroupeName")?.Value</div>
+                        <small class="troupe-profile__category text-secondary">@User.FindFirst("CategoryName")?.Value / @User.FindFirst("SubCategoryName")?.Value </small>
+                        <ul class="troupe-profile__contact">
+                            <li>
+                                <i class="bi bi-telephone-outbound-fill"></i>
+                                <a>+91 @User.FindFirst("MobileNo")?.Value </a>
+                            </li>
+                            <li>
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>@User.FindFirst("DistrictName")?.Value ,@User.FindFirst("BlockName")?.Value  </span>
+                            </li>
+                        </ul>
+                        <div>
+                            <a asp-controller="Dashboard" asp-action="ProfileDashboard" id="ProfileDashboard" class="rounded-pill btn btn-primary w-100 btn-lg btn--animation">Dashboard</a>
+                            <a asp-controller="Dashboard" asp-action="MembersProfileDashboard" id="MembersProfileDashboard" class="rounded-pill btn btn-outline-primary w-100 mt-2 btn-lg btn--animation">Members Details</a>
+                            <a asp-controller="Dashboard" asp-action="TroupeReportingList" id="TroupeReportingList" class="rounded-pill btn btn-outline-primary w-100 mt-2 btn-lg btn--animation">Troupe Report</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @RenderBody()
+        </div>
+
+
+    }
+    else
+    {
+        @RenderBody()
+    }
+    <!-- footer -->
+    <footer class="footer">
+        <div class="footer__copyright">
+            <small>&copy; <span id="currentyear"></span> Odisha KSSMS. All Rights Reserved</small>
+        </div>
+    </footer>
+    <!-- Sign Out Modal -->
+    <div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h5 class="modal-title text-primary" id="signOutModalLabel">Sign Out</h5>
+                    <p class="mb-4">Are you sure you want to sign out?</p>
+                    <a asp-controller="Authentication" asp-action="TroupLogout" class="rounded-pill btn btn-primary btn-lg btn--animation">Sign Out</a>
+                    <button type="button" class="rounded-pill btn btn-secondary mr-2 btn-lg btn--animation" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- js -->
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/app.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/dataTables.buttons.min.js"></script>
+    <script src="~/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/js/buttons.print.min.js"></script>
+    <script src="~/js/buttons.html5.min.js"></script>
+    <script src="~/js/jszip.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/custom.min.js"></script>
+    <script src="~/js/moment.min-new.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const footerHeight = document.querySelector('footer').offsetHeight;
+        const bodyContainer = document.querySelector('.body-container');
+        bodyContainer.style.minHeight = `calc(100vh - ${headerHeight}px - ${footerHeight}px)`;
+
+        const navbarToggler = document.querySelector('.navbar-toggler');
+        const troupeSidebar = document.querySelector('.sidebar');
+        const rootBody = document.querySelector('body');
+        navbarToggler.addEventListener("click", () => {
+            rootBody.classList.toggle('activeSidebar');
+        });
+        $(document).ready(function () {
+            $(".main-card").css({ "minHeight": `calc(100vh - ${headerHeight}px - ${footerHeight + 32}px)` });
+        });
+
+        document.addEventListener('click', (event) => {
+            const isClickInsideSidebar = troupeSidebar.contains(event.target);
+            const isClickOnNavbarToggler = navbarToggler.contains(event.target);
+
+            if (!isClickInsideSidebar && !isClickOnNavbarToggler) {
+                rootBody.classList.remove('activeSidebar');
+            }
+        });
+
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function MobileNumber(cntr) {
+            var Mobile = /^[6-9][0-9]{9}$/;
+            var entered_no = cntr;
+            if (!Mobile.test(entered_no)) {
+                return false;
+            }
+            else
+                return true;
+        }
+        function getCategory() {
+            var thisHtml = '<option value="0">--Select--</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetCategory',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlCategory').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlCategory').html(thisHtml);
+                    }
+                }
+            });
+        }
+        function getDistrict() {
+            var thisHtml = '<option value="0">--Select--</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetDistrict',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlDist').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlDist').html(thisHtml);
+                    }
+                }
+            });
+        }
+        $("#ddlCategory").change(function () {
+            var thisHtml = '<option value="0">--Select--</option>';
+            if ($('#ddlCategory').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetSubCategory',
+                    data: { CatId: $('#ddlCategory').val()},
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlSubCategory').html(thisHtml);
+                        }
+                        else {
+                            $('#ddlSubCategory').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlSubCategory').html(thisHtml);
+            }
+        });
+        $("#ddlDist").change(function () {
+            var thisHtml1 = '<option value="0">--Select--</option>';
+            var thisHtml = '<option value="0">--Select--</option>';
+            if ($('#ddlDist').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetBlock',
+                    data: { DistCode: $('#ddlDist').val(), },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlBlock').html(thisHtml);
+                            $('#ddlGp').html(thisHtml1);
+                        }
+                        else {
+                            $('#ddlBlock').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlBlock').html(thisHtml);
+                $('#ddlGp').html(thisHtml);
+            }
+        });
+        $("#ddlBlock").change(function () {
+            var thisHtml = '<option value="0">--Select--</option>';
+            if ($('#ddlBlock').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetGP',
+                    data: { BlockCode: $('#ddlBlock').val() },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+                            $('#ddlGp').html(thisHtml);
+                        }
+                        else {
+                            $('#ddlGp').html(thisHtml);
+
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlGp').html(thisHtml);
+            }
+        });
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function Datatable() {
+            var dtable = $('#datatable').DataTable({
+                "destroy": true,
+                "language": {
+                    "emptyTable": 'No Matching Record Found.!',
+                    "zeroRecords": 'No Matching Record Found.!',
+                    "processing": 'Loading Data',
+                },
+                "dom": '<"row"<"col-sm-12 col-md-6 text-right"lB><"col-sm-12 col-md-6 text-right"f>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                "deferRender": true,
+                "processing": true,
+                "searching": true,
+                "bSort": false,
+                "columnDefs": [{
+                    "targets": [0],
+                    "visible": true,
+                    "searchable": false
+                }],
+                columnDefs: [{
+                    targets: 0,
+                    autoWidth: true,
+                    searchable: true,
+                    orderable: false,
+                    render: function (data, type, row, info) {
+                        return parseInt(info.row) + 1;
+                    }
+                }],
+                buttons:
+                    [{
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i> Print',
+                        title: $('h1').text(),
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        footer: true,
+                        className: 'buttons-print btn-ps btn-sm',
+                        customize: function (win) {
+                            $(win.document.head).append("<link href='/css/styles.css' rel='stylesheet'><link href='/css/Print.css' rel='stylesheet'><link rel='stylesheet' href='/css/bootstrap.min.css'>");
+                            let datetime = moment().format('DD MMM YYYY hh:mm');
+                            let createdby = '@User.FindFirst("TroupeName")?.Value.ToString()  ' + ',' + ' @User.FindFirst("MobileNo")?.Value.ToString()';
+                            $(win.document.body).prepend("<header><nav class='navbar navbar-expand-xl'><div class='container-fluid'><h1><a class='navbar-brand' title='Government of Odisha'><img src='/images/logo.png' alt='Government of Odisha' class='navbar-brand__img'></a></h1><h5 class='page-name'>@ViewData["Title"]</h5></div></nav><div class='row'><div class='col-sm-6 float-start'><label><span class='font-bold'>Created On:</span>" + datetime + "</label></div><div class='col-sm-6 float-end'><label><span class='font-bold'>Created By:</span>" + createdby + "</label></div></div></header>");
+                            $(win.document.body).find('table').addClass('table-bordered');
+                        },
+                        autoPrint: true
+                    },
+                    {
+                        extend: 'excel',
+                        title: '@ViewData["Title"]',
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        className: 'btn btn-success btn-sm mx-1',
+                        text: '<i class="icon-excel"></i> Excel',
+                        className: 'buttons-excel  btn-cs btn-sm',
+                    }, 'pdf']
+                ,
+                initComplete: function () {
+                    $('.buttons-csv').html('<i class="bi bi-filetype-csv"></i>');
+                    $('.buttons-excel').html('<i class="bi bi-file-earmark-excel-fill"></i>');
+                    $('.buttons-pdf').html('<i class="bi bi-filetype-pdf"></i>');
+                    $('.buttons-print').html('<i class="bi bi-file-earmark-text-fill"></i>');
+                    $('.buttons-print').attr('data-toggle', 'tooltip');
+                    $('.buttons-excel').attr('data-toggle', 'tooltip');
+                    $('.buttons-print').attr('title', 'print table');
+                    $('.buttons-excel').attr('title', 'export to excel');
+                    $('.buttons-print').attr('data-placement', 'right');
+                    $('.buttons-excel').attr('data-placement', 'right');
+                }
+            });
+        }
+        $(document).ready(function () {
+            setTimeout(() => {
+                    $('.dataTable').parent().parent().addClass('dt-row');
+            }, 1000);
+        })
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function avoidFirstSpace(event) {
+            const inputElement = event.target;
+            const inputValue = inputElement.value;
+
+            if (inputValue.length > 0 && inputValue.charCodeAt(0) === 32) {
+                inputElement.value = inputValue.slice(1);
+            }
+            if (inputElement.type === 'number') {
+                inputElement.value = inputValue.trimStart();
+            }
+            if (inputValue.startsWith('-')) {
+                inputElement.value = inputValue.substring(1);
+            }
+        }
+    </script>
+</body>
+
+</html>

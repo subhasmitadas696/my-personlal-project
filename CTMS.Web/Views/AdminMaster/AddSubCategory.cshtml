@@ -1,0 +1,210 @@
+﻿@model CTMS.Model.Entities.AdminMaster.Subcategory
+@{
+    ViewData["Title"] = "Add SubCategory";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+
+}
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="javascript:;" class="nav-link active">
+            Add
+        </a>
+        <a class="nav-link" asp-controller="AdminMaster" asp-action="ViewSubCategory" asp-area="">
+            View
+        </a>
+    </div>
+    <div class="card-body">
+        <input id="UserId" value="@ViewBag.UserId" class="form-control" hidden />
+        <input id="SubCategoryId" class="form-control" type="hidden" />
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select Department" id="CategoryId" asp-items="@(new SelectList(ViewBag.CatList, "CategoryId", "CategoryName"))" asp-for="CategoryId">
+                        <option value="0">Select Category</option>
+                    </select>
+                    <label for="CategoryName">Category Name</label>
+                    <small id="error-messageCategory" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" id="SubCategoryName" name="SubCategoryName" value="" class="form-control alphabetInput" placeholder="Enter Sub Category Name" autocomplete="off">
+                    <label for="SubCategoryName">Sub Category Name(EN)</label>
+                    <small id="error-messageSubCategory" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" id="OdiaSubCategoryName" name="OdiaSubCategoryName" class="form-control" placeholder="Enter Sub Category in Odia" autocomplete="off">
+                    <label for="OdiaSubCategoryName">Sub Category Name(ODIA)</label>
+                    <small id="error-messageOdiaSubCategory" class="text-danger"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div>
+                    <button id="btnSubmit" type="button" class="btn btn-secondary btn-lg" onclick="save()">Submit</button>
+                    <button id="btnCancel" class="btn btn-danger btn-lg" type="reset" value="Reset" onclick="reset()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+    $(document).ready(function () {
+        var vars = getUrlVars();
+        var subCategoryId = vars.subCategoryId;
+        if (subCategoryId !== undefined) {
+            $("#btnSubmit").html("Update");
+            $("#btnCancel").html("Cancel");
+            editSubCategory(subCategoryId);
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    
+    function save() {
+        if ($("#CategoryId").val() == '0') {
+            $('#CategoryId').removeClass("is-valid").addClass("is-invalid");
+            $('#error-messageCategory').text("Please select a Category Name!");
+            $('#CategoryId').focus();
+            return false;
+        } else {
+            $('#CategoryId').removeClass("is-invalid").addClass("is-valid");
+            $('#error-messageCategory').text("");
+        }
+
+        if ($("#SubCategoryName").val().trim() != "") {
+            $('#SubCategoryName').removeClass("is-invalid");
+            $('#error-messageSubCategory').text("");
+        }
+        else {
+            $('#SubCategoryName').addClass("form-control shadow-sm is-invalid");
+            $('#error-messageSubCategory').text("Please enter Sub Category Name!");
+            $('#SubCategoryName').focus();
+            return false;
+        }
+        if ($("#OdiaSubCategoryName").val().trim() != "") {
+            $('#OdiaSubCategoryName').removeClass("is-invalid");
+            $('#error-messageOdiaSubCategory').text("");
+        }
+        else {
+            $('#OdiaSubCategoryName').addClass("form-control shadow-sm is-invalid");
+            $('#error-messageOdiaSubCategory').text("Please enter Odia Sub Category name!");
+            $('#OdiaSubCategoryName').focus();
+            return false;
+        } 
+        var formdata = new FormData();
+            formdata.append("SubCategoryId", $('#SubCategoryId').val());
+            formdata.append("CategoryId", $('#CategoryId').val());
+            formdata.append("SubCategoryName", $('#SubCategoryName').val());
+            formdata.append("OdiaSubCategoryName", $('#OdiaSubCategoryName').val());
+            formdata.append("CreatedBy", $('#UserId').val());
+            swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to submit this form?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, submit it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Content("~/")' + 'AdminMaster/AddSubCategory',
+                        data: formdata,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestVerificationToken",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+                            if (result.state === "success") {
+                                swal.fire({
+                                    title: "Success",
+                                    text: result.message,
+                                    icon: "success"
+                                }).then(function () {
+                                    var url = '@Url.Action("ViewSubCategory", "AdminMaster", new { area = "" })';
+                                    location.href = url;
+                                });
+                            }
+                            else if (result.state === "warning") {
+                                swal.fire({
+                                    title: "Warning",
+                                    text: result.message,
+                                    icon: "warning"
+                                }).then(function () {
+                                    var url = '@Url.Action("AddSubCategory", "AdminMaster", new { area = "" })';
+                                    location.href = url;
+                                });
+                                reset();
+                            } else { }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText);
+                            swal.fire({
+                                title: "Error",
+                                text: "An error occurred. Please try again later.",
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function editSubCategory(subCategoryId) {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'AdminMaster/GetSubCategoryById?SubCategoryId=' + subCategoryId,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                $('#SubCategoryId').val(result.SubCategoryId);
+                $("#CategoryId").val(result.CategoryId);
+                $('#SubCategoryName').val(result.SubCategoryName);
+                $('#OdiaSubCategoryName').val(result.OdiaSubCategoryName);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function reset(){
+        $("#CategoryId").val(0);
+        $("#SubCategoryId").val(0);
+        $("#SubCategoryName").val("");
+        $("#OdiaSubCategoryName").val("");
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(".alphabetInput").on("input", function () {
+        var inputValue = $(this).val();
+        var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+
+        if (inputValue !== sanitizedValue) {
+            $(this).val(sanitizedValue);
+        }
+    });
+</script>

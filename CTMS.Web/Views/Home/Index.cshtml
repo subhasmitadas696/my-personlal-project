@@ -1,0 +1,407 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<link href="~/css/home.css" type="text/css" rel="stylesheet" />
+@*<link href="~/css/lightgallery-bundle.min.css" rel="stylesheet" />*@
+<link href="~/css/lightgallery.css" rel="stylesheet" />
+<!-- banner -->
+<section class="banner">
+    <div class="container">
+        <img src="~/images/banner-pattern2.png" alt="Banner pattern" class="banner__pattern-img d-none d-lg-block" />
+        <div class="banner__container">
+            <div class="banner__descripttion">
+                <h2 class="banner__title wow fadeInDown" data-wow-delay=".5s">@Localizer["The all-in-one solution for Managing Kala Sanskruti Sangha"]</h2>
+                <p class="wow fadeInDown" data-wow-delay=".7s">@Localizer["KSSMS elaborates and provides a clear picture of the cultural troupe repository, details of troupe registration at BKSS, IEC programming, and payments of Cultural Troupes at BKSS level. Provides information on activities of Artiste Federation at Block, District & State level."]</p>
+                <div class="banner__btn wow fadeInDown" data-wow-delay="1s">
+                    <a asp-controller="Home" asp-action="AboutUs" asp-area="" title="Know More" class="rounded-pill btn btn-outline-light btn--animation me-2">@Localizer["Know More"]</a>
+                    <a asp-controller="Registration" asp-action="TroupeRegistration" asp-area="" class="rounded-pill btn btn-primary btn--animation" title="Troupe Registration">@Localizer["Troupe Registration"]</a>
+                </div>
+            </div>
+            <div id="bannerCarousel" class="carousel slide wow fadeInDown" data-wow-delay=".3s" data-bs-ride="carousel">
+                <div class="carousel-inner" id="bannerbind">
+                </div>
+                <button class="carousel-control-prev banner__prev-icon" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+                    <i class="bi bi-arrow-left-circle"></i>
+                </button>
+                <button class="carousel-control-next banner__next-icon" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+                    <i class="bi bi-arrow-right-circle"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- banner end -->
+<section class="know-your-status section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h3 class="section__heading text-center wow fadeInUp" data-wow-delay=".3s">@Localizer["Know your Status"]</h3>
+                <p class="text-center wow fadeInUp" data-wow-delay=".6s">
+                    @Localizer["Please Provide Your Acknowledgement no. to know your application status"]
+                </p>
+            </div>
+            <div class="col-lg-9">
+                <form asp-controller="Home" asp-action="ViewStatus" asp-area="" method="get">
+                    <div class="know-your-status__search">
+                        <input type="text" class="form-control" name="acknowledgmentNumber" autocomplete="off" placeholder="@Localizer["Enter Acknowledgement number"]" id="txtackno">
+                        <button type="submit" class="btn btn-primary rounded-pill btn--animation" onclick="return validation()">@Localizer["View Status"]</button>
+                    </div>
+                    <span class="text-danger" id="errAckNo"></span>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- features -->
+<section class="features section">
+    <div class="container">
+        <h3 class="section__heading text-center wow fadeInUp" data-wow-delay=".05s">@Localizer["Features &amp; Benefits"]</h3>
+        <p class="text-center wow fadeInUp" data-wow-delay=".1s">
+            @Localizer["Cultivating Success: Navigating the Features and Benefits of Kala Sanskruti Sangha Management System for Organizational Harmony"]
+        </p>
+        <div class="card-group features__card-group">
+            <div class="card features__card wow fadeInUp" data-wow-delay=".2s">
+                <div class="card-body">
+                    <div class="features__card__imgbox">
+                        <img src="~/images/feature-img1.png" alt="Features & Benefits">
+                    </div>
+                    <span>@Localizer["Promotion and Preservation of Traditional Folk Art"]</span>
+                </div>
+            </div>
+            <div class="card features__card  wow fadeInUp" data-wow-delay=".4s">
+                <div class="card-body">
+                    <div class="features__card__imgbox">
+                        <img src="~/images/feature-img2.png" alt="Features & Benefits" style="height: 40px;">
+                    </div>
+                    <span>@Localizer["Welfare of Artists by providing livelihood support"]</span>
+                </div>
+            </div>
+            <div class="card features__card  wow fadeInUp" data-wow-delay=".6s">
+                <div class="card-body">
+                    <div class="features__card__imgbox">
+                        <img src="~/images/feature-img3.png" alt="Features & Benefits">
+                    </div>
+                    <span>@Localizer["Effective IEC campaign on key developmental schemes of the Government"]</span>
+                </div>
+            </div>
+            <div class="card features__card  wow fadeInUp" data-wow-delay=".8s">
+                <div class="card-body">
+                    <div class="features__card__imgbox">
+                        <img src="~/images/feature-img4.png" alt="Features & Benefits" style="height: 40px;">
+                    </div>
+                    <span>@Localizer["Integration and unity among artiste and cultural troupes"]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- features end -->
+<!-- Statistics -->
+<section class="statistics section">
+    <div class="container">
+        <h3 class="section__heading text-center wow fadeInUp" data-wow-delay=".2s">@Localizer["Statistics"]</h3>
+        <p class="text-center wow fadeInUp" data-wow-delay=".3s">
+            @Localizer["Empowering Creativity and  Navigating Artistic Excellence: A Statistical Overview of Kala Sanskruti Sangha"]
+        </p>
+        @if (@ViewBag.CountDetails != null)
+        {
+            <div class="statistics__data">
+                <div class="statistics__information">
+                    <span class="icon-stats1 statistics__icon wow pulse animated" data-wow-delay=".3s"></span>
+                    <div class="statistics__data__no">@ViewBag.CountDetails.TroupeRegistered</div>
+                    <span>@Localizer["Troupe Registered"]</span>
+                </div>
+                <div class="statistics__information">
+                    <span class="icon-stats2 statistics__icon wow pulse animated" data-wow-delay=".6s"></span>
+                    <div class="statistics__data__no">@ViewBag.CountDetails.TotalEvents</div>
+                    <span>@Localizer["Programs Conducted"]</span>
+                </div>
+                <div class="statistics__information">
+                    <span class="icon-stats1 statistics__icon wow pulse animated" data-wow-delay=".9s"></span>
+                    <div class="statistics__data__no">@ViewBag.CountDetails.NoOfArtists</div>
+                    <span>@Localizer["No. of artists"]</span>
+                </div>
+                <div class="statistics__information">
+                    <span class="icon-stats2 statistics__icon wow pulse animated" data-wow-delay="1.2s"></span>
+                    <div class="statistics__data__no">@ViewBag.CountDetails.TotalArtForms</div>
+                    <span>@Localizer["Total Art Forms"]</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="statistics__data">
+                <div class="statistics__information">
+                    <span class="icon-stats1 statistics__icon wow pulse animated" data-wow-delay=".3s"></span>
+                    <div class="statistics__data__no">0</div>
+                    <span>@Localizer["Troupe Registered"]</span>
+                </div>
+                <div class="statistics__information">
+                    <span class="icon-stats2 statistics__icon wow pulse animated" data-wow-delay=".6s"></span>
+                    <div class="statistics__data__no">0</div>
+                    <span>@Localizer["Programs Conducted"]</span>
+                </div>
+                <div class="statistics__information">
+                    <span class="icon-stats1 statistics__icon wow pulse animated" data-wow-delay=".9s"></span>
+                    <div class="statistics__data__no">0</div>
+                    <span>@Localizer["Audience Engagement"]</span>
+                </div>
+                <div class="statistics__information">
+                    <span class="icon-stats2 statistics__icon wow pulse animated" data-wow-delay="1.2s"></span>
+                    <div class="statistics__data__no">0</div>
+                    <span>@Localizer["Art Forms"]</span>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+<!-- Statistics end -->
+<!-- media -->
+<section class="media section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h3 class="section__heading wow fadeInUp" data-wow-delay=".2s">@Localizer["Media Gallery"]</h3>
+                <ul class="nav nav-tabs social-tab" id="socialMedia" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link social-tab__link active" id="photos-tab" data-bs-toggle="tab" data-bs-target="#photos-tab-pane" type="button" role="tab" aria-controls="photos-tab-pane" aria-selected="true" onclick="mediabind(1)">@Localizer["Photos"]</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link social-tab__link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos-tab-pane" type="button" role="tab" aria-controls="videos-tab-pane" aria-selected="false" onclick="mediabind(2)">@Localizer["Videos"]</button>
+                    </li>
+                    <li class="ms-auto">
+                        <a asp-controller="Home" asp-action="Gallery" asp-area="" class="btn btn-primary btn-sm rounded-pill">
+                            @Localizer["View All"]
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content wow fadeInUp" data-wow-delay=".6s" id="socialMediaContent">
+                    <div class="tab-pane fade show active" id="photos-tab-pane" role="tabpanel" aria-labelledby="photos-tab" tabindex="0">
+                        <div id="homeGallery" class="home-gallery">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="videos-tab-pane" role="tabpanel" aria-labelledby="videos-tab" tabindex="0">
+                        <div id="gallery-videojs" class="home-gallery">  
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <h3 class="section__heading mt-3 mt-lg-0 wow fadeInUp" data-wow-delay=".2s">@Localizer["Social Media"]</h3>
+                <ul class="nav nav-tabs social-tab" id="socialMedia" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link social-tab__link active" id="fb-tab" data-bs-toggle="tab" data-bs-target="#fb-tab-pane" type="button" role="tab" aria-controls="fb-tab-pane" aria-selected="true">@Localizer["Facebook"]</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link social-tab__link" id="twiter-tab" data-bs-toggle="tab" data-bs-target="#twiter-tab-pane" type="button" role="tab" aria-controls="twiter-tab-pane" aria-selected="false">@Localizer["Twitter"]</button>
+                    </li>
+                </ul>
+                <div class="tab-content social__content wow fadeInUp" data-wow-delay=".6s" id="socialMediaContent">
+                    <div class="tab-pane fade show active" id="fb-tab-pane" role="tabpanel" aria-labelledby="fb-tab" tabindex="0">
+                        <div class="fb-page" data-href="https://www.facebook.com/culturedeptt/" data-tabs="timeline" data-width="420" data-height="400" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                            <blockquote cite="https://www.facebook.com/culturedeptt/" class="fb-xfbml-parse-ignore">
+                                <a href="https://www.facebook.com/culturedeptt/" target="_blank">@Localizer["Kala Sanskruti Sangha Management System"]</a>
+                            </blockquote>
+                        </div>
+                        <div id="fb-root"></div>
+                        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v12.0" nonce="uG2bsk6JIH923nsvp01n24KE"></script> 
+                        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js?hash=c6e11171625dcd079ab767f694088670" nonce="uG2bsk6JIH923nsvp01n24KE"></script>
+                    </div>
+                    <div class="tab-pane fade" id="twiter-tab-pane" role="tabpanel" aria-labelledby="twiter-tab" tabindex="0">
+                        <a class="twitter-timeline" data-width="100%" data-height="400" data-theme="light" href="https://twitter.com/culturedeptt?lang=en" target="_blank">@Localizer["Kala Sanskruti Sangha Management System"]</a>
+                        <script async src="https://platform.twitter.com/widgets.js" nonce="uG2bsk6JIH923nsvp01n24KE" charset="utf-8"></script>
+                        <script async src="https://platform.twitter.com/js/timeline.e108540dddc96e4b707f5cf259a582d7.js" nonce="uG2bsk6JIH923nsvp01n24KE" charset="utf-8"></script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- media end -->
+<div class="modal fade" id="videoModal" >
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Kala Sanskruti Sangha Management System</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <hr />
+                <div class="modal__video">
+                    <video controls id="webVideo" autoplay>
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/highcharts.js"></script>
+<script src="~/js/lightgallery-all.min.js"></script>
+<script nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $("#home").addClass("active");
+        var counters = $(".statistics__data__no");
+        var countersQuantity = counters.length;
+        var counter = [];
+
+        for (i = 0; i < countersQuantity; i++) {
+            counter[i] = parseInt(counters[i].innerHTML);
+        }
+
+        var count = function (start, value, id) {
+            var localStart = start;
+            setInterval(function () {
+                if (localStart < value) {
+                    localStart++;
+                    counters[id].innerHTML = localStart;
+                }
+            }, .5);
+        }
+
+        for (j = 0; j < countersQuantity; j++) {
+            count(0, counter[j], j);
+        }
+    });
+</script>
+<script nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        getBanner();
+        mediabind(1);
+        $('#homeGallery').lightGallery();
+        $('#gallery-videojs').lightGallery();
+
+
+    });
+    function getBanner() {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Home/GetBanner',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    var thisHtml = '';
+                    for (var i = 0; i < result.length; i++) {
+                        var photopath = "@Url.Content("~/")" + result[i].BannerPath;
+                        var isActive = i === 0 ? ' active' : '';
+                        thisHtml += '<div class="carousel-item' + isActive + '">'
+                            + '<img src="' + photopath + '" class="d-block w-100" alt="Banner Image">'
+                            + '</div>';
+                    }
+                    $('#bannerbind').html(thisHtml);
+                    $('#bannerCarousel').carousel();
+                }
+            }
+        });
+    }
+    async function mediabind(id)
+    {
+        try {
+            const data = await $.ajax({
+                url: '@Url.Content("~/")' + 'Home/GetMediaBind',
+                data: { MediaType: id },
+                type: "get",
+                dataType: "json",
+                
+            });
+
+            if (data.state == "success") {
+                var result = data.data;
+                var thisHtml = '';
+                for (var i = 0; i < result.length && i < 6; i++) {
+                    if (result[i].MediaType == 1) { // For images
+                        var photopath = "@Url.Content("~/")" + result[i].Path;
+                        thisHtml += '<a class="home-gallery__item" href="' + photopath + '">'
+                            + '<img src="' + photopath + '" alt="KSSMS" />'
+                            + '<span class="home__gallery-icon">'
+                            + '<span class="icon-gallery1-expand"></span>'
+                            + '</span>'
+                            + '</a>';
+                    } else { // For videos
+                        var photopath = "@Url.Content("~/")" + result[i].Path;
+                        var videoThumbnail = await captureVideoThumbnail(photopath);
+                        thisHtml += '<a class="home-gallery__item" href="javascript:;" data-video="' + photopath +'">'
+                            + '<img src="' + videoThumbnail + '" alt="KSSMS" />' // Use the captured video thumbnail
+                            + '<span class="home__gallery-icon">'
+                            + '<span class="icon-gallery1-expand"></span>'
+                            + '</span>'
+                            + '</a>';
+
+                        $(document).on('click', '#gallery-videojs .home-gallery__item', function () {
+                                let videoUrl = '@Url.Content("~")'+ $(this).attr('data-video');
+                                $("#webVideo").attr("src", videoUrl);
+                                const videoModal = new bootstrap.Modal($('#videoModal'));
+                                videoModal.show();
+                          });
+                    }
+                }
+                $('#homeGallery').html(thisHtml);
+                $('#homeGallery').lightGallery();
+                $('#gallery-videojs').html(thisHtml);
+                $('#gallery-videojs').lightGallery();
+            }
+        } catch (error) {
+            console.error("Error fetching media data:", error);
+        }
+    }
+
+    async function captureVideoThumbnail(videoUrl) {
+        return new Promise((resolve, reject) => {
+            var video = document.createElement("video");
+            video.src = videoUrl;
+            video.preload = "metadata";
+            video.onloadedmetadata = function() {
+                video.currentTime = 1;
+                video.onseeked = function() {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    var context = canvas.getContext("2d");
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    resolve(canvas.toDataURL("image/jpeg"));
+                };
+            };
+            video.onerror = function(error) {
+                reject(error);
+            };
+            video.load();
+        });
+    }
+    $('#videoModal').on('hidden.bs.modal', function (e) {
+        $('.modal-backdrop').remove();
+    });
+</script>
+<script nonce="uG2bsk6JIH923nsvp01n24KE">
+    function validation() {
+        var txtackno = $("#txtackno").val();
+        if (txtackno == "") {
+            $("#txtackno").addClass("form-control shadow-sm is-invalid");
+            $("#errAckNo").text("Please Enter Acknowledgement Number!!");
+            return false;
+        } else {
+            $("#txtackno").removeClass("is-invalid");
+            $("#errAckNo").text("");
+            return true;
+        }
+    }
+</script>
+@if (ViewBag.NoDataFound != null && ViewBag.NoDataFound)
+{
+    <script nonce="uG2bsk6JIH923nsvp01n24KE">
+        document.addEventListener('DOMContentLoaded', function () {
+            new swal({
+                title: 'No Data Found!',
+                text: 'The requested data was not found.',
+                icon: 'error',
+                button: 'OK'
+            });
+        });
+    </script>
+} 

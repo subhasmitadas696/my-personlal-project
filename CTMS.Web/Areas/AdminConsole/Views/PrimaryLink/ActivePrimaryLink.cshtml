@@ -1,0 +1,24 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.PrimaryLink.Primary
+@{
+    ViewBag.Title = "ActivePrimaryLink";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+
+
+<div>
+    <p>
+        Please confirm you want to Active  Primary Link:
+        <b> @Model.PlinkName? </b>
+    </p>
+</div>
+
+
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="Active" /> |
+        @Html.ActionLink("Back to List", "ViewActivePrimaryLink")
+    </p>
+}
+
+

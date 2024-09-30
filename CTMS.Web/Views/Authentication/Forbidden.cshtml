@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Acces Forbidden";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+<style>
+    .subtitle {
+        font-size: calc(24px + (32 - 24) * (100vw - 375px) / (1920 - 375));
+        text-align: center;
+        font-weight: 100;
+    }
+
+    .large-no {
+        text-align: center;
+        font-size: calc(120px + (240 - 120) * (100vw - 375px) / (1920 - 375));
+        font-weight: 100;
+        line-height: 1;
+        color: rgba(209, 86, 66,.28);
+    }
+</style>
+<div class="innerpage-container">
+    <div class="container">
+        <div class="large-no">403</div>
+        <div class="subtitle">Access Forbidden.</div>
+        <div class="text-center mt-4">
+            <a class="btn btn-primary" href="javascript:;" title="Go Back" onclick="window.history.back()">Go Back</a>
+        </div>
+    </div>
+</div>

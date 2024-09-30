@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<CTMS.Model.Entities.Master.ApplicationStatusByAckNo>
+<link href="~/css/ViewStatus.css" rel="stylesheet" />
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">View Status</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">Home</a></li>
+                <li class="breadcrumb-item active">View Status</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        <div class="statusBox">
+            <div class="statusBoxLength">
+                <div class="status-tracking approved">
+                    <span class="is-complete"></span>
+                    <div>
+                        <div class="status-title">@Model[0].GroupName</div>
+                        <small class="text-muted">@Model[0].GrpCreatedOn</small>
+                    </div>
+                </div>
+                @if (Model[0].ApprovedStatus == 1)
+                {
+                    <div class="status-tracking approved">
+                        <span class="is-complete"></span>
+                        <div>
+                            <div class="status-title">
+                                Block Level Officer
+                            </div>
+                            <small class="text-muted">@Model[0].ApprovedOnBSSO</small><br />
+                            <small class="text-muted"><b>@Model[0].Remarks</b></small>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="status-tracking rejected">
+                        <span class="is-complete"></span>
+                        <div>
+                            <div class="status-title">
+                                Block Level Officer
+                            </div>
+                            <small class="text-muted">@Model[0].ApprovedOnBSSO</small><br />
+                            <small class="text-muted"><b>@Model[0].Remarks</b></small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

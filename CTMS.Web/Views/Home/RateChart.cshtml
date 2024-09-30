@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "RateChart";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+@Html.AntiForgeryToken()
+
+<style>
+
+
+    #Side {
+        margin-left: 100px;
+        margin-right: 1100px;
+        margin-top: 50px;
+    }
+
+    .table-responsive--rounded {
+        white-space: normal;
+    }
+
+   
+</style>
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">
+            @Localizer["RateChart"]
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">@Localizer["Home"]</a></li>
+                <li class="breadcrumb-item active">@Localizer["Rate Chart"]</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+       
+        <div class="nav nav-tabs card--lg__tabs mb-3" id="nav-tab">
+            <a class="nav-link" href="../Home/Faq" title="FAQs">@Localizer["FAQs"]</a>
+
+            <a class="nav-link active" href="../Home/RateChart" title="RateChart">@Localizer["Rate Chart"]</a>
+
+            <div class="ms-auto">
+                <button id="exportBtn" onclick="tableToExcel()" class="btn btn-secondary btn-sm me-2 px-2" title="Excel" type="button">
+                    <i class="bi bi-file-earmark-excel"></i>
+                </button>
+                <button id="exportBtnPdf" class="btn btn-primary btn-sm px-2" title="Print" href="javascript:void(0);">
+                    <i class="bi bi-printer"></i>
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive--rounded">
+            <div class="table-responsive" id="printdata">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th colspan="6" class="text-center">
+                                Payment structure of cultural troupes for IEC program
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                            </th>
+                            <th>
+                            </th>
+                            <th>
+                            </th>
+                            <th colspan="3" class="text-center">
+                                Payment for three programs in a day
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="width: 50px">
+                                Sl#
+                            </th>
+                            <th>
+                                Name of the art form
+                            </th>
+                            <th style="width: 100px">
+                                No of artist in a troupe
+                            </th>
+                            <th style="width: 100px">
+                                Remuneration <small>(Rs.)</small>
+                            </th>
+                            <th style="width: 100px">
+                                Contingency <small>(Rs.)</small>
+                            </th>
+                            <th style="width: 100px">
+                                Total <small>(Rs.)</small>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        LoadData();
+        $("#Faq").addClass("active");
+    });
+
+    function LoadData() {
+        $.ajax({
+            url: "@Url.Action("RateChartDt", "Home", new {area=""})",
+            type: 'GET',
+            dataType: "json",
+            beforeSend: function (xhr) {
+                $("#overlay").show();
+            },
+            success: function (data) {
+                var tableBody = $('#bindtable');
+                tableBody.empty();
+                var slno = 0;
+                var trows = "";
+                var htm = '';
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        slno = slno + 1;
+
+                        htm += '<tr>';
+                        htm += '<td>' + slno + '</td>';
+                        htm += '<td>' + data[i].categoryName + '</td>';
+                        htm += '<td>' + data[i].noOfArtist + '</td>';
+                        htm += '<td>' + data[i].remuneration + '</td>';
+                        htm += '<td>' + data[i].contingency + '</td>';
+                        htm += '<td>' + data[i].total + '</td>';
+                        htm += '</tr>';
+                    }
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+                $('#bindtable').append(htm);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#exportBtnPdf').click(function () {
+        $('#printdata').printThis({
+            header: '<div class="mb-2 d-flex align-items-center justify-content-between"><h4 class="d-flex align-items-center"><img src="../images/logo.png" width="70" class="mr-2"></h4></div>'
+        });
+
+    });
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    
+    function tableToExcel() {
+        var table = document.getElementById('datatable');
+        var rows = table.getElementsByTagName('tr');
+        var csvContent = [];
+        var headers = rows[2].querySelectorAll('th');
+        var headersData = Array.from(headers).map(header => `"${header.innerText.trim()}"`);
+        csvContent.push(headersData.join(','));
+        var bodyRows = document.getElementById('bindtable').getElementsByTagName('tr');
+        for (var i = 0; i < bodyRows.length; i++) {
+            var row = [];
+            var cols = bodyRows[i].querySelectorAll('td');
+            for (var j = 0; j < cols.length; j++) {
+                row.push('"' + cols[j].innerText.trim() + '"');
+            }
+            csvContent.push(row.join(','));
+        }
+        var csv = csvContent.join('\n');
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        if (navigator.msSaveBlob) { // IE 10+
+            navigator.msSaveBlob(blob, 'Payment Structure.csv');
+        } else {
+            var link = document.createElement('a');
+            if (link.download !== undefined) {
+                var url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'Payment Structure.csv'); // Set the download filename
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+</script>
+
