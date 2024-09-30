@@ -1,0 +1,34 @@
+.drawflow,.drawflow .parent-node{position:relative}.parent-drawflow{display:flex;overflow:hidden;touch-action:none;outline:0}.drawflow{width:100%;height:500px;user-select:none}.drawflow .drawflow-node{display:flex;align-items:center;position:absolute;background:#fff;width:160px;min-height:40px;border-radius:4px;border:1px solid #000;color:#000;z-index:2;padding:10px; text-align: center; }.drawflow .drawflow-node.selected{background:#fff; color: #000; box-shadow: 0 2px 20px 2px #123eb3;}.drawflow .drawflow-node:hover{cursor:move}.drawflow .drawflow-node .inputs,.drawflow .drawflow-node .outputs{width:0}.drawflow .drawflow-node .drawflow_content_node{width:100%;display:block}.drawflow .drawflow-node .input,.drawflow .drawflow-node .output{position:relative;width:20px;height:20px;background:#fff;border-radius:50%;border:1px solid #000;cursor:crosshair;z-index:1;margin-bottom:5px}.drawflow .drawflow-node .input{left:56px;top:-20px;background:#a3c9e0}.drawflow .drawflow-node .output{right:80px;top:25px}.drawflow svg{z-index:0;position:absolute;overflow:visible!important}.drawflow .connection{position:absolute;transform:translate(9999px,9999px)}.drawflow .connection .main-path{fill:none;stroke-width:1px;stroke:#000;transform:translate(-9999px,-9999px)}.drawflow .connection .main-path:hover{stroke:#1266ab;cursor:pointer}.drawflow .connection .main-path.selected{stroke:#43b993}.drawflow .connection .point{cursor:move;stroke:#000;stroke-width:2;fill:#fff;transform:translate(-9999px,-9999px)}.drawflow .connection .point.selected,.drawflow .connection .point:hover{fill:#1266ab}.drawflow .main-path{fill:none;stroke-width:5px;stroke:#4682b4}.drawflow .selectbox{z-index:3;position:absolute;transform:translate(9999px,9999px)}.drawflow .selectbox rect{fill:#00f;opacity:.5;stroke:#ff0;stroke-width:5;stroke-opacity:.5;transform:translate(-9999px,-9999px)}.drawflow-delete{position:absolute;display:block;width:30px;height:30px;background:#000;color:#fff;z-index:4;border:2px solid #fff;line-height:30px;font-weight:700;text-align:center;border-radius:50%;font-family:monospace;cursor:pointer}.drawflow>.drawflow-delete{margin-left:-15px;margin-top:15px}.parent-node .drawflow-delete{right:-15px;top:-15px}
+.action-items {
+    position: relative;
+}
+.action-items ul{
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    top: 20px;
+    right: 15px;
+    z-index: 1;
+}
+.action-items ul li {
+    background: #e7f1ff;
+    margin: 0 2px;
+    border-radius: 2px;
+    color: #fff;
+    cursor: pointer;
+}
+#drawflow {
+    position: relative;
+    width: 100%!important;
+    top: 0px!important;
+    height: 500px;
+    border: 2px solid #ccc;
+    background: var(--background-color);
+    background-size: 25px 25px;
+    background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px), linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
+}
+
+.drawflow-node .box{
+    padding: 0;
+    color: #000;
+}
