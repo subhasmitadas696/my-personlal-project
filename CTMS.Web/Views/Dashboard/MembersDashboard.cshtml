@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "MembersDashboard";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var troupedetails = ViewBag.TroupeDetails;
+    var membersdetails = ViewBag.MemberDetails;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<div class="col text-end  me-2 me-2">
+    <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+</div>
+<main class="content-body">
+    @if (troupedetails != null)
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center" style="width: 50px;">Sl#</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Aadhaar Number</th>
+                                    <th scope="col">Mobile/Email</th>
+                                    <th scope="col">Bank Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                }
+                                @foreach (var items in membersdetails)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            @count
+                                        </td>
+                                        <td>
+                                            @items.MemberName
+                                            @if (@items.IsLeader == 1)
+                                            {
+                                                <div class='text-muted'>[Leader]</div>
+                                            }
+                                            <div class="text-muted">@items.Gender</div>
+                                            <div class="text-muted">
+                                                @items.Role
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.DistrictName
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.BlockName
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.GPName
+                                            </div>
+                                        </td>
+                                        <td>@items.AadharNo</td>
+                                        <td>
+                                            <div>@items.MobileNo</div>
+                                            <div>@items.EmailId</div>
+                                        </td>
+                                        <td>
+                                            @items.BankName
+                                            <div class="text-muted">
+                                                @items.IFSC
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.BranchName
+                                            </div>
+                                            <div class="text-muted">
+                                                @items.AccountNo
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    count = count + 1;
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h1>No Records Found</h1>
+    }
+</main>

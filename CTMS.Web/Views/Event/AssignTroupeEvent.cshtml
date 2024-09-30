@@ -1,0 +1,975 @@
+﻿@{
+    ViewData["Title"] = "Assign Troupe";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var EventDetails = ViewBag.EventDetails as List<CTMS.Model.Entities.Event.EventDetails>;
+}
+<link href='~/css/calendar.css' rel='stylesheet' />
+<script src='~/js/calendar.js'></script>
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<style>
+    .note {
+        color: #ed0659;
+        padding: 10px;
+        border-radius: 5px;
+    }
+</style>
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active">
+            Assign Troupe
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <input type="hidden" id="hdneventid" value="@ViewBag.EventId" />
+        <h6 class="view-form-details__title">Event Details</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+
+                <label class="control-label">Event Title</label>
+                <strong id="lblTitle">@EventDetails[0].EventTitle</strong>
+            </div>
+            <div class="col-md-4">
+
+                <label class="control-label">Department/Scheme</label>
+                <strong id="lblDepartment">@Html.Raw(@EventDetails[0].Department)<br />@EventDetails[0].Scheme </strong>
+            </div>
+            <div class="col-md-3">
+
+                <label class="control-label">Event Date</label>
+                <strong id="lblEventDate">@EventDetails[0].StartDateTime to @EventDetails[0].EndDateTime</strong>
+
+            </div>
+        </div>
+        <h6 class="view-form-details__title">Art Form</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlCategory" name="ddlCategory">
+                        <option value="0">Select Category</option>
+                    </select>
+                    <label for="category">Category</label>
+                    <span class="text-danger" id="errddlCategory"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlSubCategory" name="ddlSubCategory">
+                        <option value="0">Select Sub-Category</option>
+                    </select>
+                    <label for="scategory">Sub-Category</label>
+                    <span class="text-danger" id="errddlSubCategory"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlTroupe" name="ddlTroupe">
+                        <option value="0">Select Troupe</option>
+                    </select>
+                    <label for="troupe">Troupe</label>
+                    <span class="text-danger" id="errddlTroupe"></span>
+                </div>
+            </div>
+        </div>
+        <h6 class="view-form-details__title">Address Information</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDist" name="ddlDist">
+                        <option value="0" selected>Select District</option>
+                    </select>
+                    <label for="tdist">District</label>
+                    <small class="text-danger" id="errddlDist"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlBlock" name="ddlBlock">
+                        <option value="0" selected>Select Block</option>
+                    </select>
+                    <label for="block">Block/ULB</label>
+                    <small class="text-danger" id="errddlBlock"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlGp" name="ddlGp">
+                        <option value="0" selected>Select Gram Panchayat</option>
+                    </select>
+                    <label for="block"> Gram Panchayat/Ward</label>
+                    <small class="text-danger" id="errddlGp"></small>
+                </div>
+            </div>
+        </div>
+        <h6 class="view-form-details__title">Event Information</h6>
+        <div class="border p-3 mb-3 rounded bg-light">
+            <div class="row g-3">
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlVillage">
+                            <option value="0" selected>Select</option>
+                        </select>
+                        <label for="category1">Village</label>
+                        <span class="text-danger" id="errddlVillage"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control alphabetInput" id="txtarea" placeholder=" ">
+                        <label for="txtarea">Place of Performance</label>
+                        <span class="text-danger" id="errtxtarea"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <input type="text" name="dateofperform" id="dateofperform" class="form-control" placeholder="" autocomplete="off" value="">
+                        <label for="dop">
+                            Date of Performance
+                        </label>
+                        <span class="text-danger" id="errdateofperform"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <input type="time" name="txtStartDt" id="txtStartDt" class="form-control" placeholder="" autocomplete="off" value="">
+                        <label for="category1">Start Time</label>
+                        <span class="text-danger" id="errtxtStartDt"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <input type="time" name="txtEndDt" id="txtEndDt" class="form-control" placeholder="From Date" autocomplete="off" value="">
+                        <label for="tname">End Time</label>
+                        <span class="text-danger" id="errtxtEndDt"></span>
+                        <span class="text-danger" id="errtxtEndDt"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <input type="text" class="form-control alphabetInput" id="offcrname" placeholder=" ">
+                        <label for="category1">Assigned Officer Name</label>
+                        <span class="text-danger" id="erroffcrname"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="offcrmobno" placeholder=" " onchange="isValidMobileNumber();" autocomplete="off" maxlength="10" onKeyPress="if(this.value.length==10) return false;">
+                        <label for="category1">Assigned Officer Mobile No.</label>
+                        <span class="text-danger" id="erroffcrmobno"></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-3">
+                    <button type="submit" class="btn btn-secondary btn-lg py-3" id="btnAddLst">
+                        <i class="bi bi-plus-circle pe-2"></i>
+                        Add Event
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <div class="table-responsive--rounded ">
+                <h6 class="content-body__heading">Event List</h6>
+                <div class="note">
+                    <strong>Note:</strong> Please ensure that all event times are added in a sequential manner.
+                </div>
+                <table class="table table-borderless" id="tblevent">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Sl#
+                            </th>
+                            <th scope="col">
+                                Village Name /
+                                <br />
+                                Place of Performance
+                            </th>
+                            <th scope="col" style="display:none"></th>
+                            <th scope="col">Date of Performance</th>
+                            <th scope="col">Start Time / End Time</th>
+                            <th scope="col">
+                                Assigned Officer Name /
+                                <br />
+                                Mobile No.
+                            </th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="addmore">
+                    </tbody>
+                </table>
+                <span class="text-danger" id="errEvents"></span>
+            </div>
+        </div>
+        <div class="mt-4">
+            <input type="button" value="Submit" class="btn btn-primary rounded-pill btn-lg" id="FinalSubmit">
+            <button onclick="window.location.reload();" class="btn btn-secondary rounded-pill btn-lg">
+                Reset
+            </button>
+
+        </div>
+    </div>
+</div>
+<script src="~/js/moment.min-new.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function isValidMobileNumber() {
+        let mobileNumber = $('#offcrmobno').val();
+        const digitsOnly = mobileNumber.replace(/\D/g, '');
+        return digitsOnly.length >= 10;
+    }
+    $("#offcrmobno").on("input", function () {
+        const mobileNumber = $(this).val();
+
+        if (isValidMobileNumber(mobileNumber)) {
+            $(this).removeClass("is-invalid");
+            $('#erroffcrmobno').text("");
+        } else {
+            $(this).addClass("is-invalid");
+            $('#erroffcrmobno').text("Mobile number should have at least 10 digits.");
+        }
+    });
+    $(".alphabetInput").on("input", function () {
+        var inputValue = $(this).val();
+        var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+
+        if (inputValue !== sanitizedValue) {
+            $(this).val(sanitizedValue);
+        }
+    });
+
+    $(document).ready(function () {
+        getDepartment();
+        getDistrict();
+        getCategory();
+        var type = "@ViewBag.urtype";
+        if (type == "DSSO") {
+            var blockId = "@ViewBag.Blockid";
+            $("#ddlDist").val(blockId);
+            $('#ddlDist').trigger('change');
+            $('#ddlDist').prop('disabled', true);
+        }
+        var id = "@ViewBag.Blockid";
+        if (id != "" && id != null && type == "BSSO") {
+            var blockId = "@ViewBag.Blockid";
+            let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+            $("#ddlDist").prop("disabled", true);
+            $("#ddlBlock").prop("disabled", true);
+        }
+        $('#dateofperform').datetimepicker({
+            format: 'DD-MMM-YYYY',
+            minDate: moment("@EventDetails[0].StartDateTime").format("DD-MMM-YYYY"),
+            maxDate: moment("@EventDetails[0].EndDateTime").format("DD-MMM-YYYY"),
+            defaultDate: new Date(moment("@EventDetails[0].StartDateTime").format("DD-MMM-YYYY"))
+        });
+
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $("#ddlDepartment").change(function () {
+        Scheme($('#ddlDepartment option:selected').val());
+    });
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+            data: { blockid: blockid },
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    result = data.data;
+                }
+            }
+        });
+
+        return result;
+    }
+    $("#ddlSubCategory").change(function () {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlSubCategory').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Event/GetTroupes',
+                data: { CatId: $('#ddlCategory').val(), SubCatId: $('#ddlSubCategory').val(), BlockId: $("#ddlBlock").val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+                        $('#ddlTroupe').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlTroupe').html(thisHtml);
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlTroupe').html(thisHtml);
+        }
+    });
+    $("#ddlGp").change(function () {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlGp').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetVillage',
+                data: { GPCODE: $('#ddlGp').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+                        $('#ddlVillage').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlVillage').html(thisHtml);
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlVillage').html(thisHtml);
+        }
+    });
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function EventValidations() {
+        if ($("#ddlCategory").val() != 0) {
+            $('#ddlCategory').removeClass("is-invalid");
+            $('#errddlCategory').text("");
+        }
+        else {
+            $('#ddlCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlCategory').text("Please Select Category!");
+            $('#ddlCategory').focus();
+            return false;
+        }
+        if ($("#ddlSubCategory").val() != 0) {
+            $('#ddlSubCategory').removeClass("is-invalid");
+            $('#errddlSubCategory').text("");
+        }
+        else {
+            $('#ddlSubCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlSubCategory').text("Please Select Sub Category!");
+            $('#ddlSubCategory').focus();
+            return false;
+        }
+        if ($("#ddlTroupe").val() != 0) {
+            $('#ddlTroupe').removeClass("is-invalid");
+            $('#errddlTroupe').text("");
+        }
+        else {
+            $('#ddlTroupe').addClass("form-control shadow-sm is-invalid");
+            $('#errddlTroupe').text("Please Select Troupe !");
+            $('#ddlTroupe').focus();
+            return false;
+        }
+        if ($("#ddlGp").val() != 0) {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').text("");
+        }
+        else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please Select Gram Panchayat!");
+            $('#ddlGp').focus();
+            return false;
+        }
+        if ($("#ddlVillage").val() != 0) {
+            $('#ddlVillage').removeClass("is-invalid");
+            $('#errddlVillage').text("");
+        }
+        else {
+            $('#ddlVillage').addClass("form-control shadow-sm is-invalid");
+            $('#errddlVillage').text("Please Select Village!");
+            $('#ddlVillage').focus();
+            return false;
+        }
+        if ($("#txtarea").val().trim() != "") {
+            $('#txtarea').removeClass("is-invalid");
+            $('#errtxtarea').text("");
+        }
+        else {
+            $('#txtarea').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtarea').text("Please Enter Place of Performance!");
+            $('#txtarea').focus();
+            return false;
+        }
+        if ($("#dateofperform").val().trim() != "") {
+            $('#dateofperform').removeClass("is-invalid");
+            $('#errdateofperform').text("");
+        }
+        else {
+            $('#dateofperform').addClass("form-control shadow-sm is-invalid");
+            $('#errdateofperform').text("Please Enter Date of Performance!");
+            $('#dateofperform').focus();
+            return false;
+        }
+        if ($("#txtStartDt").val().trim() != "") {
+            $('#txtStartDt').removeClass("is-invalid");
+            $('#errtxtStartDt').text("");
+        }
+        else {
+            $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStartDt').text("Please Enter Start Time!");
+            $('#txtStartDt').focus();
+            return false;
+        }
+        let dateofPerform = $("#dateofperform").val().trim();
+        let eventStartTime = $("#txtStartDt").val().trim();
+        var selectedDate = moment(dateofPerform).format('DD-MMM-YYYY');
+
+        var today = moment(new Date()).format('DD-MMM-YYYY');
+
+        let combinedDateTime = moment(dateofPerform + ' ' + eventStartTime, 'DD-MMM-YYYY HH:mm');
+
+        let currentDateTime = moment();
+        if (moment(selectedDate).isAfter(today)) { }
+        else {
+            if (combinedDateTime.isSameOrAfter(currentDateTime)) {
+                $('#dateofperform').removeClass("is-invalid");
+                $('#errdateofperform').text("");
+                $('#txtStartDt').removeClass("is-invalid");
+                $('#errtxtStartDt').text("");
+            }
+            else {
+                $('#dateofperform').addClass("form-control shadow-sm is-invalid");
+                $('#errdateofperform').text("Entered Date should be same or greater than current Date!");
+                $('#dateofperform').focus();
+                $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtStartDt').text("Entered  Time should be same or greater than current Time!");
+                $('#txtStartDt').focus();
+                return false;
+            }
+        }
+        let StartTime = $("#txtStartDt").val().trim();
+        let EndTime = $("#txtEndDt").val().trim();
+        let CurrentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        if (moment(selectedDate).isAfter(today)) { }
+        else {
+            if (StartTime <= CurrentTime) {
+                $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtStartDt').text("Start Time cannot be less than or equal to current time!");
+                $('#txtStartDt').focus();
+                return false;
+            } else {
+                $('#txtStartDt').removeClass("is-invalid");
+                $('#errtxtStartDt').text("");
+            }
+        }
+        if ($("#txtEndDt").val().trim() != "") {
+            $('#txtEndDt').removeClass("is-invalid");
+            $('#errtxtEndDt').text("");
+        }
+        else {
+            $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtEndDt').text("Please Enter End Time!");
+            $('#txtEndDt').focus();
+            return false;
+        }
+        if (moment(selectedDate).isAfter(today)) { }
+        else {
+            if (EndTime <= CurrentTime) {
+                $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEndDt').text("End Time cannot be less than or equal to current time!");
+                $('#txtEndDt').focus();
+                return false;
+            } else {
+                $('#txtEndDt').removeClass("is-invalid");
+                $('#errtxtEndDt').text("");
+            }
+        }
+        if ($("#offcrname").val().trim() != "") {
+            $('#offcrname').removeClass("is-invalid");
+            $('#erroffcrname').text("");
+        }
+        else {
+            $('#offcrname').addClass("form-control shadow-sm is-invalid");
+            $('#erroffcrname').text("Please Enter Assigned Officer Name!");
+            $('#offcrname').focus();
+            return false;
+        }
+        if ($("#offcrmobno").val().trim() != "") {
+            if ($("#offcrmobno").val().trim().length == 10) {
+                $('#offcrmobno').removeClass("is-invalid");
+                $('#erroffcrmobno').text("");
+            } else {
+                $('#offcrmobno').addClass("form-control shadow-sm is-invalid");
+                $('#erroffcrmobno').text("Entered Assigned Officer Mobile No should contains 10 digits!");
+                $('#offcrmobno').focus();
+                return false;
+            }
+        }
+        else {
+            $('#offcrmobno').addClass("form-control shadow-sm is-invalid");
+            $('#erroffcrmobno').text("Please Enter Assigned Officer Mobile No.!");
+            $('#offcrmobno').focus();
+            return false;
+        }
+        if (MobileNumber($("#offcrmobno").val().trim()) == false) {
+            $('#offcrmobno').addClass("form-control shadow-sm is-invalid");
+            $('#erroffcrmobno').text("Please Enter a Valid Mobile Number!");
+            $('#offcrmobno').focus();
+            return false;
+        }
+        else {
+            $('#offcrmobno').removeClass("is-invalid");
+            $('#erroffcrmobno').text("");
+        }
+
+
+        return true;
+    }
+    $(document).on('click', '#btnAddLst', function () {
+        let rowcount = 0;
+        let showAlert = true;
+        let TimeArray = [];
+        let GpAsignOfc = [];
+        if (!EventValidations()) {
+
+            rowcount = 0;
+            return false;
+        }
+        else {
+            getTroupeAssignStatus().done(function (data) {
+                if (data.data !== 0) {
+                    new swal("This troupe is already assigned to another event in this time slot");
+                    return false;
+                }
+                else {
+
+                    rowcount++;
+                    let updateimgno = "";
+                    let slno = $('#addmore tr').length;
+                    if (slno >= 3) {
+                        new swal("You cannot assign troupes for more than 3 Villages for a single date!!");
+                        return false;
+                    }
+                    else {
+                        let village = $('#ddlVillage option:selected').text().split('-')[1].trim();
+                        let villageid = $('#ddlVillage').val();
+                        let gpid = $('#ddlGp').val();
+                        let Area = $('#txtarea').val();
+                        let dateofperform = $('#dateofperform').val();
+                        let startdate = $('#txtStartDt').val();
+                        let enddate = $('#txtEndDt').val();
+                        let offcrname = $('#offcrname').val();
+                        let offcrmobno = $('#offcrmobno').val();
+                        let troupid = $('#ddlTroupe').val();
+                        if (startdate >= enddate) {
+                            new swal("Start time should be earlier than the end time!");
+                            showAlert = false;
+                            return false;
+                        }
+                        if (slno != 0) {
+                            $('#tblevent tbody tr').each(function (index) {
+                                TimeArray.push($(this).find('#hdnstarttime').val(), $(this).find('#hdnendtime').val(), moment($(this).find('td:eq(3)').text()).format("DD-MMM-YYYY"));
+                                GpAsignOfc.push($(this).find('#hdngrampanchayat').val(), $(this).find('#hdnoffcrname').val(), $(this).find('#hdnoffcrmobno').val())
+                            });
+                            let timeOverlap = false;
+                            let timeInterval = false;
+                            let timesequence = false;
+                            let dateChange = false;
+                            let gpChange = false;
+                            let AssignOfficerChange = false;
+                            let AssignOfficerMobChange = false;
+                            for (let i = 0; i < TimeArray.length; i += 3) {
+                                let existingStartTime = TimeArray[i];
+                                let existingEndTime = TimeArray[i + 1];
+                                let existingDate = TimeArray[i + 2];
+                                if (existingStartTime >= existingEndTime) {
+                                    new swal("Start time should be earlier than the end time!");
+                                    showAlert = false;
+                                    return false;
+                                }
+                                if (dateofperform == existingDate) {
+                                    if (
+                                        (startdate >= existingStartTime && startdate < existingEndTime) ||
+                                        (enddate > existingStartTime && enddate <= existingEndTime) ||
+                                        (startdate <= existingStartTime && enddate >= existingEndTime)
+                                    ) {
+                                        timeOverlap = true;
+                                        break;
+                                    }
+                                    if (startdate < existingEndTime) {
+                                        timesequence = true;
+                                        break;
+                                    }
+                                    let previosendTime = moment.utc(existingEndTime, 'HH:mm').add(30, 'minutes').format('HH:mm');
+                                    if (startdate <= previosendTime) {
+                                        timeInterval = true;
+                                        break;
+                                    }
+                                }
+                                else {
+                                    dateChange = true;
+                                    break;
+                                }
+                            }
+                            for (let j = 0; j < GpAsignOfc.length; j += 3) {
+                                let existinggp = GpAsignOfc[j];
+                                let existingAssignofficerName = GpAsignOfc[j + 1];
+                                let existingAssignofficerMob = GpAsignOfc[j + 2];
+                                if (existinggp != gpid) {
+                                    gpChange = true;
+                                    break;
+                                }
+                                if (existingAssignofficerName != offcrname) {
+                                    AssignOfficerChange = true;
+                                    break;
+                                }
+                                if (existingAssignofficerMob != offcrmobno) {
+                                    AssignOfficerMobChange = true;
+                                    break;
+                                }
+
+                            }
+                            if (timeOverlap) {
+                                new swal("Time intervals should not overlap!");
+                                showAlert = false;
+                                return false;
+                            }
+                            if (timeInterval) {
+                                new swal("Time intervals should be higher than 30 mins!");
+                                showAlert = false;
+                                return false;
+                            }
+                            if (dateChange) {
+                                new swal("Events cann't assigned to troupes more than one date!");
+                                showAlert = false;
+                                return false;
+                            }
+                            if (timesequence) {
+                                new swal("Event times should be added in a sequential manner!");
+                                showAlert = false;
+                                return false;
+                            }
+                            if (gpChange) {
+                                new swal("Please assign 3 villages under 1 grampanchayat!");
+                                showAlert = false;
+                                return false;
+                            }
+                            if (AssignOfficerChange) {
+                                new swal("Assigned officer must be same for 1 grampanchayat!");
+                                showAlert = false;
+                                return false;
+                            }
+                            if (AssignOfficerMobChange) {
+                                new swal("Assigned officer mobile no. must be same for 1 grampanchayat!");
+                                showAlert = false;
+                                return false;
+                            }
+                        }
+                        if (showAlert) {
+                            if (rowcount > 0) {
+                                if (slno == 0) {
+                                    slno = 1;
+                                }
+                                else {
+                                    slno = slno + 1;
+                                }
+                                var add = '<tr>'
+                                add += '<td>' + slno + '</td><td>' + village + '<div class="text-muted">' + Area + '</div></td > ';
+                                add += '<td style="display:none"><input type="hidden" id="hdnvillageid" value="' + villageid + '" /><input type="hidden" id="hdnimgfolderid" value="' + villageid + '_' + troupid + '" /></td>';
+                                add += '<td>' + dateofperform + '</td>';
+                                add += '<td><div class="text-muted">Start Time <strong class="start-date"> ' + startdate + ' </strong></div><div class="text-muted">End Time<strong class="text-danger">' + enddate + '</strong></div></td>'
+                                add += '<td style="display:none"><input type="hidden" id="hdnstarttime" value = "' + startdate + '" /><input type="hidden" id="hdnendtime" value = "' + enddate + '" /></td>';
+                                add += '<td><div class="text-muted">' + offcrname + '</div><div class="text-muted">' + offcrmobno + '</div><input type="hidden" id="hdnoffcrname" value = "' + offcrname + '" /><input type="hidden" id="hdnoffcrmobno" value = "' + offcrmobno + '" /><input type="hidden" id="hdngrampanchayat" value = "' + gpid + '" /></td>'
+                                add += '<td><a id="edit" href ="javascript:;" class="table__icon-btn edit-btn " data-bs-toggle="tooltip" data-bs-title="Edit"><i class="bi bi-pencil-square"></i></a><button id="remove" class="table__icon-btn delete-btn"  data-bs-toggle="tooltip" data-bs-title="Delete"><i class="bi bi-trash3"></i></td>';
+                                $("#addmore").append(add);
+                                $("#ddlVillage").val("");
+                                $("#txtarea").val("");
+                                $("#dateofperform").val("");
+                                $("#txtStartDt").val("");
+                                $("#txtEndDt").val("");
+                                $("#offcrname").val("");
+                                $("#offcrmobno").val("");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+    });
+    $(document).on('click', '#remove', function () {
+        $(this).parents('tr').remove();
+        updateSerialNumbers();
+    });
+    $(document).on('click', '#edit', function () {
+        var closestRow = $(this).closest("tr");
+        var villageid = closestRow.find("#hdnvillageid").val();
+        var Area = closestRow.find("div:eq(0)").text();
+        var dateofperform = closestRow.find("td:eq(3)").text();
+        var startdate = closestRow.find("#hdnstarttime").val();
+        var enddate = closestRow.find("#hdnendtime").val();
+        var offcrname = closestRow.find("div:eq(3)").text();
+        var offcrmobno = closestRow.find("div:eq(4)").text();
+        $("#ddlVillage").val(villageid);
+        $("#txtarea").val(Area);
+        $("#dateofperform").val(dateofperform);
+        $("#txtStartDt").val(startdate);
+        $('#txtEndDt').val(enddate);
+        $('#offcrname').val(offcrname);
+        $('#offcrmobno').val(offcrmobno);
+        $(this).parents('tr').remove();
+        updateSerialNumbers();
+    });
+    function updateSerialNumbers() {
+        $('#addmore tr').each(function (index) {
+            $(this).find('td:first').text(index + 1);
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $("#FinalSubmit").on("click", function () {
+        if (TroupeValidations()) {
+            var Details = new Array();
+            var TroupeData = new FormData();
+            var i = 1;
+            $('#tblevent tbody tr').each(function (index) {
+                var AssignDetails = {};
+                AssignDetails.Village = $(this).find('#hdnvillageid').val();
+                var id = $(this).find('#hdnimgfolderid').val();
+                AssignDetails.ImgFolderID = id + "_" + i;
+                AssignDetails.Area = $(this).find('div:eq(0)').text();
+                AssignDetails.DateofPerform = $(this).find('td:eq(3)').text();
+                AssignDetails.StartTime = $(this).find('#hdnstarttime').val();
+                AssignDetails.EndTime = $(this).find('#hdnendtime').val();
+                AssignDetails.OfficerName = $(this).find('div:eq(3)').text();
+                AssignDetails.OfficerMobNo = $(this).find('div:eq(4)').text();
+                i++;
+                Details.push(AssignDetails);
+            });
+            TroupeData.append("CategoryId", $('#ddlCategory').val());
+            TroupeData.append("SubCategoryId", $('#ddlSubCategory').val());
+            TroupeData.append("TroupID", $('#ddlTroupe').val());
+            TroupeData.append("Distid", $('#ddlDist').val());
+            TroupeData.append("BlockId", $('#ddlBlock').val());
+            TroupeData.append("GPId", $('#ddlGp').val());
+            TroupeData.append("EventId", $('#hdneventid').val());
+            TroupeData.append("Elements", JSON.stringify(Details));
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to assign troupe ?",
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Submit'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    AddTroupeData(TroupeData);
+                }
+            });
+        }
+        function AddTroupeData(Data) {
+            $.ajax({
+                type: "post",
+                url: '@Url.Action("AssignTroupeEvent", "Event")',
+                contentType: false,
+                processData: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: Data,
+                success: function (response) {
+                    response = JSON.parse(response);
+                    if (response.data == 1) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'success',
+                            text: response.message
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                    else if (response.data == 2) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message
+                        }).then(() => {
+                            window.location.href = 'ViewNewRegistration';
+                        });
+                    }
+                    else if (response.data == 11) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'warning',
+                            text: response.message
+                        });
+                    }
+                    else if (response.data == 9) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'warning',
+                            text: response.message
+                        });
+                    }
+                    else if (response.data == 3) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'warning',
+                            text: response.message
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'waring',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!!',
+                        text: error
+                    });
+                }
+            });
+        }
+    });
+    function TroupeValidations() {
+        if ($("#ddlCategory").val() != 0) {
+            $('#ddlCategory').removeClass("is-invalid");
+            $('#errddlCategory').text("");
+        }
+        else {
+            $('#ddlCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlCategory').text("Please Select Category!");
+            $('#ddlCategory').focus();
+            return false;
+        }
+        if ($("#ddlSubCategory").val() != 0) {
+            $('#ddlSubCategory').removeClass("is-invalid");
+            $('#errddlSubCategory').text("");
+        }
+        else {
+            $('#ddlSubCategory').addClass("form-control shadow-sm is-invalid");
+            $('#errddlSubCategory').text("Please Select SubCategory!");
+            $('#ddlSubCategory').focus();
+            return false;
+        }
+        if ($("#ddlTroupe").val() != 0) {
+            $('#ddlTroupe').removeClass("is-invalid");
+            $('#errddlTroupe').text("");
+        }
+        else {
+            $('#ddlTroupe').addClass("form-control shadow-sm is-invalid");
+            $('#errddlTroupe').text("Please Select Troupe!");
+            $('#ddlTroupe').focus();
+            return false;
+        }
+        if ($("#ddlDist").val() != 0) {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        }
+        else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+            return false;
+        }
+        if ($("#ddlBlock").val() != 0) {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').text("");
+        }
+        else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please Select Block!");
+            $('#ddlBlock').focus();
+            return false;
+        }
+        if ($("#ddlGp").val() != 0) {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').text("");
+        }
+        else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please Select Gram Panchayat!");
+            $('#ddlGp').focus();
+            return false;
+        }
+        let eventNo = $('#tblevent tbody tr').length;
+        if (eventNo == 3) {
+            $('#errEvents').text("");
+        }
+        else {
+            $('#errEvents').text("Please add three  events !");
+            return false;
+        }
+        return true;
+    }
+    document.querySelectorAll('input[type="number"]').forEach(function (input) {
+        input.addEventListener("keydown", function (event) {
+
+            if (event.key.toLowerCase() === 'e') {
+                event.preventDefault();
+            }
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById('offcrmobno').addEventListener('keydown', function (event) {
+        if (event.key === '.' || event.key === '+' || event.key === '-') {
+            event.preventDefault();
+        }
+    });
+</script>
+<script>
+    function getTroupeAssignStatus() {
+        let formData = new FormData();
+        formData.append('troupid', $('#ddlTroupe').val());
+        formData.append('dateofPerform', $('#dateofperform').val().trim());
+        formData.append('starttime', $('#txtStartDt').val().trim());
+        return $.ajax({
+            type: "post",
+            url: '@Url.Action("TroupAssignStatus", "Event")',
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            //data: { troupid: $('#ddlTroupe').val(), dateofPerform: $('#dateofperform').val().trim(), starttime: $('#txtStartDt').val().trim() },
+            data: formData,
+            success: function (response) {
+
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!!',
+                    text: error
+                });
+            }
+        });
+    }
+</script>

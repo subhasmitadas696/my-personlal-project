@@ -1,0 +1,504 @@
+﻿@{
+    ViewData["Title"] = "Add Opening Balance";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card" id="divaddform">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="javascript:;" class="nav-link active">
+            Add Opening Balance
+        </a>
+        <a class="nav-link" href="../FundManagement/AddFund">
+            Add Fund
+        </a>
+        <a class="nav-link" href="../FundManagement/FundTransfer">
+            Fund Transfer
+        </a>
+    </div>
+    <div class="card-body">
+        <h6 class="view-form-details__title mt-0">@Localizer["Add Opening Balance"]</h6>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDist" name="ddlDist">
+                        <option value="0" selected>Select District</option>
+                    </select>
+                    <label for="tdist">District<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errddlDist"></span>
+                </div>
+            </div>           
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlScheme" name="ddlScheme">
+                        <option value="0" selected>Select Scheme</option>
+                    </select>
+                    <label for="scheme"> Scheme<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errddlScheme"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlBank" name="ddlBank">
+                        <option value="0" selected>Select Bank</option>
+                    </select>
+                    <label for="bank">Bank Name<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errddlBank"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="txtAccNo" name="txtAccNo" placeholder=" " oninput="avoidFirstSpace(event)" autocomplete="off">
+                    <label for="AccNo">Account Number<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtAccNo"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="txtOpenBal" name="txtOpenBal" placeholder=" " autocomplete="off">
+                    <label for="OpenBal">Opening Balance<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtOpenBal"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" name="txtFundDt" id="txtFundDt" class="form-control" placeholder="From Date" autocomplete="off" value="">
+                    <label for="tname">Fund Add Date<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtFundDt"></span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <input type="button" value="Submit" class="btn btn-primary rounded-pill btn-lg" id="FinalSubmit" onclick="FundManage()">
+            <button onclick="window.location.reload();" class="btn btn-secondary rounded-pill btn-lg">
+                Reset
+            </button>
+            <input id="hdnFundManage" type="hidden" value="0" />
+        </div>
+        <br />
+        <h6 class="view-form-details__title mt-0">@Localizer["View Opening Balance"]</h6>
+
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 40px;">Sl#</th>
+                            <th scope="col">District</th>
+                            <th scope="col">Scheme</th>
+                            <th scope="col">Bank Name</th>
+                            <th scope="col">Account No.</th>
+                            <th scope="col">Opening Balance</th>
+                            <th scope="col">Fund Add <br>Date and Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/moment.min-new.js"></script>
+<script src="~/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(function () {
+        $('#txtFundDt').datetimepicker({
+            format: 'DD-MMM-YYYY h:mm A',
+            maxDate: moment()
+        });
+        $('#txtFundDt').val(null);
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+document.getElementById('txtOpenBal').addEventListener('keydown', function(event) {
+        if (event.key === '.' || event.key === '+' || event.key === '-') {
+        event.preventDefault();
+    }
+});
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#txtOpenBal').change(function () {
+        var inputValue = $(this).val();
+        if (inputValue.length != 0) {
+            $('#txtOpenBal').removeClass("is-invalid");
+            $('#errtxtOpenBal').text("");
+        } else {
+
+        }
+    });
+    $('#ddlDist').on('change', validateddlDistSelection);
+
+    function validateddlDistSelection() {
+        var selectedValue = $('#ddlDist').val();
+        if (selectedValue !== "0") {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        } else {
+
+        }
+    }
+    $('#ddlScheme').on('change', validateddlSchemeSelection);
+
+    function validateddlSchemeSelection() {
+        var selectedValue = $('#ddlScheme').val();
+        if (selectedValue !== "0") {
+            $('#ddlScheme').removeClass("is-invalid");
+            $('#errddlScheme').text("");
+        } else {
+            
+        }
+    }
+    $('#ddlBank').on('change', validateddlBankSelection);
+
+    function validateddlBankSelection() {
+        var selectedValue = $('#ddlBank').val();
+        if (selectedValue !== "0") {
+            $('#ddlBank').removeClass("is-invalid");
+            $('#errddlBank').text("");
+        } else {
+
+        }
+    }
+    $('#txtAccNo').on('change', validateAccountNumber);
+    function validateAccountNumber() {
+        var inputValue = $('#txtAccNo').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length >= 8 && inputValue.length <= 20) {
+                $('#txtAccNo').removeClass("is-invalid");
+                $('#errtxtAccNo').text("");
+            } else {
+                $('#txtAccNo').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtAccNo').text("Please Enter a Valid Account No.!");
+                $('#txtAccNo').focus();
+            }
+        } else {
+            
+        }
+    }
+    
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#txtFundDt').datetimepicker();       
+        $('#txtFundDt').on('dp.change', function (e) {
+            var selectedValue = e.date;
+            if (selectedValue) {
+                $('#txtFundDt').removeClass("is-invalid");
+                $('#errtxtFundDt').text("");
+            }
+        });
+        Scheme(0);
+        LoadData();
+       
+        getDistrict();
+        $('#ddlDist').val(@User.FindFirst("Userid")?.Value);
+        $('#ddlDist').trigger('change');
+        $('#ddlDist').prop('disabled', true);
+        getBanks();
+        document.querySelectorAll('input[type="number"]').forEach(function (input) {
+            input.addEventListener("keydown", function (event) {
+                if (event.key.toLowerCase() === 'e') {
+                    event.preventDefault();
+                }
+            });
+        });
+
+   function LoadData() {
+        $.ajax({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("ViewOpeningBalance", "FundManagement")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#bindtable').empty();
+                var slno = 0;
+                var htm = '';
+                var objAyyList = data.data;
+                if (objAyyList != null) {
+                    for (var i = 0; i < objAyyList.length; i++) {
+                        slno = slno + 1;
+                        htm += '<tr>';
+                        htm += '<td class="text-center">' + slno + '</td>';
+                        htm += '<td>' + objAyyList[i].distname + '</td>';
+                        htm += '<td>' + objAyyList[i].SchemeName + '</td>';
+                        htm += '<td>' + objAyyList[i].BANKNAME + '</td>';
+                        htm += '<td>' + objAyyList[i].AccountNo + '</td>';
+                        htm += '<td>' + objAyyList[i].OpeningBalance + '</td>';
+                        htm += '<td>' + objAyyList[i].Date + '</td>';
+                        htm += '</tr>';
+                    }
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+               document.getElementById('bindtable').innerHTML = htm;
+                Datatable();
+            }
+        });
+    }
+    function getDepartment() {
+                var thisHtml = '<option value="0">--Select--</option>';
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetDepartment',
+                    data: {},
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+
+                            $('#ddldept').html(thisHtml);
+                        }
+                        else {
+                            $('#ddldept').html(thisHtml);
+                        }
+                    }
+                });
+            }
+    });
+
+    
+    function Scheme(Deptid) {
+        var thisHtml = '<option value="0">--Select--</option>';
+      
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetSCHEME',
+                data: { Deptid:0},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+
+                        $('#ddlScheme').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlScheme').html(thisHtml);
+                    }
+                }
+            });       
+    }
+    $("#ddlScheme").change(function () {
+        OpeningBalanceexist();
+    });
+    function OpeningBalanceexist(){
+        var Data = {
+            DistId: $("#ddlDist").val(),            
+            SchemeId: $("#ddlScheme").val(),
+        };
+        $.ajax({
+            url: '@Url.Content("~/")' + 'FundManagement/OpeningBalanceexist',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: Data,
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    if (result[0].AvlBalance == "1") {
+                        new Swal("", "Opening Balace Already Exist For This Scheme", "");
+                        $('#FinalSubmit').prop('disabled', true);
+                    }
+                    else {
+                        $('#FinalSubmit').prop('disabled', false);
+                    }
+
+                }
+                else {
+                    new Swal('error', data.responseMessage, data.state);
+                }
+            }
+        });
+    }
+    function getBanks() {
+        var thisHtml = '<option value="0">Select Bank</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetBanks',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+                    for (var i = 0; i < result.length; i++) {
+                        thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                    }
+                    $('#ddlBank').html(thisHtml);
+                }
+                else {
+                    $('#ddlBank').html(thisHtml);
+                }
+            }
+        });
+    }
+    function FundValidations() {
+        if ($("#ddlDist").val() != 0) {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        }
+        else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+            return false;
+        }       
+        if ($("#ddlScheme").val() != 0) {
+            $('#ddlScheme').removeClass("is-invalid");
+            $('#errddlScheme').text("");
+        }
+        else {
+            $('#ddlScheme').addClass("form-control shadow-sm is-invalid");
+            $('#errddlScheme').text("Please Select Scheme!");
+            $('#ddlScheme').focus();
+            return false;
+        }
+        if ($("#ddlBank").val() != 0) {
+            $('#ddlBank').removeClass("is-invalid");
+            $('#errddlBank').text("");
+        }
+        else {
+            $('#ddlBank').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBank').text("Please Select Bank!");
+            $('#ddlBank').focus();
+            return false;
+        }
+        if ($("#txtAccNo").val().trim() != "") {
+            $('#txtAccNo').removeClass("is-invalid");
+            $('#errtxtAccNo').text("");
+        }
+        else {
+            $('#txtAccNo').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAccNo').text("Please Enter Account No.!");
+            $('#txtAccNo').focus();
+            return false;
+        }
+        var accountNumber = $("#txtAccNo").val().trim();
+        if (accountNumber.length < 8 || accountNumber.length > 20 || parseInt($("#txtAccNo").val()) <= 0) {
+            $('#txtAccNo').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtAccNo').text("Please Enter a Valid Receiver Account No.!");
+            $('#txtAccNo').focus();
+            return false;
+        }
+        else {
+            $('#txtAccNo').removeClass("is-invalid");
+            $('#errtxtAccNo').text("");
+        }
+        if ($("#txtOpenBal").val().trim() != "") {
+            if (parseInt($("#txtOpenBal").val()) <= 0) {
+                $('#txtOpenBal').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtOpenBal').text("Opening balance cannot be less than or equal to 0!");
+                $('#txtOpenBal').focus();
+                return false;
+            }
+            else {
+                $('#txtOpenBal').removeClass("is-invalid");
+                $('#errtxtOpenBal').text("");
+            }
+        }
+        else {
+            $('#txtOpenBal').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtOpenBal').text("Please Enter Opening Balance!");
+            $('#txtOpenBal').focus();
+            return false;
+        }
+
+        if ($("#txtFundDt").val().trim() != "") {
+            $('#txtFundDt').removeClass("is-invalid");
+            $('#errtxtFundDt').text("");
+        }
+        else {
+            $('#txtFundDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtFundDt').text("Please Choose Date.!");
+            $('#txtFundDt').focus();
+            return false;
+        }
+        return true;
+    }
+    function FundManage() {
+        if (FundValidations()) {
+            Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to add opening balance",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Submit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var ManageFAQ = {
+                    FundId: $('#hdnFundManage').val(),
+                    DistId: $("#ddlDist").val(),                   
+                    SchemeId: $("#ddlScheme").val(),
+                    BankId: $("#ddlBank").val(),
+                    AccountNo: $("#txtAccNo").val(),
+                    OpeningBalance: $("#txtOpenBal").val(),
+                    Date: $("#txtFundDt").val(),
+
+                };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddOpeningBalance", "FundManagement")',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: ManageFAQ,
+                    content: 'application/json;charset=utf-8',
+                    dataType: "json",
+                    success: function (result) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var url = '@Url.Action("AddOpeningBalance", "FundManagement")';
+                                location.href = url;
+                            }
+                        })
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+
+            }
+        });
+        }
+
+
+    }
+</script>

@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Add Background Job";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="javascript:;" class="nav-link active">
+            Create Background Job
+        </a>
+    </div>
+    <div class="card-body">
+        <form id="cronForm" class="row mb-2">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="days" name="days" max="30" min="0" placeholder=" ">
+                    <label for="day">Enter Days</label>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="hour" name="hour" max="24" min="0" placeholder=" ">
+                    <label for="week">Enter Hour</label>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="minutes" name="minutes" max="60" min="1" placeholder=" ">
+                    <label for="time">Enter Minutes</label>
+                </div>
+            </div>
+
+        </form>
+        <button type="button" class="btn btn-primary" onclick="generateCronExpression()">Start Schedulling</button>
+
+        <div id="result"></div>
+
+
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script>
+    $(document).ready(function () {       
+        $("#cronForm").validate({
+            rules: {
+                days: "required",
+                hour: "required",
+                minutes: "required"
+            },
+            messages: {
+                days: "Please enter no days",
+                hour: "Please enter  hours",
+                minutes: "Please enter minutes"
+            }
+        });
+    });
+
+    function generateCronExpression() {
+        if ($("#cronForm").valid()) {
+            var formData = new FormData();
+            formData.append("days", $('#days').val().trim());
+            formData.append("hour", $('#hour').val().trim());
+            formData.append("minutes", $('#minutes').val().trim());
+
+            $.ajax({
+                url: "/JobScheduler/StartJob",
+                type: "POST",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: formData,
+                dataType: "json",
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    $("#result").text("Generated Cron Expression: " + data.cronExpression);
+                },
+                error: function () {
+                    alert("Error generating cron expression");
+                }
+            });
+        }
+    }
+</script>

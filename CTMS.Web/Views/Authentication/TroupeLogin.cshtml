@@ -1,0 +1,376 @@
+﻿@{
+    ViewData["Title"] = "TroupeRegistration";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+@Html.AntiForgeryToken()
+<link rel="stylesheet" href="~/css/troupe-login.css">
+<style>
+    .captchabox__text {
+        padding: 1.0rem;
+    }
+</style>
+<div class="innerpage-container login-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0">
+                <h3 class="section__heading">@Localizer["The all-in-one solution for Managing your Troupe"] </h3>
+                <ul class="list-group list-group-flush instruction-list">
+                    <li class="list-group-item">
+                        <i class="bi bi-arrow-right list-group-item__icon"></i>
+                        @Localizer["Manage your troupe details & activities online."]
+                    </li>
+
+                    <li class="list-group-item">
+                        <i class="bi bi-arrow-right list-group-item__icon"></i>
+                        @Localizer["Get cultural program call at your own area from Govt authority."]
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-arrow-right list-group-item__icon"></i>
+                        @Localizer["Set your program charges online & get paid directly to your bank account."]
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6 col-xl-5 offset-xl-1 order-1 order-lg-2">
+                <div id="divmob" class="card card--login">
+                    <div class="card-body">
+                        <h4 class="card--login__title">@Localizer["Login"]</h4>
+                        <div class="mb-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" onKeyPress="if (this.value.length >= 10 || event.charCode < 48 || event.charCode > 57) return false;" autocomplete="off" id="txtMobNo" placeholder="Mobile" maxlength="10">
+                                <label>@Localizer["Mobile"]</label>
+                                <i class="bi bi-phone form-floating__icon-right"></i>
+                            </div>
+                            <small class="error-messageMobileNo text-danger" id="errmsg1"></small>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="CaptchaInput"
+                                           placeholder="Enter captcha">
+                                    <label>@Localizer["Enter captcha"]</label>
+                                </div>
+                                <small class="error-messageCaptcha text-danger" id="errmsg"></small>
+                            </div>
+                            <div class="col-6 ps-0 ps-sm-3">
+                                <div class="captchabox  d-flex align-items-center">
+                                    <div class="captchabox__text">
+                                        <img id="captchimg" alt="captcha" src="~/get-captcha-image" style="pointer-events: none; user-drag: none; -moz-user-select: none; -webkit-user-drag: none; -webkit-user-select: none; -ms-user-select: none; user-select: none;" />
+                                    </div>
+                                    <a href="#" id="img-captcha" class="login-ref">
+                                        <i class="bi bi-arrow-clockwise captchabox__refresh"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="text-center mt-4 mt-md-5">
+                            <button id="btnLogin" type="submit" class="btn-primary btn w-100 rounded-pill btn-lg mb-3">
+                                @Localizer["Get OTP"]
+                            </button>
+                            <hr class="hr-divider">
+                            <div class="text-secondary text-center">
+                                @Localizer["Not Registered yet?"]
+                                <a href="../Registration/TroupeRegistration" title="Register Now" class="text-dark card--login__link">@Localizer["Register Now"]</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card--login" id="otpGenerateBox" style="display:none">
+                    <div class="card-body">
+                        <h4 class="card--login__title">@Localizer["Login"]</h4>
+                        <p id="omsg" class="text-center"></p>
+                        <div class="otp-inputs">
+                            <input type="text" name="" class="otp-inputs__box form-control" maxlength="1" id="txtotp1">
+                            <input type="text" name="" class="otp-inputs__box form-control" maxlength="1" id="txtotp2">
+                            <input type="text" name="" class="otp-inputs__box form-control" maxlength="1" id="txtotp3">
+                            <input type="text" name="" class="otp-inputs__box form-control" maxlength="1" id="txtotp4">
+                        </div>
+                        <b><small class="error-messageotp text-danger"></small></b>
+                        <div class="text-center my-4 mt-md-5">
+                            <button id="verifyLogin" type="button" class="btn-primary btn w-100 rounded-pill btn-lg">
+                                @Localizer["Verify &amp; Login"]
+                            </button>
+                        </div>
+                        <div class="text-secondary text-center">
+                            <span id="spnotp">
+                                @Localizer["Resend OTP in"]
+                            </span><span id="countdown" class="text - primary ps - 1">00:10</span>
+                            <br>
+                            <a id="resendotp" href="javascript:;" title="Resend OTP" class="text-dark card--login__link" style="display:none" onclick="resendOTP();">@Localizer["Resend OTP"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    var maxResendAttempts = 2;
+    var resendCount = 0;
+
+    function resendOTP() {
+        if (resendCount < maxResendAttempts) {
+            resendCount++;
+            var attemptsLeft = maxResendAttempts - resendCount;
+
+            document.getElementById("resendotp").style.display = "none";
+            $('#spnotp').hide();
+            document.getElementById("countdown").innerHTML = "Otp Resend Successfully.<br/> Attempts left: " + attemptsLeft;
+
+            setTimeout(function () {
+                document.getElementById("resendotp").style.display = "inline";
+                document.getElementById("countdown").textContent = "";
+            }, 10000);
+        } else {
+            document.getElementById("resendotp").style.display = "none";
+            $('#spnotp').hide();
+            document.getElementById("countdown").textContent = "Maximum resend attempts reached";
+        }
+    }
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.getElementById("CaptchaInput").addEventListener("paste", function (e) {
+        e.preventDefault();
+        var clipboardData = e.clipboardData || window.clipboardData;
+        var pastedData = clipboardData.getData("text/plain");
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        var txtMobNoInput = document.getElementById('txtMobNo');
+        $("#CaptchaInput").keypress(function (e) {
+            if (e.which === 13) { 
+                $("#btnLogin").click(); 
+            }
+        });
+        $("#txtotp4").keypress(function (e) {
+            if (e.which === 13) { 
+                $("#verifyLogin").click(); 
+            }
+        });
+        txtMobNoInput.addEventListener("keydown", function (event) {
+            if (event.key.toLowerCase() === 'e') {
+                event.preventDefault(); 
+            }
+        });
+
+        $("#CaptchaInput").keyup(function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+        $("#btnLogin").click(function () {
+            var MobileNo = $("#txtMobNo").val().trim();
+            var captcha = $("#CaptchaInput").val().trim();
+            $(".error-messageMobileNo").text("");
+            $(".error-messageCaptcha").text("");
+            $("#txtMobNo").removeClass("error");
+            $("#CaptchaInput").removeClass("error");
+            var valid = true;
+            if (MobileNo === "") {
+                $("#txtMobNo").addClass("danger");
+                $(".error-messageMobileNo").text("Please enter your registered mobile number.");
+                valid = false;
+            }
+
+            if (captcha === "") {
+                $("#CaptchaInput").addClass("error");
+                $(".error-messageCaptcha").text("Please enter the Captcha.");
+                valid = false;
+            }
+
+            if (valid) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Authentication/VerifyTroupeUserMobile',
+                    data: { MOBILENO: $.trim(MobileNo), captcha: $.trim(captcha) },
+                    headers: { "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val() },
+                    type: "post",
+                    dataType: "json",
+                    beforeSend: function () {
+                        $("#overlay").show();
+                    },
+                    success: function (data) {
+                        if (data.state == "success") {
+                            if (data.data == "200") {
+                                $("#divmob").hide();
+                                $("#omsg").html(data.message);
+                                $("#otpGenerateBox").show();
+                                $("#txtotp1").focus();
+                                updateCountdown();
+                            }
+                            else {
+                                $("#CaptchaInput").val("");
+                            }
+                        }
+                        else if (data.state == "warning") {
+                            if(data.data=="300"){
+                                $("#errmsg").html(data.message);
+                                $("#CaptchaInput").val("");
+                                resetCaptchaImage();
+                            }
+                            else{
+                                $("#errmsg1").html(data.message);
+                                $("#CaptchaInput").val("");
+                                resetCaptchaImage();
+                            }
+                            
+                        }
+                        else if (data.state == "error") {
+                            $("#errmsg").html(data.message);
+                            $("#CaptchaInput").val("");
+                            resetCaptchaImage();
+
+                        }
+                    },
+                    error: function (req, status, error) {
+                        alert(error);
+                    },
+                    complete: function () {
+                        $("#overlay").hide();
+                    }
+                });
+            }
+            return false;
+        });
+
+        $("#verifyLogin").click(function () {
+            var mobilenumber = $("#txtMobNo").val().trim();
+            var OTP = 0;
+            if ($("#txtotp1").val() == "" || $("#txtotp2").val() == "" || $("#txtotp3").val() == "" || $("#txtotp4").val() == "") {
+                $(".error-messageotp").text("Please input a valid OTP!!");
+            }
+            else {
+                $(".error-messageotp").text("");
+                var otp1 = $("#txtotp1").val().trim();
+                var otp2 = $("#txtotp1").val().trim();
+                var otp3 = $("#txtotp1").val().trim();
+                var otp4 = $("#txtotp1").val().trim();
+                OTP = otp1 + otp2 + otp3 + otp4;
+                AuthenticateTroupLeader(mobilenumber, OTP);
+            }
+        });
+    });
+    function AuthenticateTroupLeader(mobilenumber, otp) {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Authentication/TroupLogIn',
+            data: { MOBILENO: mobilenumber, OTP: $.trim(otp) },
+            headers: { "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val() },
+            type: "post",
+            dataType: "json",
+            beforeSend: function () {
+                $("#overlay").show();
+            },
+            success: function (data) {
+                if (data.state == "success") {
+                    if (data.data == "200") {
+                        window.location.href = '@Url.Content("~/Dashboard/ProfileDashboard")';
+
+                    }
+
+                }
+                else if (data.state == "warning") {
+
+                    if (data.data == "101") {
+                        $("#perrmsg").html(data.message);
+                        $("#Rusername").val(username);
+                        $(".otpGenerateBox").hide();
+                        $(".PasswordGenerateBox").show();
+                        $(".rollNumberBox").hide();
+                    }
+                    else if (data.data == "4") {
+                        $("#errmsg").html(data.message);
+                        $(".otpGenerateBox").hide();
+                        $(".rollNumberBox").show();
+                    }
+                    else {
+                        $("#oerrmsg").html(data.message);
+                        $("#Rusername").val(username);
+                        $(".otpGenerateBox").show();
+                        $("#txtotp1").focus();
+                        $(".PasswordGenerateBox").hide();
+                        $(".rollNumberBox").hide();
+                    }
+
+                }
+                else {
+                    $("#errmsg").html(data.message);
+                }
+
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            },
+            complete: function () {
+                $("#overlay").hide();
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    const otpInputs = document.querySelectorAll(".otp-inputs__box");
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener("input", (event) => {
+            const currentInput = event.target;
+            if (currentInput.value.length >= currentInput.maxLength) {
+                if (index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            }
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function updateCountdown() {
+        var countdownElement = document.getElementById("countdown");
+        var time = countdownElement.textContent.split(":");
+        var minutes = parseInt(time[0]);
+        var seconds = parseInt(time[1]);
+
+        if (minutes === 0 && seconds === 0) {
+            $("#resendotp").show();
+            var resendLink = document.getElementById("resendotp");
+            resendLink.href = "#"; 
+        }
+        else {
+            if (seconds === 0) {
+                minutes -= 1;
+                seconds = 59;
+            } else {
+                seconds -= 1;
+            }
+
+            var formattedTime = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+            countdownElement.textContent = formattedTime;
+            setTimeout(updateCountdown, 1000);
+        }
+    }
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function fun() {
+        var value = "Key";
+        window.location.href = '/Login/Config?key1=' + value + '';
+    }
+    $("#img-captcha").click(function () {
+        resetCaptchaImage();
+    });
+
+    function resetCaptchaImage() {
+        $.ajax({
+            url: '/get-captcha-image',
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response) {
+                var imageUrl = URL.createObjectURL(response);
+                $('#captchimg').attr('src', imageUrl);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>

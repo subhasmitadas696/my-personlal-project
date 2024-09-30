@@ -1,0 +1,309 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="body-container">
+        <div class="sidebar" id="sideBar">
+            <ul class="nav pt-4 flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="../ApprovalConfig/Dashboard"><i class="bi bi-grid"></i>Dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link  collapsed " href="#masterSubMenu" data-bs-toggle="collapse"
+                       aria-expanded="false" data-bs-parent="#sideBar">
+                        <i class="bi bi-file-earmark-bar-graph "></i>Master
+                    </a>
+                    <div class="collapse" id="masterSubMenu" data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/MasterAdd">
+                                    <i class="bi bi-link-45deg"></i> Add
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/MasterView">
+                                    <i class="bi bi-link-45deg"></i> View
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#approvalsSubMenu" data-bs-toggle="collapse"
+                       aria-expanded="false"><i class="bi bi-grid"></i>Approvals</a>
+                    <div class="collapse" id="approvalsSubMenu" data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/ApprovalList">
+                                    <i class="bi bi-link-45deg"></i> Take Action
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:;">
+                                    <i class="bi bi-link-45deg"></i> View
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#reportsSubMenu" data-bs-toggle="collapse"
+                       aria-expanded="false"><i class="bi bi-file-ruled"></i>Reports</a>
+                    <div class="collapse" id="reportsSubMenu" data-bs-parent="#sideBar">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/ReportsAdd">
+                                    <i class="bi bi-link-45deg"></i> Add
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="../ApprovalConfig/ReportsView">
+                                    <i class="bi bi-link-45deg"></i> View
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <main class="content-body">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="view-form-details__title">Basic Information</h6>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Cultural Troupe Information</label><strong>
+                                Gurukrupa
+                                Bhajana
+                                Sandhya
+                            </strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Troupe Created on</label><strong>
+                                13th
+                                October
+                                2017
+                            </strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">District</label>
+                            <strong>Nayagarh</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Block</label>
+                            <strong>Khandapada</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Gram Panchayat</label>
+                            <strong>Khandapada</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Address</label>
+                            <strong>Nayagarh,Khandapada 752077</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Pincode</label>
+                            <strong>752077</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Registered through 1860 society act</label>
+                            <strong>Yes</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Registration No.</label>
+                            <strong>123346</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Upload Document</label>
+                            <a href="javascritp:;" class="text-danger h5" target="_blank" title="View Document" data-bs-toggle="tooltip">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <h6 class="view-form-details__title">Art & Performance Details</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Category</label>
+                            <strong>Dasakathia</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Sub-Category</label><strong>Pala</strong>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="" class="control-label">Cultural Troupe Banner</label>
+                            <img src="~/images/banner.png" class="uploaded-img" />
+                        </div>
+                    </div>
+                    <h6 class="view-form-details__title">Artist Information</h6>
+                    <div class="table-responsive">
+                        <div class="table-responsive--rounded">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center" style="width: 50px;">Sl#</th>
+                                        <th scope="col">Member Name</th>
+                                        <th scope="col">Gender</th>
+                                        <th scope="col">Aadhaar Number</th>
+                                        <th scope="col">Mobile/Email</th>
+                                        <th scope="col">Bank Details</th> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">
+                                            01
+                                        </td>
+                                        <td>
+                                            Deepak Ch Sahoo
+                                            <div class="text-muted">
+                                                [Signer,Leader]
+                                            </div>
+                                        </td>
+                                        <td>Male</td>
+                                        <td>543398766544</td>
+                                        <td>
+                                            <div>7894561230</div>
+                                            <div>deepak@gmail.com</div>
+                                        </td>
+                                        <td>
+                                            State Bank of India
+                                            <div class="text-muted">
+                                                [SBIN0021068,Bhubaneswar,1234568987123]
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="text-center">
+                                            02
+                                        </td>
+                                        <td>
+                                            Rajesh Kumar
+                                            <div class="text-muted">
+                                                [Dancer]
+                                            </div>
+                                        </td>
+                                        <td>Male</td>
+                                        <td>123456789012</td>
+                                        <td>
+                                            <div>9876543210</div>
+                                            <div>rajesh.kumar@example.com</div>
+                                        </td>
+                                        <td>
+                                            ICICI Bank
+                                            <div class="text-muted">
+                                                [ICIC0000123,Bhubaneswar,987654321098]
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="text-center">
+                                            03
+                                        </td>
+                                        <td>
+                                            Priya Sharma
+                                            <div class="text-muted">
+                                                [Singer]
+                                            </div>
+                                        </td>
+                                        <td>Female</td>
+                                        <td>987654321098</td>
+                                        <td>
+                                            <div>1234567890</div>
+                                            <div>priya.sharma@example.com</div>
+                                        </td>
+                                        <td>
+                                            HDFC Bank
+                                            <div class="text-muted">
+                                                [HDFC0000456,Bhubaneswar,123456789012]
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="text-center">
+                                            04
+                                        </td>
+                                        <td>
+                                            Sanjay Patel
+                                            <div class="text-muted">
+                                                [Dancer]
+                                            </div>
+                                        </td>
+                                        <td>Male</td>
+                                        <td>987654321012</td>
+                                        <td>
+                                            <div>9876543210</div>
+                                            <div>sanjay.patel@example.com</div>
+                                        </td>
+                                        <td>
+                                            Axis Bank
+                                            <div class="text-muted">
+                                                [UTIB0000789,Bhubaneswar,123456789012]
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                    <tr>
+                                        <td class="text-center">
+                                            05
+                                        </td>
+                                        <td>
+                                            Anjali Gupta
+                                            <div class="text-muted">
+                                                [Dancer]
+                                            </div>
+                                        </td>
+                                        <td>Female</td>
+                                        <td>123456789012</td>
+                                        <td>
+                                            <div>9876543210</div>
+                                            <div>anjali.gupta@example.com</div>
+                                        </td>
+                                        <td>
+                                            Punjab National Bank
+                                            <div class="text-muted">
+                                                [PNB0123456,Bhubaneswar,987654321098]
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-12">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                                       value="option1">
+                                <label class="form-check-label" for="inlineRadio1">Approve</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                                       value="option2">
+                                <label class="form-check-label" for="inlineRadio2">Reject</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
+                                       value="option3">
+                                <label class="form-check-label" for="inlineRadio3">Enquiry </label>
+                            </div>
+                        </div>
+                        <div class="col-xxl-8">
+                            <div class="form-floating mb-4 ">
+                                <textarea class="form-control" placeholder="Remark" id="floatingTextarea"
+                                          style="height: 100px"></textarea>
+                                <label for="floatingTextarea">Remark</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" title="Submit" class="btn btn-primary rounded-pill">Submit</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal --> 
+    </div>
+</div>

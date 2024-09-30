@@ -1,0 +1,795 @@
+﻿@{
+    ViewData["Title"] = "ReportRevert";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var Data = ViewBag.TroupeDetails;
+    var Data1 = ViewBag.ImageList;
+    var Data2 = ViewBag.VideoList;
+}
+@Html.AntiForgeryToken()
+<style>
+    .img-fluid {
+        max-width: 500%;
+        height: auto;
+    }
+
+    .vdo-fluid {
+        max-width: 500%;
+        height: auto;
+    }
+
+    .uploaded-video-list {
+        display: grid;
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0 0;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        grid-template-columns: repeat(2,1fr);
+    }
+
+        .uploaded-video-list li {
+            border-radius: .5rem;
+            position: relative;
+        }
+
+            .uploaded-video-list li i {
+                position: absolute;
+                right: -.5rem;
+                top: -0.7rem;
+                cursor: pointer;
+            }
+
+                .uploaded-video-list li i:hover {
+                    color: var(--bs-danger);
+                }
+
+            .uploaded-video-list li img {
+                height: 70px;
+                width: 70px;
+                border-radius: 0.5rem;
+                border: 1px solid #ddd;
+                object-fit: cover;
+                object-position: center;
+            }
+
+    .member-list {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        list-style: none;
+        gap: 1rem;
+        padding: 0;
+    }
+
+    .add-more-img-btn {
+        background: var(--bs-success);
+        color: var(--bs-white);
+    }
+
+    .add-more-vdo-btn {
+        background: var(--bs-success);
+        color: var(--bs-white);
+    }
+
+    .add-more-img-btn:hover {
+        background: #157347;
+    }
+
+    .add-more-vdo-btn:hover {
+        background: #157347;
+    }
+</style>
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<main class="content-body">
+    <div class="card card--lg">
+        @if (Data != null)
+        {
+            <input type="hidden" id="hdnimgpath" value="@ViewBag.Imgpath">
+            <input type="hidden" id="hdnvdopath" value="@ViewBag.Vdopath">
+            <input type="hidden" id="hdnimgidname" value="">
+            <input type="hidden" id="hdnvdoidname" value="">
+            <input type="hidden" id="hdntdid" value="">
+            <input type="hidden" id="hdnvdotdid" value="">
+            <div class="card-body">
+                <h6 class="view-form-details__title mt-0">Event Details</h6>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <input type="hidden" id="hdntroupeid" value="@Data[0].TroupeId" />
+                        <input type="hidden" id="hdnassigneventid" value="@Data[0].AssignEventId" />
+                        <label for="" class="control-label">
+                            Event Title
+                        </label>
+                        <strong>
+                            @Data[0].EventTitle
+                        </strong>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="" class="control-label">
+                            Event Date
+                        </label>
+                        <strong>
+                            @Data[0].DateOfPerform
+                        </strong>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="" class="control-label">
+                            Address
+                        </label>
+                        <strong>
+                            @Data[0].DistrictName
+                        </strong>
+                        <div class="text-muted">@Data[0].BlockName</div>
+                        <div class="text-muted">@Data[0].GPName</div>
+
+                    </div>
+                </div>
+                <h6 class="view-form-details__title">Place of Perfromance</h6>
+                <h6 style="color:red">
+                    Note:-
+                    <ul>
+                        <li>For Image:Please remove the photos having (x) symbol and upload photos sequentially.</li>
+                        <li>Maximum Image Size 1MB.</li>
+                        <li>For Video: 1st choose video then upload direct sequentially.</li>
+                        <li>Maximum Upload Video Size 5MB.</li>
+                    </ul>
+                </h6>
+                <div class="table-responsive--rounded">
+                    <div class="table-responsive">
+                        <table class="table" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl#</th>
+                                    <th scope="col" class="d-none">Village Id</th>
+                                    <th scope="col"> Village Name</th>
+                                    <th scope="col" style="width: 250px;"> Image<span class="text-danger">*</span></th>
+                                    <th scope="col"> Video<span class="text-danger">*</span></th>
+                                    <th scope="col"> Member Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int cnt = 1;
+                                    int count = 1;
+                                    bool isFirstLoop = true;
+                                    bool isFirstLoopVdo = true;
+                                    bool alreadyexecute = false;
+                                    bool vdoexecute = false;
+                                }
+                                @foreach (var items in Data)
+                                {
+                                    <tr>
+                                        <td class="text-center">@count</td>
+                                        <td class="d-none">@items.VillageId</td>
+                                        <td>
+                                            @items.VLGNAME
+                                            <div class="text-muted">@items.StartTime</div>
+                                            <div class="text-muted">@items.EndTime</div>
+                                            <div class="text-muted">@items.AssignOfficerName</div>
+                                            <div class="text-muted">@items.AssignOfficerMobNo</div>
+                                        </td>
+                                        <td>
+                                            @foreach (var itemsimg in Data1)
+                                            {
+                                                var imglist = itemsimg.imagename.Split("|");
+                                                @if (itemsimg.villageid == items.VillageId.ToString() && itemsimg.imagename.Contains("~S1"))
+                                                {
+                                                    @if (!alreadyexecute)
+                                                    {
+                                                        @if (isFirstLoop == true)
+                                                        {
+                                                            <div class="mb-3" id="IMG-@count">
+                                                                <div class="input-group">
+                                                                    <input class="form-control image-upload-input" type="file" id="imageUpload-@count" name="imageUpload" accept="image/*">
+                                                                    <span class="input-group-text add-more-img-btn" data-village-id="@itemsimg.villageid" data-td-id="@count" id="addMoreImgBtn">
+                                                                        <i class="bi bi-upload"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="mb-3" id="IMG-@count">
+                                                                <div class="input-group">
+                                                                    <input class="form-control image-upload-input" type="file" id="imageUpload-@count" name="imageUpload" accept="image/*" disabled>
+                                                                    <span class="input-group-text add-more-img-btn" data-village-id="@itemsimg.villageid" data-td-id="@count" id="addMoreImgBtn">
+                                                                        <i class="bi bi-upload"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+
+                                                    <small class="text-danger" id="errgrpphoto-@count"></small>
+
+                                                }
+                                                @if (itemsimg.villageid == items.VillageId.ToString() && itemsimg.imagename.Contains("~S1"))
+                                                {
+                                                    @if (!alreadyexecute)
+                                                    {
+                                                        <ul class="uploaded-img-list" id="imageList-@count">
+                                                            @foreach (var img in imglist)
+                                                            {
+                                                                var imgname = img.Split("~")[0];
+                                                                var Status = img.Split("~")[1];
+
+                                                                @if (itemsimg.villageid == items.VillageId.ToString())
+                                                                {
+                                                                    <li>
+                                                                        <img class="img-fluid" data-img-id-name="@itemsimg.imageid|@imgname"
+                                                                             src="~/TroupeReporting/@Data[0].TroupeId/Image/@itemsimg.imageid/@imgname">
+                                                                        @if (Status == "S1")
+                                                                        {
+                                                                            @if (isFirstLoop == true)
+                                                                            {
+                                                                                <i class="bi bi-x-circle-fill"></i>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <i id="crossSymbol-@count" class="bi bi-x-circle-fill crossSymbol" style="pointer-events: none; color: #777;"></i>
+                                                                            }
+
+                                                                        }
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        </ul>
+                                                        isFirstLoop = false;
+                                                        alreadyexecute = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    @if (itemsimg.villageid == items.VillageId.ToString() && itemsimg.imagename.Contains("~S0"))
+                                                    {
+                                                        @if (!alreadyexecute)
+                                                        {
+                                                            <ul class="uploaded-img-list" id="imageList-@count">
+                                                                @foreach (var img in imglist)
+                                                                {
+                                                                    var imgname = img.Split("~")[0];
+                                                                    var Status = img.Split("~")[1];
+
+                                                                    @if (itemsimg.villageid == items.VillageId.ToString())
+                                                                    {
+                                                                        <li>
+                                                                            <img class="img-fluid" data-img-id-name="@itemsimg.imageid|@imgname"
+                                                                                 src="~/TroupeReporting/@Data[0].TroupeId/Image/@itemsimg.imageid/@imgname">
+                                                                            @if (Status == "S1")
+                                                                            {
+                                                                                <i class="bi bi-x-circle-fill"></i>
+                                                                            }
+                                                                        </li>
+                                                                    }
+                                                                }
+                                                            </ul>
+                                                            alreadyexecute = true;
+                                                        }
+
+                                                    }
+                                                }
+
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @foreach (var itemsvdo in Data2)
+                                            {
+                                                @if (itemsvdo.villageid == items.VillageId.ToString() && itemsvdo.Status == "S1")
+                                                {
+                                                    @if (!vdoexecute)
+                                                    {
+                                                        @if (isFirstLoopVdo == true)
+                                                        {
+                                                            <div class="mb-3" id="VDO-@count">
+                                                                <div class="input-group">
+                                                                    <input class="form-control video-upload-input" type="file" id="videoUpload-@count" name="videoUpload" accept="video/*">
+                                                                    <span class="input-group-text add-more-vdo-btn" data-village-id="@items.VillageId" data-td-id="@count" id="addMorevideoBtn">
+                                                                        <i class="bi bi-upload"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <small class="text-danger" id="errgrpvideo-@count"></small>
+                                                            <ul class="uploaded-video-list" id="videoList-@count">
+
+                                                                <li>
+                                                                    <a class="home-gallery__item vclass" href="~/TroupeReporting/@Data[0].TroupeId/Video/@itemsvdo.videoid/@itemsvdo.videoname" target="_blank" id="capturedFrameLink-@cnt">
+                                                                        <img id="capturedFrame-@cnt" class="vdo-fluid" data-img-id-name="@itemsvdo.videoid|@itemsvdo.videoname" alt="KSSMS"><span class="home__gallery-icon"><span class="icon-gallery1-expand"></span></span>
+                                                                    </a>
+                                                                    @if (itemsvdo.Status == "S1")
+                                                                    {
+                                                                        <i class="bi bi-x-circle-fill vdoxcircle"></i>
+                                                                    }
+                                                                </li>
+
+                                                            </ul>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="mb-3" id="VDO-@count">
+                                                                <div class="input-group">
+                                                                    <input class="form-control video-upload-input" type="file" id="videoUpload-@count" name="videoUpload" accept="video/*" disabled>
+                                                                    <span class="input-group-text add-more-vdo-btn" data-village-id="@items.VillageId" data-td-id="@count" id="addMorevideoBtn">
+                                                                        <i class="bi bi-upload"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <small class="text-danger" id="errgrpvideo-@count"></small>
+                                                            <ul class="uploaded-video-list" id="videoList-@count">
+
+                                                                <li>
+                                                                    <a class="home-gallery__item vclass" href="~/TroupeReporting/@Data[0].TroupeId/Video/@itemsvdo.videoid/@itemsvdo.videoname" target="_blank" id="capturedFrameLink-@cnt">
+                                                                        <img id="capturedFrame-@cnt" class="vdo-fluid" data-img-id-name="@itemsvdo.videoid|@itemsvdo.videoname" alt="KSSMS"><span class="home__gallery-icon"><span class="icon-gallery1-expand"></span></span>
+                                                                    </a>
+                                                                    @if (itemsvdo.Status == "S1")
+                                                                    {
+                                                                        <i id="crossvdoSymbol-@count" class="bi bi-x-circle-fill vdoxcircle" style="pointer-events: none; color: #777;"></i>
+                                                                    }
+                                                                </li>
+
+                                                            </ul>
+                                                        }
+                                                        isFirstLoopVdo = false;
+                                                        vdoexecute = true;
+                                                    }
+
+                                                }
+                                                else if (itemsvdo.villageid == items.VillageId.ToString() && itemsvdo.Status != "S1")
+                                                {
+                                                    @if (!vdoexecute)
+                                                    {
+                                                        <ul class="uploaded-video-list" id="videoList-@count">
+
+                                                            <li>
+                                                                <a class="home-gallery__item vclass" href="~/TroupeReporting/@Data[0].TroupeId/Video/@itemsvdo.videoid/@itemsvdo.videoname" target="_blank" id="capturedFrameLink-@cnt">
+                                                                    <img id="capturedFrame-@cnt" class="vdo-fluid" data-img-id-name="@itemsvdo.videoid|@itemsvdo.videoname" alt="KSSMS"><span class="home__gallery-icon"><span class="icon-gallery1-expand"></span></span>
+                                                                </a>
+                                                            </li>
+
+                                                        </ul>
+                                                        vdoexecute = true;
+                                                    }
+
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @items.MemberCount
+                                        </td>
+                                    </tr>
+                                    cnt = cnt + 1;
+                                    count++;
+                                    alreadyexecute = false;
+                                    vdoexecute = false;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <h6 class="view-form-details__title mt-0">Remark</h6>
+                <div class="row g-4 mb-12">
+                    <div class="col-md-12">
+                        <label for="" class="control-label">
+                            Authority Remarks
+                        </label>
+                        <strong>
+                            @Data[0].AuthorityRemarks
+                        </strong>
+                    </div>
+                </div>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <textarea class="form-control" placeholder=" " rows="4" id="remark"></textarea>
+                            <label for="remark">Remark<span class="text-danger">*</span></label>
+                            <small class="text-danger" id="errtxtRemark"></small>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="rounded-pill btn btn-primary btn-lg btn--animation" id="submitButton">Submit</button>
+                        <button class="rounded-pill btn btn-secondary btn-lg btn--animation">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <h1>No Records Found</h1>
+        }
+    </div>
+</main>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        var i = 1;
+        $(".image-upload-input").change(function () {
+           
+            var tdId = $(event.target).closest('td').find('.add-more-img-btn').data('td-id');
+            var imgidname = $(event.target).closest('li').find('.img-fluid').data('img-id-name');
+         
+            $('#errgrpphoto-' + tdId + '').text("");
+            var img = $("#imageUpload-" + tdId + "").val();
+            
+            var maxSize = 1 * 1024 * 1024; 
+            var fileSize = $(this).get(0).files[0].size;
+
+            if (fileSize > maxSize) {
+                $('#errgrpphoto-' + tdId + '').text("File size exceeds 1 MB limit.");
+                return false;
+            }
+            var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+            if (!allowedExtensions.exec(img)) {
+                $('#errgrpphoto-' + tdId + '').text("Invalid file type. Please choose a JPEG or PNG file.");
+                return false;
+            }
+            if (img == 0 || img == null || img == undefined) {
+                $('#errgrpphoto-' + tdId +'').text("Please Choose Photo!");
+                return false;
+            }
+            else {
+               
+                var imageCount = $("#imageList-" + tdId + " li").length;
+                if (imageCount != 3) {
+                    var file = $("#imageUpload-" + tdId + "").get(0).files[0];
+                    var videofile = "";
+                    var TroupeId = $('#hdntroupeid').val();
+                    let DynImgIdName = imgidname
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            $("#imageList-" + tdId + "").append(`
+                                <li>
+                                    <img class="img-fluid" data-img-id-name="${DynImgIdName}" src="${reader.result}"   />
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </li>`
+                            );
+                            $("#imageUpload").val("");
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                   
+                    i = i + 1;
+                }
+                else {
+                    $('#errgrpphoto-' + tdId + '').text("Can Not Upload More Than 3 Photo!");
+                    $("#imageUpload").val("");
+                    $("#addMoreImgBtn").prop('disabled', true);
+                }
+            }
+        });
+        $(".video-upload-input").change(function () {
+            var tdId = $(event.target).closest('td').find('.add-more-vdo-btn').data('td-id');
+            var videofile = $("#videoUpload-" + tdId + "").get(0).files[0];
+            var vdoidname = $(".vdo-fluid").attr("data-img-id-name");
+            if (videofile) {
+                var maxSize = 5 * 1024 * 1024; // 5 MB
+                var fileSize = videofile.size;
+                if (fileSize > maxSize) {
+                    $('#errgrpvideo-' + tdId + '').text("Video size exceeds 5 MB limit.");
+                    $("#videoUpload-" + tdId + "").val("");
+                    return false;
+                }
+                var allowedExtensions = /(\.mp4|\.3gp)$/i;
+                if (!allowedExtensions.exec(videofile.name)) {
+                    $('#errgrpvideo-' + tdId + '').text("Invalid file type. Please choose an MP4 or 3GP file.");
+                    $("#videoUpload-" + tdId + "").val("");
+                    return false;
+                }
+                var reader = new FileReader();
+                reader.onload = function () {
+                    const video = document.createElement("video");
+                    video.src = URL.createObjectURL(videofile);
+                    video.onloadeddata = () => {
+                        video.currentTime = 1;
+                        const canvas = document.createElement("canvas");
+                        canvas.width = 100;
+                        canvas.height = 100;
+                        const context = canvas.getContext("2d");
+                        video.onseeked = function () {
+                            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const thumbnailImageDataURL = canvas.toDataURL("image/png");
+                            $("#videoList-" + tdId + "").empty();
+                            $("#videoList-" + tdId).append(`
+                                        <li>
+                                            <img class="vdo-fluid" data-img-id-name="${vdoidname}" src="${thumbnailImageDataURL}" />
+                                            <i class="bi bi-x-circle-fill"></i>
+                                        </li>`
+                            );
+                           
+                        };
+                    }
+                }
+                
+                reader.readAsDataURL(videofile);
+            }
+        });
+        $(".add-more-img-btn").click(function () {
+            var tdid = $("#hdntdid").val();
+            var imageCount = $("#imageList-" + tdid + " li").length;
+            if (imageCount == 3) {
+                uploadImageToServer("", "", "", tdid, 1);
+            }
+            else {
+                $('#errgrpphoto-' + tdid + '').text("Please Upload 3 Photo!");
+            }
+
+        });
+        $(".add-more-vdo-btn").click(function () {
+            var tdId = $(this).data('td-id');
+            var villageid = $(this).data('village-id');
+            var vdoidname = $(".vdo-fluid").attr("data-img-id-name");
+            $('#errgrpvideo-' + tdId +'').text("");
+            var img = $("#videoUpload-" + tdId + "").val();
+            if (img == 0 || img == null || img == undefined) {
+                $('#errgrpvideo-' + tdId + '').text("Please Choose Photo!");
+                return false;
+            }
+            else {
+                $("#videoList-" + tdId + "").empty();
+                var imageCount = $("#videoList-" + tdId + " li").length;
+                if (imageCount != 1) {
+                    var file = "";
+                    var videofile = $("#videoUpload-" + tdId + "").get(0).files[0];
+
+                    var TroupeId = $('#hdntroupeid').val();
+
+                    let DynImgIdName = vdoidname
+                    if (videofile) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            const video = document.createElement("video");
+                            video.src = URL.createObjectURL(videofile);
+                            video.onloadeddata = () => {
+                                video.currentTime = 1;
+                                const canvas = document.createElement("canvas");
+                                canvas.width = 100;
+                                canvas.height = 100;
+                                const context = canvas.getContext("2d");
+                                video.onseeked = function () {
+                                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                                    const thumbnailImageDataURL = canvas.toDataURL("image/png");
+                                    $("#videoList-" + tdId).append(`
+                                        <li>
+                                            <img class="vdo-fluid" data-img-id-name="${DynImgIdName}" src="${thumbnailImageDataURL}" />
+                                        </li>`
+                                    );
+                                    $("#videoUpload-" + tdId + "").val("");
+                                };
+                            }
+                        }
+                        reader.readAsDataURL(videofile);
+                    }
+                    uploadImageToServer(file,videofile, DynImgIdName, tdId,2);
+                }
+                else {
+                    $('#errgrpvideo-' + tdId + '').text("Can Not Upload More Than 1 Video!");
+                    $("#videoUpload-" + tdId + "").val("");
+                }
+
+            }
+        });
+        $(document).on("click", ".bi-x-circle-fill", function () {
+            var hdnid = $("#hdnimgidname").val();
+            if (hdnid == "") {
+                var tdId = $(event.target).closest('td').find('.add-more-img-btn').data('td-id');
+                var imgid = $(event.target).closest('li').find('.img-fluid').data('img-id-name');
+                $("#hdnimgidname").val(imgid);
+                $("#hdntdid").val(tdId);
+            }
+            else {
+                var tdId = $(event.target).closest('td').find('.add-more-img-btn').data('td-id');
+                var imgid = $(event.target).closest('li').find('.img-fluid').data('img-id-name');
+                var newhdnid = hdnid + "," + imgid;
+                $("#hdnimgidname").val(newhdnid);
+                $("#hdntdid").val(tdId);
+            }
+            $(this).parent().remove();
+            $("#addMoreImgBtn").prop('disabled', false);
+        });
+        $(document).on("click", ".vdoxcircle", function () {
+            var hdnid = $("#hdnvdoidname").val();
+            if (hdnid == "") {
+                var imgid = $(event.target).closest('li').find('.vdo-fluid').data('img-id-name');
+                $("#hdnvdoidname").val(imgid);
+            }
+            else {
+                var imgid = $(event.target).closest('li').find('.vdo-fluid').data('img-id-name');
+                var newhdnid = hdnid + "," + imgid;
+                $("#hdnvdoidname").val(newhdnid);
+            }
+            $(this).parent().remove();
+            
+        });
+    });
+    function uploadImageToServer(file, videofile, imageId, tdId,nid) {
+        var imageInfoArray = "";
+        var formdata = new FormData();
+        if (nid == 1) {
+            var cnt = 0;
+            var id = $('#hdnimgidname').val();
+            id = id.split(",");
+            formdata.append("ImageIdName", $('#hdnimgidname').val());
+            $("#imageList-" + tdId + " li img").each(function () {
+                var srcAttribute = $(this).attr("src");
+                if (srcAttribute.startsWith('data:image')) {
+                    var imgFile = dataURLtoFile($(this).attr("src"), id[cnt]);
+                    formdata.append("ImagesFile", imgFile);
+                    cnt++;
+                }
+            });
+            $("#imageList-" + tdId + " li i").remove();
+        }
+        else {
+            formdata.append("ImageIdName", imageId);
+            formdata.append("Upldvdofile", videofile);
+        }
+        formdata.append("TroupeId", $('#hdntroupeid').val());
+        formdata.append("AssignEventId", $('#hdnassigneventid').val());
+        formdata.append("ImgIdPath", $('#hdnimgpath').val());
+        formdata.append("VdoIdPath", $('#hdnvdopath').val());
+        $.ajax({
+            type: "post",
+            url: '@Url.Action("RevertUploadImage", "Dashboard", new { area = "" })',
+            contentType: false,
+            processData: false,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: formdata,
+            success: function (response) {
+                var response1 = JSON.parse(response);
+                $("#hdnimgid").val(response1.data);
+                $("#hdnvdoid").val(response1.data1);
+                new Swal("", response1.message, "");
+                if (nid == 1) {
+                    var dynamicId = "#IMG-" + tdId;
+                    $(dynamicId).hide();
+                    tdId = parseInt(tdId) + 1;
+                    $("#imageUpload-" + tdId).prop('disabled', false);
+                    $(".crossSymbol").removeAttr('style');
+                } else {
+                    var dynamicId = "#VDO-" + tdId;
+                    $(dynamicId).hide();
+                    tdId = parseInt(tdId) + 1;
+                    $("#videoUpload-" + tdId).prop('disabled', false);
+                    $("#crossvdoSymbol-" + tdId).removeAttr('style');
+                }
+                $("#hdnimgidname").val("");
+            },
+            error: function (error) {
+                console.error('Error uploading image:', error);
+            }
+        });
+    }
+    function ReportValidation() {
+        var liCountWithoutCross = $(".uploaded-img-list li:not(:has(.bi-x-circle-fill))").length;
+        var videoLiCountWithoutCross = $(".uploaded-video-list li:not(:has(.bi-x-circle-fill))").length;
+        if (liCountWithoutCross === 9 && videoLiCountWithoutCross === 3) {
+            if ($("#remark").val().trim() != "") {
+                $('#remark').removeClass("is-invalid");
+                $('#errtxtRemark').text("");
+                return true;
+            }
+            else {
+                $('#remark').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtRemark').text("Please Enter Remark!");
+                $('#remark').focus();
+                return false;
+            }
+        }
+        else {
+            new swal("", "Please Upload All The Photo and Video!", "");
+            return false;
+        }
+    }
+    $("#submitButton").click(function () {
+        if (ReportValidation()) {
+            var formdata = new FormData();
+            formdata.append("TroupeId", $('#hdntroupeid').val());
+            formdata.append("AssignEventId", $('#hdnassigneventid').val());
+            formdata.append("ImgPath", $('#hdnimgpath').val());
+            formdata.append("VdoIdPath", $('#hdnvdopath').val());
+            formdata.append("Remark", $('#remark').val());
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to submit Report Details.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Submit'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "post",
+                        url: '@Url.Action("ReportReverting", "Dashboard", new { area = "" })',
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestVerificationToken",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        data: formdata,
+                        success: function (result) {
+                            response = JSON.parse(result);
+                            if (response.data == 4) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var url = '@Url.Action("TroupeReportingList", "Dashboard", new { area = "" })';
+                                        location.href = url;
+                                    }
+                                    else if (result.isDenied) {
+                                        Swal.fire('Changes are not saved', '', 'info')
+                                    }
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'waring',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!!',
+                                text: error
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+    function dataURLtoFile(dataurl, filename) {
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    document.addEventListener("DOMContentLoaded", function () {
+        var anchorTags = document.querySelectorAll('a.vclass');
+        var Count = 1;
+        anchorTags.forEach(function (anchor) {
+            var hrefValue = anchor.getAttribute("href");
+            captureVideoFrame(hrefValue, Count);
+            Count += 1;
+        });
+
+    });
+    function captureVideoFrame(videoUrl, Count) {
+        var video = document.createElement("video");
+        video.src = videoUrl;
+        video.onloadedmetadata = function () {
+            video.currentTime = 1;
+            setTimeout(function () {
+                var imgElement = document.getElementById("capturedFrame-" + Count);
+                imgElement.src = getVideoFrameAsDataURL(video);
+                var linkElement = document.getElementById("capturedFrameLink-" + Count);
+                linkElement.addEventListener("click", function () {
+                    window.open(videoUrl, '_blank');
+                });
+            }, 1000);
+        };
+    }
+    function getVideoFrameAsDataURL(video) {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = 100;
+        canvas.height = 100;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL("image/jpeg");
+    }
+</script>

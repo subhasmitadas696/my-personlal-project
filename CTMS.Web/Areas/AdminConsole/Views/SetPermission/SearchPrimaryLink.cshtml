@@ -1,0 +1,154 @@
+﻿@*@model IEnumerable<AdminConsole.Models.PrimaryModel>*@
+
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewBag.Title = "Order List";
+
+}
+
+<style>
+    body {
+        font-size: 14px;
+        font-family: Helvetica, Arial, sans-serif;
+        color: #666;
+    }
+
+    h4 {
+        font-size: 16px;
+        color: #dd007d;
+    }
+
+    table {
+        font-size: 14px;
+        font-family: Helvetica, Arial, sans-serif;
+        color: #666;
+    }
+</style>
+
+@section Scripts{
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            $(".checkParent").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+                    $(".checkParent").each(function () {
+                        if (!this.checked)
+                            isAllChecked = 1;
+                    })
+                    $(this).closest("tr").next("tr").find(".checkChild").prop("checked", true);
+
+                } else {
+                    $(this).closest("tr").next("tr").find(".checkChild").prop("checked", false);
+                }
+            });
+
+            $(".checkChild").click(function () {
+                if ($(this).is(":checked")) {
+
+                    var isChildChecked = 0;
+                    $(".checkChild").each(function () {
+                        if (!this.checked)
+                            isChildChecked = 1;
+                    });
+                    $(this).closest("table").closest("tr").prev("tr").find(".checkParent").prop("checked", true);
+
+                } else {
+                    var isAllSiblingChecked = 0;
+                    $(this).closest("tr").nextAll("tr").find(".checkChild").each(function () {
+                        if ($(this).is(":checked"))
+                            isAllSiblingChecked = 1;
+                    });
+
+                    $(this).closest("tr").prev("tr").find(".checkChild").each(function () {
+                        if ($(this).is(":checked"))
+                            isAllSiblingChecked = 1;
+                    });
+
+                    if (isAllSiblingChecked == 0) {
+                        $(this).closest("table").closest("tr").prev("tr").find(".checkParent").prop("checked", false);
+                    }
+                }
+            });
+
+        });
+    </script>
+}
+
+<table class="table table-striped tablesorter">
+    <thead>
+        <tr colspan="2">
+            <th>
+                <input type="checkbox" id="checkedAll">
+            </th>
+            <th>Check/UnCheck ALL Boxes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <input type="checkbox" class="checkParent">
+            </td>
+            <td>1KWT</td>
+
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 0">
+                <table class="innertable" style="margin: 10px 0px 10px 50px;border: 1px solid #d0d0d0">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Sub</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="checkChild" style="margin-top: -3px">
+                            </td>
+                            <td>1KWT1</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="checkChild" style="margin-top: -3px">
+                            </td>
+                            <td>1KWT2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="checkbox" class="checkParent" style="margin-top: -3px">
+            </td>
+            <td>1OMN</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="padding: 0">
+                <table class="innertable" style="margin: 10px 0px 10px 50px;border: 1px solid #d0d0d0">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Sub</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="checkChild" style="margin-top: -3px">
+                            </td>
+                            <td>1OMN1</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="checkChild" style="margin-top: -3px">
+                            </td>
+                            <td>1OMN2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>

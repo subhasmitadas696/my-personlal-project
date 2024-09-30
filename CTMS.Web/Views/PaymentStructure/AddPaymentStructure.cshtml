@@ -1,0 +1,423 @@
+﻿@model CTMS.Model.Entities.PaymentStructure.PaymentStructureMaster
+@{
+    ViewData["Title"] = "Add Payment Structure";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+}
+<style>
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__rendered .select2-selection__choice {
+        font-size: 0.7rem;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card" id="divaddform">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" asp-controller="PaymentStructure" asp-action="AddPaymentStructure">
+            Add
+        </a>
+        <a class="nav-link" asp-controller="PaymentStructure" asp-action="ViewPaymentStructure">
+            View
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="row g-4 mb-4">
+            <input id="UserId" value="@ViewBag.UserId" class="form-control" hidden />
+            <input id="Id" class="form-control" type="hidden" />
+            <input id="Code" class="form-control" type="hidden" />
+            <div class="col-md-4">
+                <input type="hidden" id="hdnschemeid" value="" />
+                <div class="form-floating">
+                    <select class="form-select" id="ddlScheme" name="ddlScheme">
+                        <option value="0" selected>Select Scheme</option>
+
+                    </select>
+                    <label for="block">Scheme</label>
+                    <span class="text-danger" id="errddlScheme"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select category" id="CategoryId" data-placeholder="Category Name" asp-items="@(new SelectList(ViewBag.CatList, "CategoryId", "CategoryName"))" multiple>
+                        <option value="0" disabled>Select Category</option>
+                    </select>
+                    <small class="text-danger" id="error-messageCategory"></small>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" id="NoOfArtist" placeholder=" " autocomplete="off">
+                    <label for="NoOfArtist">No Of Artist</label>
+                    <span class="text-danger" id="errtxtNoOfArtist"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" id="Remuneration" placeholder=" " autocomplete="off">
+                    <label for="Remuneration">Remuneration</label>
+                    <span class="text-danger" id="errtxtRemuneration"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" id="Contingency" placeholder=" " autocomplete="off">
+                    <label for="Contingency ">Contingency</label>
+                    <span class="text-danger" id="errtxtContingency"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" id="Total" placeholder=" " autocomplete="off" disabled>
+                    <label for="Total">Total</label>
+                    <span class="text-danger" id="errtxtTotal"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-secondary btn-lg py-3" id="btnAddLst">
+                    <i class="bi bi-plus-circle pe-2"></i>
+                    Add More
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <div class="table-responsive--rounded" id="tblline">
+            <table class="table" id="tblmembers">
+                <thead>
+                    <tr>
+                        <th scope="col">Slno.#</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">No Of Artist</th>
+                        <th scope="col">Remuneration</th>
+                        <th scope="col">Contingency</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="addmore">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-4 text-center">
+        <button id="btnSubmit" type="button" class="btn btn-secondary mb-1">Submit</button>
+        <button id="btnCancel" class="btn btn-danger mb-1" type="reset" value="Reset" onclick="reset()">Cancel</button>
+    </div>
+</div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).on('click', '#btnAddLst', function () {
+        if (!PaymentStrValidations()) {
+            return;
+        }
+        var slno = $('#addmore tr').length + 1;
+        var scheme = $("#ddlScheme option:selected").text();
+        var schemeid = $("#ddlScheme").val();
+        $("#hiddenschemeid").val(schemeid);
+        var categoryIds = $("#CategoryId").val();
+        var categoryNames = [];
+        $.each(categoryIds, function (index, categoryId) {
+            categoryNames.push($("#CategoryId option[value='" + categoryId + "']").text());
+        });
+        var categoryNamesString = categoryNames.join(', ');
+        let noofartist = $("#NoOfArtist").val();
+        let remuneration = $("#Remuneration").val();
+        let contingency = $("#Contingency").val();
+        let total = $("#Total").val();
+        let add = '<tr>'
+        add += '<td>' + slno + '</td>';
+        add += '<td><input type="hidden" id="hiddencategoryid" value="' + $("#CategoryId").val().toString() + '"/>' + categoryNamesString + '</td>';
+        add += '<td>' + noofartist + '</td>';
+        add += '<td>' + remuneration + '</td>';
+        add += '<td>' + contingency + '</td>';
+        add += '<td>' + total + '</td>';
+        add += '<td>' + '<a id="edit" href="javascript:;" class="table__icon-btn edit-btn" data - bs - toggle="tooltip" data - bs - title="Edit" ><i class="bi bi-pencil-square"></i></a ><button class="table__icon-btn delete-btn" id="remove" data-bs-toggle="tooltip" data-bs-title="Delete">  <i class="bi bi-trash3"></i></button>' + '</td></tr>';
+        $("#addmore").append(add);
+        EnableSchemeChange();
+        var categoryidss = $("#CategoryId").val('');
+        $("#CategoryId").trigger('change');
+        let noofartistss = $("#NoOfArtist").val("");
+        let remunerationss = $("#Remuneration").val("");
+        let contingencyss = $("#Contingency").val("");
+        let totalss = $("#Total").val("");
+    });
+    $(document).on('click', '#remove', function () {
+        $(this).parents('tr').remove();
+        EnableSchemeChange();
+    });
+    $(document).on('click', '#edit', function () {
+        var row = $(this).closest('tr');
+        var slno = row.find('td:eq(0)').text();
+        var x = row.find('#hiddencategoryid').val();
+        var categoryIds = row.find('#hiddencategoryid').val().split(',');
+        $("#CategoryId").val(categoryIds).change();
+        var noOfArtist = row.find('td:eq(3)').text();
+        var remuneration = row.find('td:eq(4)').text();
+        var contingency = row.find('td:eq(5)').text();
+        var total = row.find('td:eq(6)').text();
+        $("#NoOfArtist").val(noOfArtist);
+        $("#Remuneration").val(remuneration);
+        $("#Contingency").val(contingency);
+        $("#Total").val(total);
+        $(this).parents('tr').remove();
+        EnableSchemeChange();
+    });
+</script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+
+    $(document).ready(function () {
+        Scheme(0);
+        var vars = getUrlVars();
+        var id = vars["Id"];
+        if (id !== undefined) {
+            $("#btnSubmit").html("Update");
+            $("#btnCancel").html("Cancel");
+            editPaymentStructure(id);
+            $('#hdnschemeid').val(id);
+            $('#Code').val('U');
+        }
+        else{
+            $('#Code').val('I');
+        }
+        $('#CategoryId').select2({
+            theme: 'bootstrap-5',
+            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+            placeholder: $(this).data('placeholder'),
+            closeOnSelect: false,
+        });
+    });
+
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function PaymentStrValidations() {
+        if ($("#ddlScheme").val() != 0) {
+            $('#ddlScheme').removeClass("is-invalid");
+            $('#errddlScheme').text("");
+        }
+        else {
+            $('#ddlScheme').addClass("form-control shadow-sm is-invalid");
+            $('#errddlScheme').text("Please Select Scheme!");
+            $('#ddlScheme').focus();
+            return false;
+        }
+        if ($('#CategoryId').val().length == 0) {
+            $('#CategoryId').removeClass("is-valid").addClass("is-invalid");
+            $('#error-messageCategory').text("Please select a Category Name!");
+            $('#CategoryId').focus();
+            return false;
+        }
+        else {
+            $('#CategoryId').removeClass("is-invalid").addClass("is-valid");
+            $('#error-messageCategory').text("");
+        }
+        if ($("#NoOfArtist").val().trim() != "") {
+            $('#NoOfArtist').removeClass("is-invalid");
+            $('#errtxtNoOfArtist').text("");
+        }
+        else {
+            $('#NoOfArtist').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtNoOfArtist').text("Please enter No Of Artist!");
+            $('#NoOfArtist').focus();
+            return false;
+        }
+        if ($("#Remuneration").val().trim() != "") {
+            $('#Remuneration').removeClass("is-invalid");
+            $('#errtxtRemuneration').text("");
+        }
+        else {
+            $('#Remuneration').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtRemunerationtext').text("Please enter Remuneration!");
+            $('#Remuneration').focus();
+            return false;
+        }
+        if ($("#Contingency").val().trim() != "") {
+            $('#Contingency').removeClass("is-invalid");
+            $('#errtxtContingency').text("");
+        }
+        else {
+            $('#Contingency').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtContingency').text("Please enter Contingency!");
+            $('#Contingency').focus();
+            return false;
+        }
+        return true;
+    }
+    function EnableSchemeChange() {
+        let trcount = $('#tblmembers tbody tr').length;
+        let catidlist = new Array;
+        $('#CategoryId option:disabled').not('option[value="0"]').removeAttr('disabled');
+        if (trcount == 0) {
+            $('#ddlScheme').attr('disabled', false);
+        }
+        else {
+            $('#ddlScheme').attr('disabled', true);
+            $('#tblmembers tbody tr').each(function (index) {
+                let catids = $(this).find('#hiddencategoryid').val().split(',');
+                catidlist = catidlist.length == 0 ? catids : catidlist.concat(catids);
+            });
+            $.each(catidlist, function (index, value) {
+                $('#CategoryId').find('option[value="' + value + '"').attr('disabled', true);
+            });
+        }
+    }
+</script>
+<script>
+    $("#btnSubmit").on("click", function () {
+        var formdata = new FormData();
+        let payList = new Array;
+        $('#tblmembers tbody tr').each(function (index) {
+            let pay = new Object();
+            pay.CategoryIdList = $(this).find('#hiddencategoryid').val();
+            pay.SchemeId = $('#ddlScheme').val();
+            pay.NoOfArtist = $(this).find('td:eq(2)').text();
+            pay.Remuneration = $(this).find('td:eq(3)').text();
+            pay.Contingency = $(this).find('td:eq(4)').text();
+            pay.Total = $(this).find('td:eq(5)').text();
+            pay.CreatedBy = $('#UserId').val();
+            pay.ActionCode = $('#Code').val();
+            payList.push(pay);
+        });
+        formdata.append("payments", JSON.stringify(payList));
+        swal.fire({
+            title: "Are you sure?",
+            text: "you want to add payment structure?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, add it!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("AddPaymentStructure", "PaymentStructure")",
+                    data: { payments: payList },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (result) {
+                        if (result.state === "success") {
+                            swal.fire({
+                                title: "Success",
+                                text: result.message,
+                                icon: "success"
+                            }).then(function () {
+                                var url = '@Url.Action("ViewPaymentStructure", "PaymentStructure")';
+                                location.href = url;
+                            });
+                        }
+                        else if (result.state === "warning") {
+                            swal.fire({
+                                title: "Warning",
+                                text: result.message,
+                                icon: "warning"
+                            }).then(function () {
+                                var url = '@Url.Action("AddPaymentStructure", "PaymentStructure")';
+                                location.href = url;
+                            });
+                            reset();
+                        } else { }
+                    },
+                    error: function (xhr, status, error) {
+                        swal.fire({
+                            title: "Error",
+                            text: "An error occurred. Please try again later.",
+                            icon: "error"
+                        });
+                        reset();
+                    }
+                });
+            }
+        });
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function updateTotal() {
+
+        var remuneration = parseInt($("#Remuneration").val()) || 0;
+        var contingency = parseInt($("#Contingency").val()) || 0;
+        var total = remuneration + contingency;
+        $('#Total').val(total);
+
+    }
+
+    $('#Remuneration, #Contingency').on('input', function () {
+        updateTotal();
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function editPaymentStructure(id) {
+        $.ajax({
+            url: "@Url.Action("Getbyid", "PaymentStructure")",
+            data: { "Id": id },
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                let add = '';
+                if (result.length != 0) {
+                    $('#ddlScheme').val(result[0].SchemeId);
+                    $('#hdnschemeid').val(result[0].SchemeId);
+                    $.each(result,function (index, value) {
+                        add = '<tr>'
+                        add += '<td>' + (index + 1) + '</td>';
+                        add += '<td><input type="hidden" id="hiddencategoryid" value="' + value.CategoryIdList + '"/>' + value.CategoryName + '</td>';
+                        add += '<td>' + value.NoOfArtist + '</td>';
+                        add += '<td>' + value.Remuneration + '</td>';
+                        add += '<td>' + value.Contingency + '</td>';
+                        add += '<td>' + value.Total + '</td>';
+                        add += '<td>' + '<a id="edit" href="javascript:;" class="table__icon-btn edit-btn" data - bs - toggle="tooltip" data - bs - title="Edit" ><i class="bi bi-pencil-square"></i></a ><button class="table__icon-btn delete-btn" id="remove" data-bs-toggle="tooltip" data-bs-title="Delete">  <i class="bi bi-trash3"></i></button>' + '</td></tr>';
+                        $("#addmore").append(add);
+                    });
+                }
+                else {
+                    add = '<tr>'
+                    add += '<td colspan="7">no record found</td></tr>';
+                    $("#addmore").append(add);
+                }
+                
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function reset() {
+        $("#Id").val(0);
+        $("#CategoryId").val(0);
+        $("#NoOfArtist").val("");
+        $("#Remuneration").val("");
+        $("#Contingency").val("");
+        $("#Total").val("");
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(".alphabetInput").on("input", function () {
+        var inputValue = $(this).val();
+        var sanitizedValue = inputValue.replace(/\D/g, '');
+
+        if (inputValue !== sanitizedValue) {
+            $(this).val(sanitizedValue);
+        }
+    });
+</script>
+

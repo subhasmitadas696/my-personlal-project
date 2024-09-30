@@ -1,0 +1,282 @@
+﻿@{
+    ViewData["Title"] = "Approval";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+
+    .urgentBox {
+        background-image: url(../images/urgentBg.png);
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        font-size: 12px;
+        color: #555;
+        padding: 7px;
+        display: block;
+        right: 0;
+        margin: 0;
+        line-height: .5em;
+        width: 60px;
+    }
+
+        .urgentBox label {
+            color: #fff;
+            bottom: 0;
+            text-align: center;
+            margin: 2px;
+        }
+
+    .modal-lg, .modal-xl {
+        max-width: 1077px;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="inner-layout">
+    <div class="container-fluid px-4 pt-3">
+        <nav class="tab-menu">
+            <h6>ViewTroupeRegister</h6>
+        </nav>
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    <a href="#" class="nav-link" onclick="LoadData(0)">Pending</a>
+                    <a href="#" class="nav-link" onclick="LoadData(1)">Approved</a>
+                    <a href="#" class="nav-link " onclick="LoadData(2)">Rejected</a>
+                </ul>
+            </div>
+            <div class="table-responsive" id="printArea">
+                <table class="table table-bordered" id="datatable">
+                    <thead>
+                        <tr>
+                            <th width="20" class="text-center">@Localizer["SL"]</th>
+                            <th>@Localizer["DistrictName"]</th>
+                            <th>@Localizer["BlockName"]</th>
+                            <th>@Localizer["GPName"]</th>
+                            <th>@Localizer["GroupName"]</th>
+                            <th>@Localizer["LeaderName"]</th>
+                            <th>@Localizer["MobileNo"]</th>
+                            <th>@Localizer["MemberCount"]</th>
+                            <th class="dip no-print">@Localizer["Action"]</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<div id="successModal22" class="modal customodal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="successModal22"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: black">
+                    @Localizer["Member Details"]
+                </h5>
+                <button type="button" class="btn-close" style="color: black" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body" id="viewdiv">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr style="background: #eee;">
+                                <th>@Localizer["SL"]</th>
+                                <th>@Localizer["MemberName"]</th>
+                                <th>@Localizer["Role"]</th>
+                                <th>@Localizer["AadhaarNo"]</th>
+                                <th>@Localizer["AccountNo"]</th>
+                                <th>@Localizer["BankName"]</th>
+                                <th>@Localizer["BranchName"]</th>
+                                <th>@Localizer["IFSC"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="Popupview"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModalTakeAction" class="modal customodal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModalTakeAction"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down" width="55%">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Action Taken
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+            </div>
+            <div class="modal-body" style="width: 100%;" id="viewdiv">
+                <div class="container">
+                    <div class="row">
+                        <input type="hidden" id="hdnRequestId" />
+                        <div class="col-md-6 form-group">
+
+                            <label class="control-label">@Localizer["Remark"]<span style="color:Red">*</span></label>
+
+                            <textarea id="txtRemark" name="txtRemark" class="form-control" autocomplete="off"></textarea>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-info" values="Approve" onclick="ApproveAction(1)">Approve</button>
+                <button class="btn btn-danger" values="Reject" onclick="ApproveAction(2)">Reject</button>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+         LoadData(0);
+    });
+    function Takeaction(Troupeid) {
+        $('#hdnRequestId').val(Troupeid);
+        var TROUPEID = Troupeid;
+        $('#myModalTakeAction').modal('show');
+
+    }
+    function LoadData(ID) {
+        if (ID !== 0) {
+            $(".dip").css("display", "none");
+        } else {
+            $(".dip").css("display", "");
+        }
+        var record = new Object();
+        record.Status = ID;
+
+        $.ajax({
+            data: record,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("TroupeRegistrationView", "Registration")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#bindtable').empty();
+                var slno = 0;
+                var htm = '';
+                var objAyyList = data.data;
+                if (objAyyList !=null ) {
+                    for (var i = 0; i < objAyyList.length; i++) {
+                        slno = slno + 1;
+                        htm += '<tr>';
+                        htm += '<td>' + slno + '</td>';
+                        htm += '<td>' + objAyyList[i].DistrictName + '</td>';
+                        htm += '<td>' + objAyyList[i].BlockName + '</td>';
+                        htm += '<td>' + objAyyList[i].GPName + '</td>';
+                        htm += '<td>' + objAyyList[i].GroupName + '</td>';
+                        htm += '<td>' + objAyyList[i].LeaderName + '</td>';
+                        htm += '<td>' + objAyyList[i].MobileNo + '</td>';
+                        htm += '<td><a style="color:Blue;cursor: pointer;" data-toggle="modal"  onclick="return MemberDetails(' + objAyyList[i].TroupeId + ')">' + objAyyList[i].MemberCount + '</a></td>';
+                        if (objAyyList[i].ApprovedStatus !== 0) {
+                            htm += '';
+                        } else {
+                            htm += '<td><a data-toggle="modal" onclick="return Takeaction(' + objAyyList[i].TroupeId + ')"><i class="bi bi-arrow-right-circle" title="Take Action" style="color:blue;cursor:pointer;"></i></a></td>';
+                        }
+                        htm += '</tr>';
+                    }
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+
+                $('#bindtable').append(htm);
+            }
+        });
+    } 
+    function MemberDetails(Troupeid) {
+        var TROUPEID = Troupeid;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("GetMemberDetails", "Registration")',
+            data: { "TROUPEID": TROUPEID },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+
+                    Count = Count + 1;
+                    if (v1.IsLeader == 1) {
+                        List += "<tr><td width='5%'>" + Count + "</td><td>" + v1.MemberName + "<div class='urgentBox'><span>Leader</span></div></td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td><td>" + v1.BankName + "</td><td>" + v1.BranchName + "</td><td>" + v1.IFSC + "</td></tr>";
+                    }
+                    else {
+                        List += "<tr><td width='5%'>" + Count + "</td><td>" + v1.MemberName + "</td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td><td>" + v1.BankName + "</td><td>" + v1.BranchName + "</td><td>" + v1.IFSC + "</td></tr>";
+                    }
+                });
+
+                $("#Popupview").html(List)
+
+            }
+        })
+    }
+    function Takeaction(Troupeid) {
+        $('#hdnRequestId').val(Troupeid);
+        var TROUPEID = Troupeid;
+        $('#myModalTakeAction').modal('show');
+
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function ApproveAction(id) {
+        var Troupeid = $('#hdnRequestId').val();
+        var record = new Object();
+        record.Troupeid = $('#hdnRequestId').val();
+        record.Remarks = $('#txtRemark').val();
+        record.Status = id;
+        if ($('#txtRemark').val() == "") {
+            new swal("error", "Please Enter Remarks!", "");
+            $('#txtRemark').focus();
+        }
+        else {
+
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("TakeAction", "ApprovalConfig")',
+            data: record,
+            success: function (newdata) {
+                newdata = JSON.parse(newdata);
+                 if (newdata.data == 10) {
+                    new swal({
+                        title: "",
+                        text: "Data Approved Successfully",
+                        type: "success"
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                    
+                }
+                else {
+                    new swal({
+                        title: "",
+                        text: "Data Rejected Successfully",
+                        type: "success"
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                    
+                }
+            }
+        })
+        }
+    }
+</script>

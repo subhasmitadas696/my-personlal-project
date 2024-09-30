@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    var Data = ViewBag.Data;
+}
+
+<link href="~/css/notification.css" rel="stylesheet" />
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">@Localizer["Notification"]</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">@Localizer["Home"]</a></li>
+                <li class="breadcrumb-item active">@Localizer["Notification"]</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        @if (Data != null)
+        {
+            int count = 1;
+            <div class="notification-list mb-3 row g-4">
+                @foreach (var list in Data)
+                {
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body">
+                                @if (Lang == "en")
+                                {
+                                    <h5>@list.Title</h5>
+                                    <p>@list.Description</p>
+                                }
+                                else
+                                {
+                                    <h5>@list.TitleOd</h5>
+                                    <p>@list.DescriptionOd</p>
+                                }
+                                <small class="notification-time text-muted">
+                                    <label>Start Date</label>
+                                    <strong class="start-date ps-md-2">@list.StartDate</strong>
+                                    <br />
+                                    <label>End Date</label>
+                                    <strong class="text-danger ps-md-2">@list.EndDate</strong>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    count++;
+                }
+            </div>
+
+        }
+    </div>
+</div>

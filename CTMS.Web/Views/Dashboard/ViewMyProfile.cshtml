@@ -1,0 +1,359 @@
+﻿@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    .images {
+        display: grid;
+        grid-template-columns: repeat(7,1fr);
+        gap: 1rem;
+    }
+
+    .gallery {
+        position: relative;
+    }
+
+        .gallery img {
+           
+            object-fit: cover;
+            height: 100%;
+            border-radius: 0.5rem 0.5rem;
+            width: 100%;
+        }
+
+        .gallery a {
+            display: block;
+            height: 100%;
+        }
+
+    .gallery {
+        position: relative;
+        overflow: hidden;
+        height: 100px;
+    }
+
+    .check-box {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        z-index: 3;
+    }
+
+    .input[type="checkbox"] {
+        background-color: var(--bs-primary);
+    }
+
+    .form-check {
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+
+    .form-check1 {
+        width: 1.4rem;
+        height: 1.4rem;
+    }
+    .home-gallery__itemss img {
+        height: 50%;
+        width: 50%;
+    }
+</style>
+@Html.AntiForgeryToken()
+<link href="~/css/styles.css" rel="stylesheet" />
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link " id="tropue-basic-info-tab" asp-controller="Dashboard" asp-action="MyProfile">
+            Add
+        </a>
+        <a class="nav-link active" id="artist-info-tab" asp-controller="Dashboard" asp-action="ViewMyProfile">
+            View
+        </a>
+        <a class="btn btn-primary btn-sm ms-auto mb-2 " data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0"> Event Details</h5>
+        <div>
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="sdate" name="sdate" placeholder="" />
+                                <label for="sdate">From Date</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="edate" name="edate" placeholder="" />
+                                <label for="edate">To Date</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-primary btn-lg " id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;">
+                            <input class="btn btn-primary btn-lg " id="btnclrfilter" type="reset" value="Reset" style="margin-top:10px;margin-left:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table id="datatable" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl#</th>
+                            <th scope="col">Society Registration</th>
+                            <th scope="col">BKSS Account No.</th>
+                            <th scope="col">By Law  File</th>
+                            <th scope="col">By Memorandum  File</th>
+                            <th scope="col">Meeting Resolution</th>
+                            <th scope="col">Last General Body<br /> Formation Date</th>
+                            <th scope="col">Vice President</th>
+                            <th scope="col">Executive Members</th>
+                            <th scope="col">General Bodys</th>
+                            <th class="no-print" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModal22">
+    <div class="modal-dialog modal-lg">
+        <!-- Change modal size class to modal-lg -->
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Executive Member Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Mobile Number</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Executivedetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModal77">
+    <div class="modal-dialog modal-lg">
+       
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">General Body Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Mobile Number</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Generalbodydetails"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        LoadProfiledetails();
+    });
+    function LoadProfiledetails() {
+        let Blockid = "@ViewBag.Blockid";
+        $.ajax({
+            url: '@Url.Action("ViewMyProfile", "Dashboard")',
+            type: 'POST',
+            dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            success: function (data) {
+                $('#datatable tbody').html('');
+                $('#datatable').DataTable().destroy();
+                let count = 1;
+                let row = ''
+                if (data.data.length != 0) {
+                    $.each(data.data, function (index, item) {
+                        row += '<tr>';
+                        row += '<td>' + count + '</td>';
+                        row += '<td>';
+                        if (item.societyregcert!= "NA")
+                        {
+                            row += '<a class="home-gallery__itemss" href="/ProfileDetails/' + Blockid + '/SocietyRegCert/' + item.societyregcert + '" target="_blank"><img height="50px" width="50px" src="/ProfileDetails/' + Blockid + '/SocietyRegCert/' + item.societyregcert + '" class="uploaded-img"><div class="text-muted"></a>' +'No.'+ item.societyregnumber + '</div><div class="text-muted">' + 'Date:'+item.societyregdate + '</div>';
+
+                        }
+                        else
+                            {
+                            row += '<strong>'+item.societyregcert+'</strong>';
+                            }
+                        row += '</td>';
+                        row += '<td>' + item.Bkssaccountno +'</td>';
+                        row += '<td>';
+                        if (item.bylawfile != "NA") {
+                            row += '<a class="home-gallery__itemss" href="/ProfileDetails/' + Blockid + '/ByLaw/' + item.bylawfile + '" target="_blank"><img height="50px" width="50px" src="/ProfileDetails/' + Blockid + '/ByLaw/' + item.bylawfile + '" class="uploaded-img"></a>';
+
+                        }
+                        else {
+                            row += '<strong>' + item.bylawfile + '</strong>';
+                        }
+                        row += '</td>';
+                        row += '<td>';
+                        if (item.bymemorandumfile != "NA") {
+                            row += '<a class="home-gallery__itemss" href="/ProfileDetails/' + Blockid + '/ByMemorandum/' + item.bymemorandumfile + '" target="_blank"><img height="50px" width="50px" src="/ProfileDetails/' + Blockid + '/ByMemorandum/' + item.bymemorandumfile + '" class="uploaded-img"></a>';
+
+                        }
+                        else {
+                            row += '<strong>' + item.bymemorandumfile + '</strong>';
+                        }
+                        row += '</td>';
+                        row += '<td>' + item.mettingresolution +'</td>';
+                        row += '<td>' + item.generalbodyformdate + '</td>';
+                        row += '<td>' + item.vicepresidentname + '<div class="text-muted">' + item.positionheldfrom + '</td>';
+                        row += '<td>' + '<a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return ExecutiveMemberDetails(' + item.PID + ')">' + item.MemberCount + '</a>' + '</td>';
+                        row += '<td>' + '<a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return GeneralBodyDetails(' + item.PID + ')">' + item.MemberCountss + '</a>' + '</td>';
+                        row += '<td>' + '<a onclick="EditMyProfile(' + item.PID + ', \'' + Blockid + '\')"><i class="bi bi-pencil-square" title="EditMyProfile" style="cursor: pointer;"></i></a><a onclick="return DeleteMyProfile(' + item.PID + ')"><i class="bi bi-trash" title="DeleteMyProfile" style="color: red; cursor: pointer;"></a></td>';
+                        row += '</tr>';
+                    });
+                }
+                else{
+                    row += '';
+                }
+                $('#datatable tbody').html(row);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+        setTimeout(function () {
+            Datatable();
+        }, 1000);
+    }
+    function ExecutiveMemberDetails(PID) {
+        var PID = PID;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("GetExecutiveMemberDetails", "Dashboard")',
+            data: { "PID": PID },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + v1.ExecutiveMemberName + "</td><td>" + v1.ExecutiveMemberMobile + "</td></tr>";
+                });
+                $("#Executivedetails").html(List)
+            }
+        })
+    }
+    function GeneralBodyDetails(PID) {
+        var PID = PID;
+        $('#successModal77').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("GetGeneralBodyDetails", "Dashboard")',
+            data: { "PID": PID },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + v1.GeneralBodyMemberName + "</td><td>" + v1.GeneralBodyMobile + "</td></tr>";
+                });
+                $("#Generalbodydetails").html(List)
+            }
+        })
+    }
+    function DeleteMyProfile(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete profile details!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Submit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Dashboard/DeleteMyProfile?Id=' + id,
+                    type: 'get',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.data == '3') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: result.responseMessage
+                            }).then(() => {
+                                window.location.href = 'ViewMyProfile';
+                            });
+                        }
+                        else if (result.data =='99') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Error!!!'
+                            }).then(() => {
+                                window.location.href = 'ViewMyProfile';
+                            });
+                        }
+                        },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+
+            }
+            return false;
+        })
+    }
+    function EditMyProfile(PID, Blockid) {
+        window.location.href = '@Url.Action("EditMyProfile", "Dashboard")?PID=' + PID + '&Blockid=' + Blockid;;
+    }
+</script>
+

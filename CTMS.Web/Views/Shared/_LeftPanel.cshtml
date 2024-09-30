@@ -1,0 +1,130 @@
+@using System.Security.Claims;
+
+@* Getting User Id*@
+<input type="hidden" id="hfUserId" value=@User.FindFirstValue(ClaimTypes.Sid) />
+<input type="hidden" id="hfRoleId" value=@User.FindFirstValue(ClaimTypes.Role) />
+<input type="hidden" id="contollerName" />
+<div class="sidemenu scrollbar style-4">
+    <div class="navbar-brand">
+        <a href="#">
+            <h2> @Localizer["Kala Sanskruti Sangha"]</h2>
+        </a>
+    </div>
+    @if (Convert.ToInt32(User.FindFirstValue(ClaimTypes.Role)) == 1)
+    {
+        <nav class="navbar">
+            <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+                <ul class="navbar-nav" id="sideBarId">
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="icon-dashboard"></i><span>@Localizer["Dashboard"]</span></a></li>
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Registration" asp-action="TroupeRegistration"><i class="icon-dashboard"></i><span>@Localizer["Troupe Registration"]</span></a></li>
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Registration" asp-action="TroupeRegistrationView"><i class="icon-dashboard"></i><span>@Localizer["Troupe Registration Details"]</span></a></li>
+                </ul>
+            </div>
+        </nav>
+    }
+    else if (Convert.ToInt32(User.FindFirstValue(ClaimTypes.Role)) == 2)
+    {
+        <nav class="navbar">
+            <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+                <ul class="navbar-nav" id="sideBarId">
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="icon-dashboard"></i><span>@Localizer["Dashboard"]</span></a></li>
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Registration" asp-action="TroupeRegistrationBsso"><i class="icon-dashboard"></i><span>@Localizer["Troupe Registration"]</span></a></li>
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Registration" asp-action="TroupeRegistrationView"><i class="icon-dashboard"></i><span>@Localizer["Troupe Registration Details"]</span></a></li>
+                </ul>
+            </div>
+        </nav>
+    }
+    else if (Convert.ToInt32(User.FindFirstValue(ClaimTypes.Role)) == 4)
+    {
+        <nav class="navbar">
+            <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+                <ul class="navbar-nav" id="sideBarId">
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Home" asp-action="Index"><i class="icon-dashboard"></i><span>@Localizer["Dashboard"]</span></a></li>
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="Registration" asp-action="TroupeRegistrationBsso"><i class="icon-dashboard"></i><span>@Localizer["Troupe Registration Bsso"]</span></a></li>
+                    <li class="nav-item glDashboard"><a class="nav-link" asp-controller="ApprovalConfig" asp-action="TroupeApprovalView"><i class="icon-dashboard"></i><span>@Localizer["Troupe Approval"]</span></a></li>
+                </ul>
+            </div>
+        </nav>
+    }
+    else
+    {
+        <nav class="navbar">
+            <div class="navbar-collapse justify-content-end" id="basicExampleNav">
+                <ul class="navbar-nav" id="sideBarId">
+                </ul>
+            </div>
+        </nav>
+    }
+
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+
+        if ($('#hfRoleId').val() != "1") {
+            $(".dropdown-item.active").each(function () {
+                $(this).parent().closest('div').addClass('show');
+                $(this).parent().closest('li').addClass('show active');
+            });
+        }
+    });
+    
+    function appendMenu(data) {
+        let html = "";
+        var menu = data.reduce(function (memo, e1) {
+            var matches = memo.filter(function (e2) {
+                return e1.MENUID == e2.MENUID
+            })
+            if (matches.length == 0)
+                memo.push(e1)
+            return memo;
+        }, [])
+        for (let i = 0; i < menu.length; i++) {
+            const item = menu[i];
+            var filtered = data.filter(function (el) {
+                return el.MENUID == item.MENUID;
+            });
+            if (filtered.length == 1) {
+                let path = '@Url.Content("~/")' + item.PATHURL
+                html += '<li class="nav-item glDashboard"><a class="nav-link" href="' + path + '"><i class="' + menu[i].GLOBALICON + '"></i><span>' + menu[i].PRIMARYLINKNAME + '</span></a></li>'
+            } else {
+
+                html += '<li class="nav-item dropdown glMaster"><a class="nav-link dropdown-toggle" id = "MasterDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ><i class="' + menu[i].GLOBALICON + '"></i><span>' + menu[i].GLOBALLINKNAME + '</span></a ><div class="dropdown-menu" aria-labelledby="MasterDropdownMenuLink">'
+                for (let j = 0; j < filtered.length; j++) {
+                    let path = '@Url.Content("~/")' + filtered[j].PATHURL;
+                    //let
+                    let activeStatus = CheckActiveStatus(filtered[j].PATHURL, filtered[j].Remarks)
+
+                    let subHtml = '<a class="dropdown-item plAddRelig ' + activeStatus + '"  href=' + path + '><span>RM </span> ' + filtered[j].PRIMARYLINKNAME + '</a>';
+                    html += subHtml;
+                }
+                html += '</div></li>'
+
+            }
+        }
+        $('#sideBarId').append(html);
+    }
+
+    function CheckActiveStatus(sideBarPath, remarks) {
+        cPathArray = window.location.pathname.split("/");
+        sPathArray = sideBarPath.split("/")
+
+        if (cPathArray[1] == sPathArray[0] && (cPathArray[2] == sPathArray[1] || cPathArray[2] == "View" + sPathArray[1])) {
+            return "active";
+        }
+        else {
+
+            if (remarks != null) {
+                remarksArray = remarks.split(",");
+                for (let i = 0; i < remarksArray.length; i++) {
+                    remarksPathArray = remarksArray[i].split("/");
+                    if (cPathArray[1] == remarksPathArray[0] && cPathArray[2] == remarksPathArray[1]) {
+                        return "active";
+                    }
+                }
+            }
+            return "";
+        }
+
+    }
+
+</script>

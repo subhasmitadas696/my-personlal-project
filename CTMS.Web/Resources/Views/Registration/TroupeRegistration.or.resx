@@ -1,0 +1,588 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="(Maximum Upload Cultural Troupe Banner Size 1MB)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ସାଂସ୍କୃତିକ ସଂଘ ବ୍ୟାନର ଆକାର 1MB)</value>
+  </data>
+  <data name="(Maximum upload Cultural Troupe Banner size is 1MB and only PDF &amp; image(.jpeg/jpg/png/pdf) files are allowed)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ସାଂସ୍କୃତିକ ଟ୍ରୁପ୍ ବ୍ୟାନର ଆକାର ହେଉଛି 1MB ଏବଂ କେବଳ PDF ଏବଂ ପ୍ରତିଛବି (.jpeg / jpg / png / pdf) ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ)</value>
+  </data>
+  <data name="(Maximum Upload Group Photo Size 1MB)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ଗୋଷ୍ଠୀ ଫଟୋ ଆକାର 1MB)</value>
+  </data>
+  <data name="(Maximum upload group photo size is 1MB and only image(.jpeg/jpg/png) files are allowed)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ଗ୍ରୁପ୍ ଫଟୋ ଆକାର ହେଉଛି 1MB ଏବଂ କେବଳ ପ୍ରତିଛବି (.jpeg / jpg / png) ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ)</value>
+  </data>
+  <data name="(Maximum Upload Registration Certificate Size 1MB)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ପଞ୍ଜୀକରଣ ପ୍ରମାଣପତ୍ର ଆକାର 1MB)</value>
+  </data>
+  <data name="(Maximum upload Registration Certificate size is 1MB and only PDF &amp; image(.jpeg/jpg/png/pdf) files are allowed)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ ଆକାର ହେଉଛି 1MB ଏବଂ କେବଳ PDF ଏବଂ ପ୍ରତିଛବି (.jpeg / jpg / png / pdf) ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ)</value>
+  </data>
+  <data name="(Maximum Upload Video Size 5MB)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ଭିଡିଓ ଆକାର 5MB)</value>
+  </data>
+  <data name="(Maximum upload video size is 5MB and only video(.mp4/avi/mov/wmv) files are allowed)" xml:space="preserve">
+    <value>(ସର୍ବାଧିକ ଅପଲୋଡ୍ ଭିଡିଓ ଆକାର ହେଉଛି 5MB ଏବଂ କେବଳ ଭିଡିଓ (.mp4 / avi / mov / wmv) ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ)</value>
+  </data>
+  <data name="--Select Role--" xml:space="preserve">
+    <value>- ଭୂମିକା ଚୟନ କରନ୍ତୁ -</value>
+  </data>
+  <data name="--Select--" xml:space="preserve">
+    <value>- ଚୟନ କରନ୍ତୁ -</value>
+  </data>
+  <data name="Aadhaar Number" xml:space="preserve">
+    <value>ଆଧାର ନମ୍ବର</value>
+  </data>
+  <data name="Aadhaar number should have exactly 12 digits." xml:space="preserve">
+    <value>ଆଧାର ନମ୍ବରରେ ଠିକ୍ 12 ଅଙ୍କ ରହିବା ଉଚିତ୍ |</value>
+  </data>
+  <data name="Aadhar number should have exactly 12 digits." xml:space="preserve">
+    <value>ଆଧାର ନମ୍ବରରେ ଠିକ୍ 12 ଅଙ୍କ ରହିବା ଉଚିତ୍ |</value>
+  </data>
+  <data name="Account Number" xml:space="preserve">
+    <value>ଆକାଉଣ୍ଟ ନମ୍ବର</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>କ୍ରିୟା</value>
+  </data>
+  <data name="Add Member Details" xml:space="preserve">
+    <value>ସଦସ୍ୟ ବିବରଣୀ ଯୋଗ କରନ୍ତୁ</value>
+  </data>
+  <data name="Add Members" xml:space="preserve">
+    <value>ସଦସ୍ୟ ଯୋଡନ୍ତୁ</value>
+  </data>
+  <data name="Add More Members" xml:space="preserve">
+    <value>ସଦସ୍ୟ ଯୋଡନ୍ତୁ</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>ଠିକଣା</value>
+  </data>
+  <data name="Any cultural troupe comes under a BKSS can register/ enroll their troupes. They should mention the number and names of all troupe members as per actual requirement of that art form." xml:space="preserve">
+    <value>BKSS ଅଧୀନରେ ଥିବା କୌଣସି ସାଂସ୍କୃତିକ ସଂଘ ସେମାନଙ୍କ ସଂଘ ପଞ୍ଜିକରଣ / ନାମାଙ୍କନ କରିପାରିବେ | ସେହି କଳାର ପ୍ରକୃତ ଆବଶ୍ୟକତା ଅନୁଯାୟୀ ସେମାନେ ସଂଘ ର ସମସ୍ତ ସଦସ୍ୟଙ୍କ ସଂଖ୍ୟା ଏବଂ ନାମ ଉଲ୍ଲେଖ କରିବେ |</value>
+  </data>
+  <data name="Are you sure?" xml:space="preserve">
+    <value>ଆପଣ ନିଶ୍ଚିତ କି?</value>
+  </data>
+  <data name="Art &amp;amp; Performance Details" xml:space="preserve">
+    <value>କଳା ଏବଂ ପ୍ରଦର୍ଶନ ବିବରଣୀ</value>
+  </data>
+  <data name="Artist Information" xml:space="preserve">
+    <value>କଳାକାର ସୂଚନା</value>
+  </data>
+  <data name="Bank" xml:space="preserve">
+    <value>ବ୍ୟାଙ୍କ</value>
+  </data>
+  <data name="Bank Account No." xml:space="preserve">
+    <value>ବ୍ୟାଙ୍କ ଖାତା ନମ୍ବର</value>
+  </data>
+  <data name="Bank Details" xml:space="preserve">
+    <value>ବ୍ୟାଙ୍କ ବିବରଣୀ</value>
+  </data>
+  <data name="Bank Name" xml:space="preserve">
+    <value>ବ୍ୟାଙ୍କ ନାମ</value>
+  </data>
+  <data name="Basic Information" xml:space="preserve">
+    <value>ମୌଳିକ ସୂଚନା</value>
+  </data>
+  <data name="Block" xml:space="preserve">
+    <value>ବ୍ଲକ</value>
+  </data>
+  <data name="Block/ULB" xml:space="preserve">
+    <value>ବ୍ଲକ / ULB</value>
+  </data>
+  <data name="Branch" xml:space="preserve">
+    <value>ଶାଖା</value>
+  </data>
+  <data name="Branch Name" xml:space="preserve">
+    <value>ଶାଖା ନାମ</value>
+  </data>
+  <data name="Branch Names" xml:space="preserve">
+    <value>ଶାଖା ନାମଗୁଡିକ</value>
+  </data>
+  <data name="By checking the box, you acknowledge that you have read and understood these terms and conditions and that you agree to abide by them." xml:space="preserve">
+    <value>ବାକ୍ସ ଯାଞ୍ଚ କରି, ଆପଣ ସ୍ୱୀକୃତି କରନ୍ତି ଯେ ଆପଣ ଏହି ସର୍ତ୍ତାବଳୀ ଏବଂ ସର୍ତ୍ତଗୁଡିକ ପଢିଛନ୍ତି ଏବଂ ବୁଝିଚନ୍ତି ଏବଂ ଆପଣ ସେଗୁଡିକ ପାଳନ କରିବାକୁ ରାଜି ହୋଇଛନ୍ତି |</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>ବାତିଲ୍ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>ବର୍ଗ</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>ବନ୍ଦ</value>
+  </data>
+  <data name="Cultural Troupe Banner" xml:space="preserve">
+    <value>ସାଂସ୍କୃତିକ ସଂଘ ବ୍ୟାନର</value>
+  </data>
+  <data name="Cultural Troupe Information" xml:space="preserve">
+    <value>ସାଂସ୍କୃତିକ ସଂଘ ସୂଚନା</value>
+  </data>
+  <data name="Cultural Troupe Management Registration" xml:space="preserve">
+    <value>କଳା ସଂସ୍କୃତି ସଂଘରେ ପଞ୍ଜୀକୃତ ନିମନ୍ତେ ଲୋକକଳା ଓ ସାଂସ୍କୃତିକ ଦଳର ବିସ୍ତୃତ ବିବରଣୀ</value>
+  </data>
+  <data name="Cultural Troupe Name" xml:space="preserve">
+    <value>ସାଂସ୍କୃତିକ ସଂଘ ନାମ</value>
+  </data>
+  <data name="District" xml:space="preserve">
+    <value>ଜିଲ୍ଲା</value>
+  </data>
+  <data name="Duplicate Aadhaar Number Found.!" xml:space="preserve">
+    <value>ନକଲି ଆଧାର ନମ୍ବର ମିଳିଲା।!</value>
+  </data>
+  <data name="Duplicate Email Found.!" xml:space="preserve">
+    <value>ନକଲି ଇମେଲ ମିଳିଲା।!</value>
+  </data>
+  <data name="Duplicate Mobile Number Found.!" xml:space="preserve">
+    <value>ନକଲି ମୋବାଇଲ୍ ନମ୍ବର ମିଳିଲା।!</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>ଇମେଲ୍ କରନ୍ତୁ</value>
+  </data>
+  <data name="errDist" xml:space="preserve">
+    <value>ଦୟାକରି କୋଣଟି ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>ମହିଳା</value>
+  </data>
+  <data name="File size exceeds 1MB limit." xml:space="preserve">
+    <value>ଫାଇଲ୍ ଆକାର 1MB ସୀମା ଅତିକ୍ରମ କରିଛି |</value>
+  </data>
+  <data name="File size exceeds 5MB limit." xml:space="preserve">
+    <value>ଫାଇଲ୍ ଆକାର 5MB ସୀମା ଅତିକ୍ରମ କରିଛି |</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>ଲିଙ୍ଗ</value>
+  </data>
+  <data name="Get IFSC" xml:space="preserve">
+    <value>ଆଇ.ଏଫ.ଏସ.ସି ପାଆନ୍ତୁ</value>
+  </data>
+  <data name="Gram Panchayat" xml:space="preserve">
+    <value>ଗ୍ରାମ ପଞ୍ଚାୟତ</value>
+  </data>
+  <data name="Gram Panchayat / Ward" xml:space="preserve">
+    <value>ଗ୍ରାମ ପଞ୍ଚାୟତ / ୱାର୍ଡ</value>
+  </data>
+  <data name="GramPanchayat" xml:space="preserve">
+    <value>ଗ୍ରାମ ପଞ୍ଚାୟତ</value>
+  </data>
+  <data name="Group Creation Date" xml:space="preserve">
+    <value>ଗୋଷ୍ଠୀ ଗଠନ ତାରିଖ</value>
+  </data>
+  <data name="Group Name" xml:space="preserve">
+    <value>ଗୋଷ୍ଠୀ ନାମ</value>
+  </data>
+  <data name="Group Photo" xml:space="preserve">
+    <value>ଗୋଷ୍ଠୀ ଫଟୋ</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>ମୂଳପୃଷ୍ଠା</value>
+  </data>
+  <data name="Homepage" xml:space="preserve">
+    <value>ମୂଳପୃଷ୍ଠା</value>
+  </data>
+  <data name="IFSC" xml:space="preserve">
+    <value>IFSC</value>
+  </data>
+  <data name="IFSC Code" xml:space="preserve">
+    <value>ଆଇ.ଏଫ.ଏସ.ସି କୋଡ</value>
+  </data>
+  <data name="IFSC No:" xml:space="preserve">
+    <value>ଆଇ.ଏଫ.ଏସ.ସି ନା:</value>
+  </data>
+  <data name="Invalid email address" xml:space="preserve">
+    <value>Invalid  ଈମୈଲ ଠିକଣା</value>
+  </data>
+  <data name="Leader Name" xml:space="preserve">
+    <value>ନେତା ନାମ</value>
+  </data>
+  <data name="lease Enter Member Name!" xml:space="preserve">
+    <value>ଲିଜ୍ ସଦସ୍ୟ ନାମ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>ଲଗ ଇନ</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>ପୁରୁଷ</value>
+  </data>
+  <data name="Member Name" xml:space="preserve">
+    <value>ସଦସ୍ୟ ନାମ</value>
+  </data>
+  <data name="Member Role" xml:space="preserve">
+    <value>ସଦସ୍ୟ ଭୂମିକା</value>
+  </data>
+  <data name="Member's Date Of Birth" xml:space="preserve">
+    <value>ସଦସ୍ୟଙ୍କ ଜନ୍ମ ତାରିଖ </value>
+  </data>
+  <data name="Member's Father Name" xml:space="preserve">
+    <value>ସଦସ୍ୟଙ୍କ ପିତା ନାମ </value>
+  </data>
+  <data name="Mobile Number" xml:space="preserve">
+    <value>ମୋବାଇଲ୍ ନମ୍ବର</value>
+  </data>
+  <data name="Mobile number should have at least 10 digits." xml:space="preserve">
+    <value>ମୋବାଇଲ୍ ନମ୍ବରରେ ଅତି କମରେ 10 ଅଙ୍କ ରହିବା ଉଚିତ୍ |</value>
+  </data>
+  <data name="Mobile/Email" xml:space="preserve">
+    <value>ମୋବାଇଲ୍ / ଇମେଲ୍</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>ନା</value>
+  </data>
+  <data name="No, Cancel" xml:space="preserve">
+    <value>ନା, ବାତିଲ୍ କରନ୍ତୁ |</value>
+  </data>
+  <data name="No. Of Members" xml:space="preserve">
+    <value>ସଦସ୍ୟମାନ ସଂଖ୍ୟା</value>
+  </data>
+  <data name="Only Image files are allowed." xml:space="preserve">
+    <value>କେବଳ ପ୍ରତିଛବି ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ |</value>
+  </data>
+  <data name="Only PDF and Image files are allowed." xml:space="preserve">
+    <value>କେବଳ PDF ଏବଂ ପ୍ରତିଛବି ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ |</value>
+  </data>
+  <data name="Only Video files are allowed." xml:space="preserve">
+    <value>କେବଳ ଭିଡିଓ ଫାଇଲଗୁଡିକ ଅନୁମତିପ୍ରାପ୍ତ |</value>
+  </data>
+  <data name="Others" xml:space="preserve">
+    <value>ଅନ୍ୟମାନେ</value>
+  </data>
+  <data name="Pincode" xml:space="preserve">
+    <value>ପିନ କୋଡ</value>
+  </data>
+  <data name="Pincode number should have exactly 6 digits!" xml:space="preserve">
+    <value>ପିନ୍ କୋଡ୍ ନମ୍ବରରେ ଠିକ୍ 6 ଅଙ୍କ ରହିବା ଉଚିତ୍!</value>
+  </data>
+  <data name="Please Choose Group Created On!" xml:space="preserve">
+    <value>ଦୟାକରି ଗୋଷ୍ଠୀ ସୃଷ୍ଟି ତାରିଖ ବାଛନ୍ତୁ!</value>
+  </data>
+  <data name="Please Choose Leader!" xml:space="preserve">
+    <value>ଦୟାକରି ନେତା ବାଛନ୍ତୁ!</value>
+  </data>
+  <data name="Please Choose Member Date Of Birth!" xml:space="preserve">
+    <value>ଦୟାକରି ସଦସ୍ୟ ଜନ୍ମ ତାରିଖ ବାଛନ୍ତୁ!</value>
+  </data>
+  <data name="Please Choose Member's Date Of Birth!" xml:space="preserve">
+    <value>ଦୟାକରି ସଦସ୍ୟଙ୍କ ଜନ୍ମ ତାରିଖ ବାଛନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter a Valid Aadhaar No.!" xml:space="preserve">
+    <value>ଦୟାକରି ଏକ ବୈଧ ଆଧାର ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter a Valid Account No.!" xml:space="preserve">
+    <value>ଦୟାକରି ଏକ ବୈଧ ଖାତା ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter a Valid Email.!" xml:space="preserve">
+    <value>ଦୟାକରି ଏକ ବୈଧ ଇମେଲ୍ ପ୍ରବେଶ କରନ୍ତୁ।!</value>
+  </data>
+  <data name="Please Enter a Valid Mobile Number.!" xml:space="preserve">
+    <value>ଦୟାକରି ଏକ ବୈଧ ମୋବାଇଲ୍ ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ।!</value>
+  </data>
+  <data name="Please Enter Aadhaar No.!" xml:space="preserve">
+    <value>ଦୟାକରି ଆଧାର ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Account No.!" xml:space="preserve">
+    <value>ଦୟାକରି ଆକାଉଣ୍ଟ ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Address!" xml:space="preserve">
+    <value>ଦୟାକରି ଠିକଣା ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Father Name!" xml:space="preserve">
+    <value>ଦୟାକରି ପିତାଙ୍କ ନାମ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter IFSC!" xml:space="preserve">
+    <value>ଦୟାକରି ଆଇ.ଏଫ.ଏସ.ସି ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Member Name!" xml:space="preserve">
+    <value>ଦୟାକରି ସଦସ୍ୟ ନାମ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Member's Father Name!" xml:space="preserve">
+    <value>ଦୟାକରି ସଦସ୍ୟଙ୍କ ପିତା ନାମ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Mobile Number.!" xml:space="preserve">
+    <value>ଦୟାକରି ମୋବାଇଲ୍ ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ।!</value>
+  </data>
+  <data name="Please Enter Pincode!" xml:space="preserve">
+    <value>ଦୟାକରି ପିନ କୋଡ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Role!" xml:space="preserve">
+    <value>ଦୟାକରି ଭୂମିକା ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Society Registration Date!" xml:space="preserve">
+    <value>ଦୟାକରି ସମାଜ ପଞ୍ଜୀକରଣ ତାରିଖ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Society Registration Number!" xml:space="preserve">
+    <value>ଦୟାକରି ସମାଜ ପଞ୍ଜୀକରଣ ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Troupe Name!" xml:space="preserve">
+    <value>ଦୟାକରି ସଂଘ ନାମ ପ୍ରବେଶ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Enter Your Valid Registration Number." xml:space="preserve">
+    <value>ଦୟାକରି ଆପଣଙ୍କର ଠିକ୍ ପଞ୍ଜୀକରଣ ନମ୍ବର ପ୍ରବେଶ କରନ୍ତୁ।</value>
+  </data>
+  <data name="Please Select Bank!" xml:space="preserve">
+    <value>ଦୟାକରି ବ୍ୟାଙ୍କ ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select Block!" xml:space="preserve">
+    <value>ଦୟାକରି ବ୍ଲକ ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select Branch!" xml:space="preserve">
+    <value>ଦୟାକରି ଶାଖା ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select Category!" xml:space="preserve">
+    <value>ଦୟାକରି ବର୍ଗ ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select District!" xml:space="preserve">
+    <value>ଦୟାକରି ଜିଲ୍ଲା ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select Gram Panchayat!" xml:space="preserve">
+    <value>ଦୟାକରି ଗ୍ରାମ ପଞ୍ଚାୟତ ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select GramPanchayat!" xml:space="preserve">
+    <value>ଦୟାକରି ଗ୍ରାମପଞ୍ଚାୟତ ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select Role!" xml:space="preserve">
+    <value>ଦୟାକରି ଭୂମିକା ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Select SubCategory!" xml:space="preserve">
+    <value>ଦୟାକରି ଉପ-ବର୍ଗ ଚୟନ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Upload Group Photo!" xml:space="preserve">
+    <value>ଦୟାକରି ଗୋଷ୍ଠୀ ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Upload Registration Certificate!" xml:space="preserve">
+    <value>ଦୟାକରି ପଞ୍ଜୀକରଣ ପ୍ରମାଣପତ୍ର ଅପଲୋଡ୍ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Upload Registration Photo!" xml:space="preserve">
+    <value>ଦୟାକରି ପଞ୍ଜୀକରଣ ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Please Upload Video!" xml:space="preserve">
+    <value>ଦୟାକରି ଭିଡିଓ ଅପଲୋଡ୍ କରନ୍ତୁ!</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>ପୂର୍ବ</value>
+  </data>
+  <data name="Registered through 1860 society act" xml:space="preserve">
+    <value>1860 ସମାଜ କାର୍ଯ୍ୟ ମାଧ୍ୟମରେ ପଞ୍ଜିକୃତ</value>
+  </data>
+  <data name="Registered Through 1860 Society Registration Act" xml:space="preserve">
+    <value>୧୮୬୦ society registration Act ଜରିଆରେ ଅଥବା ଅନ୍ୟ କୌଣସି ନିୟମରେ ପଞ୍ଜୀକୃତ କି?</value>
+  </data>
+  <data name="Registration Completed" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ସମାପ୍ତ ହୋଇଛି</value>
+  </data>
+  <data name="Registration Date" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ତାରିଖ</value>
+  </data>
+  <data name="Registration date should be greater than or equal to Troupe created date!" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ତାରିଖ ଟ୍ରୁପ୍ ସୃଷ୍ଟି ତାରିଖ ଠାରୁ ବଡ କିମ୍ବା ସମାନ ହେବା ଉଚିତ୍!</value>
+  </data>
+  <data name="Registration No." xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ନଂ</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>ପୁନରୁଦ୍ଧାର କରନ୍ତୁ</value>
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value>ଭୂମିକା</value>
+  </data>
+  <data name="Role in Troupe" xml:space="preserve">
+    <value>ସଂଘରେ ଭୂମିକା</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>ସଞ୍ଚୟ କରନ୍ତୁ</value>
+  </data>
+  <data name="Save &amp;amp; Continue" xml:space="preserve">
+    <value>ସେଭ୍ ଏବଂ ଜାରି ରଖନ୍ତୁ</value>
+  </data>
+  <data name="Select Bank" xml:space="preserve">
+    <value> ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select Block" xml:space="preserve">
+    <value> ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select Branch" xml:space="preserve">
+    <value>ଶାଖା ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select Category" xml:space="preserve">
+    <value>ବର୍ଗ ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select District" xml:space="preserve">
+    <value> ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select Gram Panchayat" xml:space="preserve">
+    <value> ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select Role" xml:space="preserve">
+    <value>ଭୂମିକା ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="Select Sub-Category" xml:space="preserve">
+    <value>ଉପ - ବର୍ଗ ଚୟନ କରନ୍ତୁ |</value>
+  </data>
+  <data name="SlNo" xml:space="preserve">
+    <value>କ୍ରମସଂଖ୍ୟା</value>
+  </data>
+  <data name="Society Registration Date" xml:space="preserve">
+    <value>ସମାଜ ପଞ୍ଜୀକରଣ ତାରିଖ |</value>
+  </data>
+  <data name="Sub - Category" xml:space="preserve">
+    <value>ଉପ - ବର୍ଗ</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>ଦାଖଲ କର |</value>
+  </data>
+  <data name="Thank you for Registering, Your Acknowledgement no. is" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ପାଇଁ ଧନ୍ୟବାଦ, ଆପଣଙ୍କର ସ୍ୱୀକୃତି ନଂ। ହେଉଛି</value>
+  </data>
+  <data name="Thank you for Registering, Your Ackowledgment no. is" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ପାଇଁ ଧନ୍ୟବାଦ, ଆପଣଙ୍କର ସ୍ୱୀକୃତି ନଂ। ହେଉଛି</value>
+  </data>
+  <data name="Troupe Created on" xml:space="preserve">
+    <value>ସଂଘ ସୃଷ୍ଟି ହୋଇଛି</value>
+  </data>
+  <data name="Troupe Leader" xml:space="preserve">
+    <value>ଗୋଷ୍ଠୀ  ଲିଡର୍</value>
+  </data>
+  <data name="Troupe Member Details" xml:space="preserve">
+    <value>ସଂଘ ସଦସ୍ୟ ବିବରଣୀଗୁଡିକ</value>
+  </data>
+  <data name="Troupe Registration" xml:space="preserve">
+    <value>ସଂଘ ପଞ୍ଜୀକରଣ</value>
+  </data>
+  <data name="Upload Document" xml:space="preserve">
+    <value>ଡକ୍ୟୁମେଣ୍ଟ୍ ଅପଲୋଡ୍ କରନ୍ତୁ</value>
+  </data>
+  <data name="Upload Photo Copy" xml:space="preserve">
+    <value>ଫୋଟୋ ପ୍ରତି ଆପଲୋଡ କରନ୍ତୁ</value>
+  </data>
+  <data name="Upload Registration Certificate" xml:space="preserve">
+    <value>ପଞ୍ଜୀକରଣ ପ୍ରମାଣପତ୍ର ଅପଲୋଡ୍ କରନ୍ତୁ</value>
+  </data>
+  <data name="Upload Video" xml:space="preserve">
+    <value>ଭିଡିଓ ଅପଲୋଡ୍ କରନ୍ତୁ</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>ହଁ</value>
+  </data>
+  <data name="Yes, register it!" xml:space="preserve">
+    <value>ହଁ, ଏହାକୁ ପଞ୍ଜିକରଣ କର!</value>
+  </data>
+  <data name="You want to register!" xml:space="preserve">
+    <value>ଆପଣ ପଞ୍ଜିକରଣ କରିବାକୁ ଚାହୁଁଛନ୍ତି!</value>
+  </data>
+</root>

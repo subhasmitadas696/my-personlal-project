@@ -1,0 +1,182 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.HierarchyMaster.HierarchyModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "Active Global Link";
+}
+
+@section Scripts {
+}
+@{
+    @if (@TempData["CommandStatus"] != null)
+    {
+        <input type="hidden" id="hdnMsg" value="@TempData["CommandStatus"]" />
+
+    }
+    else
+    {
+        <input type="hidden" id="hdnMsg" value="0" />
+    }
+
+}
+
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="HirerachyMaster" asp-action="AddHirerarchy">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="HirerachyMaster" asp-action="ViewActiveHirerarchy">
+            Active
+        </a>
+        <a class="nav-link active" id="inactive-hierarchy" asp-controller="HirerachyMaster" asp-action="ViewInActiveHirerarchy">
+            InActive
+        </a>
+    </div>
+
+    <div class="card-body">
+        @if (Model.HierarchyList.Count != 0)
+        {
+            <form id="frmMarkInactive" data-parsley-validate novalidate method="post" asp-action="MarkAsActive"
+                    asp-controller="HirerachyMaster" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateActiveForm()">
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive">
+                        <table class="table" id="example1">
+
+                            <thead>
+                                <tr>
+                                    <th width="10px"><input type="checkbox" class="NoPrint" id="checkBoxAll" onclick="check_uncheck_checkbox_Inactive(this.checked)" /></th>
+                                    <th width="10px">SL#</th>
+                                    <th width="100px">Name</th>
+                                    <th width="20px">No Of Level</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.HierarchyList.Count != 0)
+                                {
+                                    @foreach (var hierarchy in Model.HierarchyList.Select((x, i) => new { Data = x, Index = i + 1 }))
+                                    {
+
+                                        <tr>
+                                            <td><input type="checkbox" name="chkbox" value="@hierarchy.Data.ROLEID" /></td>
+                                            <td>@hierarchy.Index</td>
+                                            <td>@Html.DisplayFor(modelItem => hierarchy.Data.ROLENAME)</td>
+                                            <td>@Html.DisplayFor(modelItem => hierarchy.Data.LEVELID)</td>
+
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr style="text-align: center;font-size: x-large;font-weight: bolder;">
+                                        <td colspan='6' align='center'> No records found!</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <button type="submit" id="btnsubmit" name="submitButton" class="btn btn-primary mb-1t white-text" title="Mark AS Active" value="submit">Mark AS Active</button>
+                        <button type="button" value="Reset" class="btn btn-danger" title="Reset" onclick="return chkClearField_Inactive();"><span>Reset</span></button>
+                    </div>
+                </div>
+                
+            </form>
+        }
+        else
+
+        {
+
+            <h4>Record Not Found</h4>
+        }
+
+        <div class="table-responsive">
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function chkClearField_Inactive() {
+        $('input[type=checkbox]').prop('checked', false);
+    }
+    function check_uncheck_checkbox_Inactive(isChecked) {
+        if (isChecked) {
+            $('input[name="chkbox"]').each(function () {
+                this.checked = true;
+            });
+        }
+        else {
+            $('input[name="chkbox"]').each(function () {
+                this.checked = false;
+            });
+        }
+    }
+    $('#btnsubmit').click(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        if ($('#example1 :checked').length == 0) {
+            new swal("No record selected for Inactive!");
+            return false;
+        }
+        var chkbox = [];
+        $('input[name=chkbox]:checked').map(function () {
+            chkbox.push($(this).val());
+        });
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to Mark As Active",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/AdminConsole/HirerachyMaster/MarkAsActive',
+                    data: { chkbox: chkbox },
+                    success: function (response) {
+                        console.log(response);
+                        if (response === "Marked As Active Successfully") {
+                            Swal.fire({
+                                title: "",
+                                text: response,
+                                icon: "success"
+                            }).then(() => {
+                                window.location.href = "/AdminConsole/HirerachyMaster/ViewActiveHirerarchy";
+                            });
+                        } else if (response === "Already Exist") {
+                            Swal.fire({
+                                title: "",
+                                text: response,
+                                icon: "warning"
+                            }).then(() => {
+                                return;
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "",
+                                text: response,
+                                icon: "error"
+                            }).then(() => {
+                                return;
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: "",
+                            text: 'An error occurred while processing the request.',
+                            icon: "error"
+                        }).then(() => {
+                            return;
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>

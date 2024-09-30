@@ -1,0 +1,187 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.LevelMaster.LevelMasterModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "In Active Level";
+}
+
+@section Scripts {
+
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            $('#example1').DataTable();
+        });
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function check_uncheck_checkbox(isChecked) {
+            if (isChecked) {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+        function ClearField() {
+            $('input[type=checkbox]').prop('checked', false);
+        }
+
+    </script>
+    
+
+}
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="add-hierarchy" asp-controller="LevelMaster" asp-action="AddLevelMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="LevelMaster" asp-action="ViewActiveLevel">
+            Active
+        </a>
+        <a class="nav-link active" id="inactive-hierarchy" asp-controller="LevelMaster" asp-action="ViewInActiveLevel">
+            InActive
+        </a>
+    </div>      
+    <div class="card-body">
+        @if (Model.LevelList.Count != 0)
+        {
+            <form id="frmInactive" data-parsley-validate novalidate method="post" asp-action="MarkAsActive"
+                    asp-controller="LevelMaster" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+                <div class="table-responsive">
+                    <table data-toggle="table" class="table table-hover table-bordered table-padding" id="example1">
+
+                        <thead>
+                            <tr>
+                                <th width="10px"><input type="checkbox" id="checkBoxAll" onclick="check_uncheck_checkbox(this.checked)" /></th>
+                                <th width="10px">SL#</th>
+                                <th width="100px">Hierarchy Name</th>
+                                <th width="20px">Parent Level Name</th>
+                                <th width="20px">Level Name</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.LevelList.Count != 0)
+                            {
+                                @foreach (var level in Model.LevelList.Select((x, i) => new { Data = x, Index = i + 1 }))
+                                {
+
+                                    <tr>
+                                        <td><input type="checkbox" name="chkbox" value="@level.Data.INTLEVELID" /></td>
+                                        <td>@level.Index</td>
+                                        <td>@Html.DisplayFor(modelItem => level.Data.NVCHHIERARCHYNAME)</td>
+                                        <td>@Html.DisplayFor(modelItem => level.Data.parentlevel)</td>
+                                        <td>@Html.DisplayFor(modelItem => level.Data.NVCHLABEL)</td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr style="text-align: center;font-size: x-large;font-weight: bolder;">
+                                    <td colspan='6' align='center'> No records found!</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+
+                    <button type="submit" name="submitButton" id="btnsubmit" class="btn btn-primary mb-1t white-text" title="Mark AS Active" value="submit">Mark AS Active</button>
+                    <button type="button" title="Reset" class="btn btn-danger" onclick="return ClearField();"><span>Reset</span></button>
+                </div>
+            </form>
+        }
+        else
+
+        {
+
+            <h4>Record Not Found</h4>
+        }
+
+        <div class="table-responsive">
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function chkClearField() {
+        $('input[type=checkbox]').prop('checked', false);
+    }
+    $('#btnsubmit').click(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+        if ($('#example1 :checked').length == 0) {
+            new swal("No record selected for Inactive!");
+            return false;
+        }
+        var chkbox = [];
+        $('input[name=chkbox]:checked').map(function () {
+            chkbox.push($(this).val());
+        });
+
+        swal({
+            title: "Are you sure?",
+            text: "You want to Mark As Active",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }, function (isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/AdminConsole/LevelMaster/MarkAsActive', // Adjust the URL to your endpoint
+                    data: { chkbox: chkbox },
+                    success: function (response) {
+                        console.log(response);
+                        if (response === "Marked As Active Successfully") {
+                            swal({
+                                title: "",
+                                text: response,
+                                type: "success"
+                            }, function () {
+                                window.location.href = "/AdminConsole/LevelMaster/ViewActiveLevel";
+                            });
+                        } else if (response == "Already Exist") {
+                            swal({
+                                title: "",
+                                text: response,
+                                type: "warning"
+                            }, function () {
+                                return;
+                            });
+                        }
+                        else {
+                            swal({
+                                title: "",
+                                text: response,
+                                type: "error"
+                            }, function () {
+                                return;
+                            });
+                        }
+                    },
+                    error: function () {
+                        swal({
+                            title: "",
+                            text: 'An error occurred while processing the request.',
+                            type: "error"
+                        }, function () {
+                            return;
+                        });
+                    }
+                });
+            }
+
+        });
+    });
+</script>
+
+
+
+

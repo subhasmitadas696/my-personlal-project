@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "KSSMS";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@Html.AntiForgeryToken()
+<link href="~/css/styles.css" rel="stylesheet" />
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link " id="tropue-basic-info-tab" asp-controller="Event" asp-action="ManageEvent">
+            Add Event
+        </a>
+        <a class="nav-link active" id="artist-info-tab" asp-controller="Event" asp-action="ViewEvent">
+            Event Details
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0"> Event Details</h5>
+        <div class="table-responsive">
+            <div class="table-responsive--rounded">
+                <table id="dataTable" class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Department</th>
+                            <th scope="col">Scheme</th>
+                            <th scope="col">Event Title</th>
+                            <th scope="col">Event Details</th>
+                            <th scope="col">StartDate</th>
+                            <th scope="col">EndDate</th>
+                            <th scope="col">District</th>
+                            <th scope="col">Block</th>
+                            <th scope="col">GP</th>
+                            <th class="no-print" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbltd">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Event/GetEventList',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#dataTable tbody').empty();
+                $.each(data, function (index, item) {
+                    var row = '<tr>' +
+                        '<td>' + item.department + '</td>' +
+                        '<td>' + item.scheme + '</td>' +
+                        '<td>' + item.eventTitle + '</td>' +
+                        '<td>' + item.eventDescription + '</td>' +
+                        '<td>' + item.startDateTime + '</td>' +
+                        '<td>' + item.endDateTime + '</td>' +
+                        '<td>' + item.distName + '</td>' +
+                        '<td>' + item.blockName + '</td>' +
+                        '<td>' + item.gpName + '</td>' +
+                        "<td>" + "<a class='table__icon-btn edit-btn' href='/Event/ManageEvent?strid=" + item.eventId + "'><i class='bi bi-pencil-square' title='Edit'></i></a>&nbsp;<a class='table__icon-btn delete-btn' onclick='Delete_Event(" + item.eventId + ")'><i class='bi bi-trash3' title='Delete' style='color: red; cursor: pointer;'></i></a>" + "</td>" +
+                        '</tr>';
+                    $('#dataTable tbody').append(row);
+                });
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    });
+    function Delete_Event(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Event/DeleteEvent/' + id,
+                    type: 'post',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (result) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/Event/ViewEvent";
+                            }
+                        })
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+
+            }
+            return false;
+        })
+    }
+
+</script>
+

@@ -1,0 +1,711 @@
+﻿@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/datepicker.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card" id="divaddform">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="Dashboard" asp-action="MyProfile" asp-area="" class="nav-link active">
+            Add
+        </a>
+        <a class="nav-link" asp-controller="Dashboard" asp-action="ViewMyProfile" asp-area="">
+            View
+        </a>
+    </div>
+    <div class="card-body">
+        <h6 class="view-form-details__title mt-0">My Profile</h6>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="file" class="form-control" id="societyregcert" accept="image/*">
+                    <label for="tname">Society Registration Certificate<span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errsocietyregcert"></span>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtsocietyregnumber" oninput="avoidFirstSpace(event)" name="txtAddress" placeholder=" " autocomplete="off">
+                    <label for="address1">Society Registration Number<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtsocietyregnumber"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" name="txtsocietyregdate" data-date-format="dd-mm-yyyy" id="txtsocietyregdate" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="" readonly>
+                    <label for="tname">Society Registration Date<span class="text-danger">*</span></label>
+                    <i class="bi bi-calendar3 form-floating__icon-right"></i>
+                </div>
+                <span class="text-danger" id="errtxtsocietyregdate"></span>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" oninput="avoidFirstSpace(event)"  autocomplete="off" id="txtBkssaccountno">
+                    <label for="scategory">BKSS Account No.<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtBkssaccountno"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="file" class="form-control" id="bylawfile" accept="image/*">
+                    <label for="tname">By law <span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errbylawfile"></span>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="file" class="form-control" id="bymemorandumfile" accept="image/*">
+                    <label for="tname">Memorandum <span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errbymemorandumfile"></span>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" id="txtmettingresolution" oninput="avoidFirstSpace(event)" autocomplete="off">
+                    <label for="scategory">Meeting Resolution<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtmettingresolution"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" name="lbgdate" data-date-format="dd-mm-yyyy" id="generalbodyformdate" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="" readonly>
+                    <label for="tname">Last General Body Formation Date<span class="text-danger">*</span></label>
+                    <i class="bi bi-calendar3 form-floating__icon-right"></i>
+                </div>
+                <span class="text-danger" id="errgeneralbodyformdate"></span>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" id="txtvicepresidentname" oninput="avoidFirstSpace(event)"  name="txtAddress" placeholder=" " autocomplete="off">
+                    <label for="address1"> Vice President Name<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtvicepresidentname"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" name="txtsocietyregdate" data-date-format="dd-mm-yyyy" id="positionheldfrom" class="form-control date-picker12" placeholder="From Date" autocomplete="off" value="" readonly>
+                    <label for="tname">Position Held from<span class="text-danger">*</span></label>
+                    <i class="bi bi-calendar3 form-floating__icon-right"></i>
+                </div>
+                <span class="text-danger" id="errpositionheldfrom"></span>
+            </div>
+        </div>
+        <h6 class="view-form-details__title mt-0">Executive Member</h6>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" oninput="avoidFirstSpace(event)" id="txtmembername" name="txtmembername" placeholder=" " autocomplete="off">
+                    <label for="txtmembername">Executive Member Name<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtmembername"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" oninput="avoidFirstSpace(event)" name="txtmembermobile" id="txtmembermobile" class="form-control" onchange="isValidMobileNumber();"onKeyPress="if(this.value.length==10) return false;" placeholder="" autocomplete="off" value="">
+                    <label for="txtmembermobile">Mobile Number<span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errtxtmembermobile"></span>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-secondary btn-lg py-3" id="btnExecutiveMemberAdd">
+                    <i class="bi bi-plus-circle pe-2"></i>
+                    Add More
+                </button>
+            </div>
+            <div class="table-responsive">
+                <div class="table-responsive--rounded" id="tblline">
+                    <table class="table" id="tblExecutiveMember">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sl#</th>
+                                <th scope="col">Executive Member Name</th>
+                                <th scope="col">Mobile Number</th>  
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="addmoreExecutiveMember">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <h6 class="view-form-details__title mt-0">General Body</h6>
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control alphabetInput" oninput="avoidFirstSpace(event)" id="txtgnrlbodyname" name="txtgnrlbodyname" placeholder=" " autocomplete="off">
+                    <label for="txtgnrlbodyname">General Body Name<span class="text-danger">*</span></label>
+                    <span class="text-danger" id="errtxtgnrlbodyname"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" onchange="ValidMobileNumber();" oninput="avoidFirstSpace(event)" onKeyPress="if(this.value.length==10) return false;" name="txtgnrlmobile" id="txtgnrlmobile" class="form-control" placeholder="From Date" autocomplete="off" value="">
+                    <label for="txtgnrlmobile">Mobile Number<span class="text-danger">*</span></label>
+                </div>
+                <span class="text-danger" id="errtxtgnrlmobile"></span>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-secondary btn-lg py-3" id="btnGeneralBodyAdd">
+                    <i class="bi bi-plus-circle pe-2"></i>
+                    Add More
+                </button>
+            </div>
+            <div class="table-responsive">
+                <div class="table-responsive--rounded" id="tblline">
+                    <table class="table" id="tblgnrlbody">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sl#</th>
+                                <th scope="col">General Body Name</th>
+                                <th scope="col">Mobile Number</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="addmoregnrlbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <input type="button" value="Submit" class="btn btn-primary rounded-pill btn-lg" id="FinalSubmit">
+            <button onclick="window.location.reload();" class="btn btn-secondary rounded-pill btn-lg">Reset</button>
+        </div>
+    </div>
+    </div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    let addMoreCount = 1;
+    $('#btnExecutiveMemberAdd').click(function () {
+        if (ExecutiveMemberValidations()) {
+            return true;
+        }
+    });
+    $('#btnGeneralBodyAdd').click(function () {
+        if (GeneralBodyValidations()) {
+            return true;
+        }
+    });      
+    $(document).on('click', '#btnExecutiveMemberAdd', function () {
+            if (!ExecutiveMemberValidations()) {
+                return false;
+            }
+            else {
+                var slno = $('#addmoreExecutiveMember tr').length + 1;
+                let Executivemembername = $("#txtmembername").val();
+                let Executivemembermobile = $("#txtmembermobile").val();
+                var add = '<tr>'
+                add += '<td>' + slno + '</td>';
+                add += '<td>' + Executivemembername + '</td>';
+                add += '<td>' + Executivemembermobile + '</td> ';
+                add += '<td>' + '<a id="editExecutiveMember" href="javascript:;" class="table__icon-btn edit-btn" data - bs - toggle="tooltip" data - bs - title="Edit" ><i class="bi bi-pencil-square"></i></a ><button class="table__icon-btn delete-btn" id="removeExecutiveMember" data-bs-toggle="tooltip" data-bs-title="Delete">  <i class="bi bi-trash3"></i></button>' + '</td></tr>';                
+                $("#txtmembername").val('');
+                $("#txtmembermobile").val('');
+                updateSlno("#addmoreExecutiveMember");
+                addMoreCount++;
+                if (addMoreCount > 11) {
+                    new Swal("You can only add 10 executive members.");
+                    $("#btnExecutiveMemberAdd").prop("disabled", true);
+                }
+                else {
+                    $("#btnExecutiveMemberAdd").prop("disabled", false);
+                    $("#addmoreExecutiveMember").append(add);
+                }
+                
+            }
+        });
+    $(document).on('click', '#removeExecutiveMember', function () {
+        $(this).parents('tr').remove();
+        updateSlno("#addmoreExecutiveMember");
+    });
+    $(document).on('click', '#editExecutiveMember', function () {
+        var row = $(this).closest('tr');
+        var slno = row.find('td:eq(0)').text();
+        var Executivemembername = row.find('td:eq(1)').text();
+        var Executivemembermobile = row.find('td:eq(2)').text();
+        $("#txtmembername").val(Executivemembername);
+        $("#txtmembermobile").val(Executivemembermobile);
+        $(this).parents('tr').remove();
+        updateSlno("#addmoreExecutiveMember");
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).on('click', '#btnGeneralBodyAdd', function () {  
+        if (!GeneralBodyValidations()) {
+            return false;
+        }
+        else {
+            var slno = $('#addmoregnrlbody tr').length + 1;
+            let Generalmembername = $("#txtgnrlbodyname").val();
+            let Generalmembermobile = $("#txtgnrlmobile").val();
+            var add = '<tr>'
+            add += '<td>' + slno + '</td>';
+            add += '<td>' + Generalmembername + '</td>';
+            add += '<td>' + Generalmembermobile + '</td> ';
+            add += '<td>' + '<a id="editGeneralBody" href="javascript:;" class="table__icon-btn edit-btn" data - bs - toggle="tooltip" data - bs - title="Edit" ><i class="bi bi-pencil-square"></i></a ><button class="table__icon-btn delete-btn" id="removeGeneralBody" data-bs-toggle="tooltip" data-bs-title="Delete">  <i class="bi bi-trash3"></i></button>' + '</td></tr>';
+            $("#addmoregnrlbody").append(add);
+            $("#txtgnrlbodyname").val('');
+            $("#txtgnrlmobile").val('');
+        }
+    });
+    $(document).on('click', '#removeGeneralBody', function () {
+        $(this).parents('tr').remove();
+        updateSlno("#addmoregnrlbody");
+    });
+    $(document).on('click', '#editGeneralBody', function () {
+        var row = $(this).closest('tr');
+        var slno = row.find('td:eq(0)').text();
+        var Generalmembername = row.find('td:eq(1)').text();
+        var Generalmembermobile = row.find('td:eq(2)').text();
+        $("#txtgnrlbodyname").val(Generalmembername);
+        $("#txtgnrlmobile").val(Generalmembermobile);
+        $(this).parents('tr').remove();
+        updateSlno("#addmoregnrlbody");
+    });
+</script>
+<script>
+    $('#txtmembermobile').on('change', validateMobileNumber);
+    function validateMobileNumber() {
+        var inputValue = $('#txtmembermobile').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length === 10) {
+                $('#txtmembermobile').removeClass("is-invalid");
+                $('#errtxtmembermobile').text("");
+            }
+            else {
+                $('#txtmembermobile').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtmembermobile').text("Please Enter a Valid Mobile Number.!");
+                $('#txtmembermobile').focus();
+            }
+        }
+        else {
+            $('#txtmembermobile').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmembermobile').text("Please Enter a Valid  Mobile Number.!");
+            $('#txtmembermobile').focus();
+        }
+    }
+    $('#txtmembermobile').change(function () {
+        if (MobileNumber($('#txtmembermobile').val()) == false) {
+            $('#txtmembermobile').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmembermobile').text("Please Enter a Valid Mobile Number.!");
+            $('#txtmembermobile').focus();
+        }
+        else {
+            $('#txtmembermobile').removeClass("is-invalid");
+            $('#errtxtmembermobile').text("");
+        }
+    })
+    $('#txtgnrlmobile').on('change', validateMobileNumberGB);
+    function validateMobileNumberGB() {
+        var inputValue = $('#txtgnrlmobile').val().trim();
+        if (inputValue !== "") {
+            if (inputValue.length === 10) {
+                $('#txtgnrlmobile').removeClass("is-invalid");
+                $('#errtxtgnrlmobile').text("");
+            }
+            else {
+                $('#txtgnrlmobile').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtgnrlmobile').text("Please Enter a Valid Mobile Number.!");
+                $('#txtgnrlmobile').focus();
+            }
+        }
+        else {
+            $('#txtgnrlmobile').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtgnrlmobile').text("Please Enter Mobile Number.!");
+            $('#txtgnrlmobile').focus();
+        }
+    }
+    $('#txtgnrlmobile').change(function () {
+        if (MobileNumber($('#txtgnrlmobile').val()) == false) {
+            $('#txtgnrlmobile').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtgnrlmobile').text("Please Enter a Valid Mobile Number.!");
+            $('#txtgnrlmobile').focus();
+        }
+        else {
+            $('#txtgnrlmobile').removeClass("is-invalid");
+            $('#errtxtgnrlmobile').text("");
+        }
+    })
+    function ExecutiveMemberValidations()
+    {
+        if ($("#txtmembername").val().trim() != "") {
+            $('#txtmembername').removeClass("is-invalid");
+            $('#errtxtmembername').text("");
+
+        }
+        else {
+            $('#txtmembername').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmembername').text("Please Enter Executive Member Name!");
+            $('#txtmembername').focus();
+            return false;
+        }
+        if ($("#txtmembermobile").val().trim().length == 10) {
+            $('#txtmembermobile').removeClass("is-invalid");
+            $('#errtxtmembermobile').text("");
+
+        }
+        else {
+            $('#txtmembermobile').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtmembermobile').text("Please Enter a Valid Mobile Number.!");
+            $('#txtmembermobile').focus();
+            return false;
+        }
+        return true;
+    }
+    function GeneralBodyValidations() {
+        if ($("#txtgnrlbodyname").val().trim() != "") {
+            $('#txtgnrlbodyname').removeClass("is-invalid");
+            $('#errtxtgnrlbodyname').text("");
+
+        }
+        else {
+            $('#txtgnrlbodyname').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtgnrlbodyname').text("Please Enter General Body Name!");
+            $('#txtgnrlbodyname').focus();
+            return false;
+        }
+        if ($("#txtgnrlmobile").val().trim().length == 10) {
+            $('#txtgnrlmobile').removeClass("is-invalid");
+            $('#errtxtgnrlmobile').text("");
+
+        }
+        else {
+            $('#txtgnrlmobile').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtgnrlmobile').text("Please Enter a Valid Mobile Number.!");
+            $('#txtgnrlmobile').focus();
+            return false;
+        }
+        return true;
+    }
+    $("#txtmembermobile").on("input", function () {
+        const mobileNumber = $(this).val();
+        if (isValidMobileNumber(mobileNumber)) {
+            $(this).removeClass("is-invalid");
+            $('#errtxtmembermobile').text("");
+        } else {
+            $(this).addClass("is-invalid");
+            $('#errtxtmembermobile').text("Mobile number should have at least 10 digits.");
+        }
+    });
+    $("#txtgnrlmobile").on("input", function () {
+        const mobileNumber = $(this).val();
+        if (ValidMobileNumber(mobileNumber)) {
+            $(this).removeClass("is-invalid");
+            $('#errtxtgnrlmobile').text("");
+        } else {
+            $(this).addClass("is-invalid");
+            $('#errtxtgnrlmobile').text("Mobile number should have at least 10 digits.");
+        }
+    });
+    function isValidMobileNumber() {
+        let mobileNumber = $('#txtmembermobile').val();
+        const digitsOnly = mobileNumber.replace(/\D/g, '');
+        return digitsOnly.length >= 10;
+    }
+    function ValidMobileNumber() {
+        let mobileNumber = $('#txtgnrlmobile').val();
+        const digitsOnly = mobileNumber.replace(/\D/g, '');
+        return digitsOnly.length >= 10;
+    }
+    $(document).ready(function () {
+        $("#addmoreExecutiveMember").on("click", "#removeExecutiveMember", function () {
+            $(this).closest("tr").remove();
+            updateSlno("#addmoreExecutiveMember");
+            addMoreCount--;
+            addMoreCount--;
+            if (addMoreCount <= 11) {
+                $("#btnExecutiveMemberAdd").prop("disabled", false);
+            }
+        });
+        $("#addmoreExecutiveMember").on("click", "#editExecutiveMember", function () {
+            updateSlno("#addmoreExecutiveMember");
+            addMoreCount--;
+            addMoreCount--;
+            if (addMoreCount <= 11) {
+                $("#btnExecutiveMemberAdd").prop("disabled", false);
+            }
+        });
+        $(".alphabetInput").on("input", function () {
+            var inputValue = $(this).val();
+            var sanitizedValue = inputValue.replace(/[^A-Za-z\s]/g, '');
+
+            if (inputValue !== sanitizedValue) {
+                $(this).val(sanitizedValue);
+            }
+        });
+        $('.date-picker').datepicker({
+            format: 'dd-M-yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            endDate: new Date()
+        });
+        $('.date-picker12').datepicker({
+            format: 'M-yyyy',
+            minViewMode: 1,
+            autoclose: true,
+            todayHighlight: true,
+            endDate: new Date()
+        });
+    });
+     function ProfileValidations() {
+         if ($("#societyregcert").val().trim() != "") {
+             $('#societyregcert').removeClass("is-invalid");
+             $('#errsocietyregcert').text("");
+         }
+         else {
+             $('#societyregcert').addClass("form-control is-invalid");
+             $('#errsocietyregcert').text("Please Upload Society Registration Certificate!");
+             $('#societyregcert').focus();
+             return false;
+         }
+         if ($("#txtsocietyregnumber").val().trim() != "") {
+             $('#txtsocietyregnumber').removeClass("is-invalid");
+             $('#errtxtsocietyregnumber').text("");
+        }
+        else {
+             $('#txtsocietyregnumber').addClass("form-control shadow-sm is-invalid");
+             $('#errtxtsocietyregnumber').text("Please Enter Society Registration Number!");
+             $('#txtsocietyregnumber').focus();
+            return false;
+        }
+         if ($("#txtsocietyregdate").val().trim() != "") {
+             $('#txtsocietyregdate').removeClass("is-invalid");
+             $('#errtxtsocietyregdate').text("");
+
+        }
+        else {
+             $('#txtsocietyregdate').addClass("form-control shadow-sm is-invalid");
+             $('#errtxtsocietyregdate').text("Please Choose Society Registration Date!");
+             $('#txtsocietyregdate').focus();
+            return false;
+        }
+         if ($("#txtBkssaccountno").val().trim() != "") {
+             $('#txtBkssaccountno').removeClass("is-invalid");
+             $('#errtxtBkssaccountno').text("");
+
+        }
+        else {
+             $('#txtBkssaccountno').addClass("form-control shadow-sm is-invalid");
+             $('#errtxtBkssaccountno').text("Please Enter Bkss Account No.!");
+             $('#txtBkssaccountno').focus();
+            return false;
+         }
+         if ($("#bylawfile").val().trim() != "") {
+             $('#bylawfile').removeClass("is-invalid");
+             $('#errbylawfile').text("");
+
+        }
+        else {
+             $('#bylawfile').addClass("form-control shadow-sm is-invalid");
+             $('#errbylawfile').text("Please Upload By Law File!");
+             $('#bylawfile').focus();
+            return false;
+         }
+         if ($("#bymemorandumfile").val().trim() != "") {
+             $('#bymemorandumfile').removeClass("is-invalid");
+             $('#errbymemorandumfile').text("");
+
+        }
+        else {
+             $('#bymemorandumfile').addClass("form-control shadow-sm is-invalid");
+             $('#errbymemorandumfile').text("Please Upload Memorandum File!");
+             $('#bymemorandumfile').focus();
+            return false;
+         }
+         if ($("#txtmettingresolution").val().trim() != "") {
+             $('#txtmettingresolution').removeClass("is-invalid");
+             $('#errtxtmettingresolution').text("");
+
+        }
+        else {
+             $('#txtmettingresolution').addClass("form-control shadow-sm is-invalid");
+             $('#errtxtmettingresolution').text("Please Enter Metting Resolution!");
+             $('#txtmettingresolution').focus();
+            return false;
+         }
+         if ($("#generalbodyformdate").val().trim() != "") {
+             $('#generalbodyformdate').removeClass("is-invalid");
+             $('#errgeneralbodyformdate').text("");
+
+        }
+        else {
+             $('#generalbodyformdate').addClass("form-control shadow-sm is-invalid");
+             $('#errgeneralbodyformdate').text("Please Choose Last General Body Formation Date!");
+             $('#generalbodyformdate').focus();
+            return false;
+         }
+         if ($("#txtvicepresidentname").val().trim() != "") {
+             $('#txtvicepresidentname').removeClass("is-invalid");
+             $('#errtxtvicepresidentname').text("");
+
+        }
+        else {
+             $('#txtvicepresidentname').addClass("form-control shadow-sm is-invalid");
+             $('#errtxtvicepresidentname').text("Please Enter Vice President Name !");
+             $('#txtvicepresidentname').focus();
+            return false;
+         }
+         if ($("#positionheldfrom").val().trim() != "") {
+             $('#positionheldfrom').removeClass("is-invalid");
+             $('#errpositionheldfrom').text("");
+
+        }
+        else {
+             $('#positionheldfrom').addClass("form-control shadow-sm is-invalid");
+             $('#errpositionheldfrom').text("Please Choose Position Held From !");
+             $('#positionheldfrom').focus();
+            return false;
+        }
+        return true;
+    }
+    function getPCount(callback) {
+        $.ajax({
+            url: '/Dashboard/GetPCount',
+            method: 'GET',
+            success: function (response) {
+                let pcount = response.pcount;
+                console.log('pcount value retrieved:', pcount);
+                callback(pcount); 
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while fetching pcount:', error);
+                callback(null);
+            }
+        });
+    }
+    $("#FinalSubmit").on("click", function () {
+        getPCount(function (pcount) {
+            if (pcount === 0)
+            {
+            var up = "@ViewBag.ButtonName";
+            var AllDetails = new Array();
+            if (up != "Update") {
+                if (ProfileValidations() && ExecutiveMemberValidations && GeneralBodyValidations) {
+                    var MyProfileData = new FormData();
+                    var societyregcert = $("#societyregcert").get(0);
+                    var bylawfile = $("#bylawfile").get(0);
+                    var bymemorandumfile = $("#bymemorandumfile").get(0);
+                    var societyregcertfiles = societyregcert.files;
+                    var bylawfiles = bylawfile.files;
+                    var bymemorandumfiles = bymemorandumfile.files;
+                   
+                    $('#tblExecutiveMember tbody tr').each(function (index) {
+                        var ExecutiveMemberDetail = {};
+                        ExecutiveMemberDetail.ExecutiveMemberName = $(this).find('td:eq(1)').text();
+                        ExecutiveMemberDetail.ExecutiveMemberMobile = $(this).find('td:eq(2)').text();
+                        MyProfileData.append("Executives[" + index + "].ExecutiveMemberName", ExecutiveMemberDetail.ExecutiveMemberName);
+                        MyProfileData.append("Executives[" + index + "].ExecutiveMemberMobile", ExecutiveMemberDetail.ExecutiveMemberMobile);
+                    });
+                    
+                    $('#tblgnrlbody tbody tr').each(function (index) {
+                        var GeneralBodyDetail = {};
+                        GeneralBodyDetail.GeneralBodyMemberName = $(this).find('td:eq(1)').text();
+                        GeneralBodyDetail.GeneralBodyMobile = $(this).find('td:eq(2)').text();
+                        MyProfileData.append("Generals[" + index + "].GeneralBodyMemberName", GeneralBodyDetail.GeneralBodyMemberName);
+                        MyProfileData.append("Generals[" + index + "].GeneralBodyMobile", GeneralBodyDetail.GeneralBodyMobile);
+                    });
+                    if (societyregcertfiles.length > 0) {
+                        MyProfileData.append("societyregcertfiles", societyregcertfiles[0]);
+                    }
+                    if (bylawfiles.length > 0) {
+                        MyProfileData.append("bylawfiles", bylawfiles[0]);
+                    }
+                    if (bymemorandumfiles.length > 0) {
+                        MyProfileData.append("bymemorandumfiles", bymemorandumfiles[0]);
+                    }
+                    MyProfileData.append("societyregnumber", $('#txtsocietyregnumber').val());
+                    MyProfileData.append("societyregdate", $('#txtsocietyregdate').val());
+                    MyProfileData.append("Bkssaccountno", $('#txtBkssaccountno').val());
+                    MyProfileData.append("mettingresolution", $('#txtmettingresolution').val());
+                    MyProfileData.append("generalbodyformdate", $('#generalbodyformdate').val());
+                    MyProfileData.append("vicepresidentname", $('#txtvicepresidentname').val());
+                    MyProfileData.append("positionheldfrom", $('#positionheldfrom').val());
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You want to save to Profile Details.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Submit'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            AddMyProfileData(MyProfileData);
+                        }
+                    });
+                }
+                function AddMyProfileData(Data) {
+                    $.ajax({
+                        type: "post",
+                        url: "../Dashboard/MyProfile",
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader("RequestVerificationToken",
+                                $('input:hidden[name="__RequestVerificationToken"]').val());
+                        },
+                        data: Data,
+                        success: function (response) {
+                            response = JSON.parse(response);
+                            if (response.data == 1) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message
+                                }).then(() => {
+                                    window.location.href = 'ViewMyProfile';
+                                });
+                            }
+                            else if (response.data == 7) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message
+                                }).then(() => {
+                                    window.location.href = 'ViewMyProfile';
+                                });
+                            }
+                            else if (response.data == 11) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'warning',
+                                    text: response.message
+                                });
+                            }
+                            else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'waring',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!!',
+                                text: error
+                            });
+                        }
+                    });
+                }
+            }
+            else {
+                alert("Update code not completed yet");
+                }
+            }
+            else {
+                new swal("You can not add more than one profile details.");
+                $("#FinalSubmit").prop("disabled", true);
+            }
+        });       
+    });
+    function updateSlno(tablename){
+        $(tablename+' tr').each(function (index) {
+            $(this).find('td:first').text(index+1);
+        });
+    }
+</script>
+<script src="~/js/bootstrap-datepicker.min.js"></script>

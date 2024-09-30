@@ -1,0 +1,25 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.PrimaryLink.Primary
+
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewBag.Title = "InActivePrimaryLink";
+
+}
+
+<div>
+    <p>
+        Please confirm you want to InActive  Primary Link:
+        <b> @Model.PlinkName? </b>
+    </p>
+</div>
+
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="InActive" /> |
+        @Html.ActionLink("Back to List", "ViewInActivePrimaryLink")
+    </p>
+}
+
+
+

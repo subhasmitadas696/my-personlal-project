@@ -1,0 +1,144 @@
+@{
+    ViewData["Title"] = "Banner Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    .wrap-text {
+        white-space: normal;
+    }
+</style>
+@Html.AntiForgeryToken()
+<link href="~/css/styles.css" rel="stylesheet" />
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link " id="tropue-basic-info-tab" asp-area="CMS" asp-controller="Banner" asp-action="ManageBanner">
+            Add Banner
+        </a>
+        <a class="nav-link active" id="artist-info-tab" asp-area="CMS" asp-controller="Banner" asp-action="ViewManageBanner">
+            Banner Details
+        </a>
+    </div>       
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">Banner Information</h5>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl#
+                            </th>
+                            <th>
+                                Banner Title
+                            </th>
+                            <th>
+                                Banner Title(Odia)
+                            </th>
+                            <th>
+                                Banner Description
+                            </th>
+                            <th>
+                                Banner Description(Odia)
+                            </th>
+                            <th>
+                                Banner Image
+                            </th>
+                            <th>
+                                Start Date
+                            </th>
+                            <th>
+                                End Date
+                            </th>
+                            <th> Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Get_ManageBanner();
+    });
+    function Get_ManageBanner() {
+        $.ajax({
+            type: 'Get',
+            dataType: 'Json',
+            contentType: 'application/json; charset=utf-8',
+            data: {},
+            url: "@Url.Action("Get_ManageBanner","Banner", new { area = "CMS" })",
+            success: function (result) {
+                var data1 = JSON.parse(result);
+                if (data1.length > 0) {
+                    $('#datatable.tbody').empty();
+                    $.each(data1, function (i, data) {
+                        var trows = "<tr>";
+                        trows = trows + "<td>" + (i + 1) + "</td>";
+                        trows = trows + "<td style='white-space: pre-line;'>" + data.BannerTitle + "</td>";
+                        trows = trows + "<td style='white-space: pre-line;'>" + data.BannerTitleOD + "</td>";
+                        trows = trows + "<td class='wrap-text'>" + data.BannerDescription +"</td>";
+                        trows = trows + "<td class='wrap-text'>" + data.BannerDescriptionOD + "</td>";
+                        trows = trows + "<td><a href='../Banner/DownloadFile?fileName=" + data.BannerPath + "'>" + data.BannerImage + "</a></td>";
+                        trows = trows + "<td>" + data.StartDate +"</td>";
+                        trows = trows + "<td>" + data.EndDate +"</td>";
+                        trows = trows + "<td>" + "<a class='table__icon-btn edit-btn' data-bs-title='Edit' data-bs-toggle='tooltip' href='../Banner/ManageBanner?strid=" + data.Id + "'><i class='bi bi-pencil-square' title='Edit'></i></a>&nbsp;<a class='table__icon-btn delete-btn' data-bs-title='Edit' data-bs-toggle='tooltip'onclick='Delete_ManageBanner(" + data.Id +")'><i class='bi bi-trash3' title='Delete' style='color: red; cursor: pointer;'></i></a>" + "</td>";
+                        trows = trows + "</tr>";
+                        $('#datatable').append(trows);
+                    });
+                }
+                Datatable();
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }
+
+    function Delete_ManageBanner(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "Delete",
+                    dataType: "json",
+                    url: "@Url.Action("D_ManageBanner","Banner")",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: { "Id": id },
+                    success: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'Banner Deleted Successfully!',
+                            'success'
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                var url = '@Url.Action("ViewManageBanner", "Banner", new { area = "CMS" })';
+                                location.href = url;
+                            }
+                            else if (result.isDenied) {
+                                Swal.fire('Changes are not saved', '', 'info')
+                            }
+                        })
+                    }
+                });
+
+            }
+            return false;
+        })
+    }
+</script>

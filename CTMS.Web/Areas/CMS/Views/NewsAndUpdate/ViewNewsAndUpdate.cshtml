@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "News And Update Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link " id="tropue-basic-info-tab" asp-area="CMS" asp-controller="NewsAndUpdate" asp-action="NewsAndUpdate">
+            Add NewsAndUpdate
+        </a>
+        <a class="nav-link active" id="artist-info-tab" asp-area="CMS" asp-controller="NewsAndUpdate" asp-action="ViewNewsAndUpdate">
+            View NewsAndUpdate
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">News And Update Information</h5>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table" id="datatable">
+                    <thead>
+                        <tr>
+                            <th>
+                               Sl#
+                            </th>
+                            <th>
+                                News Title
+                            </th>
+                            <th>
+                                News Title(Odia)
+                            </th>
+                            <th>
+                                News Description
+                            </th>
+                            <th>
+                                News Description(Odia)
+                            </th>
+                            <th>
+                                News Source
+                            </th> 
+                            <th>
+                                News Source(Odia)
+                            </th>
+                            <th>
+                                News Publish Date
+                            </th>
+                            <th>
+                                Image
+                            </th>
+                            <th>
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Get_ManageFAQ();
+    });
+    function Get_ManageFAQ() {
+        $.ajax({
+            type: 'Get',
+            dataType: 'Json',
+            contentType: 'application/json; charset=utf-8',
+            data: {},
+            url: "@Url.Action("GetNewsAndUpdate", "NewsAndUpdate", new {area="CMS"})",
+            success: function (result) {
+                var data1 = JSON.parse(result);
+                if (data1.length > 0) {
+                    $('#datatable.tbody').empty();
+                    $.each(data1, function (i, data) {
+                        var origin = window.location.origin;
+                        var photopath = origin + "/" + data.NewsPhotoPath;
+                        var trows = "<tr>";
+                        trows = trows + "<td>" + (i+1) + "</td>";
+                        trows = trows + "<td style='white-space: pre-line;'>" + data.NewsTitle + "</td>";
+                        trows = trows + "<td style='white-space: pre-line;'>" + data.NewsTitleOD + "</td>";
+                        trows += "<td style='white-space: pre-line;'>" + data.NewsDescription + "</td>";
+                        trows += "<td style='white-space: pre-line;'>" + data.NewsDescriptionOD + "</td>";
+                        trows = trows + "<td>" + data.NewsSource + "</td>";
+                        trows = trows + "<td>" + data.NewsSourceOD + "</td>";
+                        trows = trows + "<td>" + data.NewsPublishDate + "</td>";
+                        trows = trows + "<td><a href='../Banner/DownloadFile?fileName=" + data.NewsPhotoPath + "'><img height='100px' width='100px' src='" + photopath + "' alt='Image'></a></td>";
+                        trows = trows + "<td>" + "<a href='../NewsAndUpdate/NewsAndUpdate?strid=" + data.Id + "'><i class='bi bi-pencil-square' title='Edit'></i></a>&nbsp;<a onclick='Delete_ManageFAQ(" + data.Id + ")'><i class='bi bi-trash' title='Delete' style='color: red; cursor: pointer;'></i></a>" + "</td>";
+                        trows = trows + "</tr>";
+                        $('#datatable').append(trows);
+                    });
+                }
+                Datatable();
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }
+
+    function Delete_ManageFAQ(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "Delete",
+                    dataType: "json",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    url: "@Url.Action("DeleteNewsAndUpdate", "NewsAndUpdate", new { area="CMS"})",
+
+                    data: { "Id": id },
+                    success: function (response) {
+                        Swal.fire(
+                            'Success!',
+                            'News And Update Deleted Successfully!',
+                            'success'
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                var url = '@Url.Action("ViewNewsAndUpdate", "NewsAndUpdate", new { area = "CMS" })';
+                                location.href = url;
+                            }
+                            else if (result.isDenied) {
+                                Swal.fire('Changes are not saved', '', 'info')
+                            }
+                        })
+                    }
+                });
+
+            }
+            return false;
+        })
+    }
+</script>

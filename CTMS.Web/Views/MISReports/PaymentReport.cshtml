@@ -1,0 +1,462 @@
+﻿@model CTMS.Model.Entities.ReportMaster.PaymentReport
+@{
+    ViewData["Title"] = "District wise Payment Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.PaymentDetail;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="MISReports" asp-action="PaymentReport" asp-area="" class="nav-link active">
+            District wise Payment Report
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <form method="get" asp-controller="MISReports" asp-action="PaymentReport">
+                <div class="collapse" id="collapseFilter">
+                    <div class="border p-3 rounded mb-3 bg-light">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlDist" asp-for="Distid">
+                                        <option value="0">Select Dsistrict</option>
+                                    </select>
+                                    <label for="category">District</label>
+                                    <span class="text-danger" id="errddlCategory"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlBlock" asp-for="Blockid">
+                                        <option value="0">Select Block</option>
+                                    </select>
+                                    <label for="scategory">Block</label>
+                                    <span class="text-danger" id="errddlSubCategory"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="btn btn-primary btn-lg" id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;margin-left:10px;">
+                                <a class="btn btn-primary btn-lg" id="reset" onclick="reset()" style="margin-top:10px;margin-left:10px;">Reset</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                <th scope="col">District/Block</th>
+                                <th scope="col">Reported</th>
+                                <th scope="col">Pending</th>
+                                <th scope="col">Success</th>
+                                <th scope="col">Failure</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                            }
+                            @foreach (var items in Data)
+                            {
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>
+                                        @if (@ViewBag.DistId == 0)
+                                        {
+                                                <a href="../MISReports/PaymentReportDD?Distid=@items.Distid&Blockid=@ViewBag.Blockid">@items.Districtname</a>
+                                        }
+                                        else
+                                        {
+                                            @items.Districtname
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.Total_Reported == 0)
+                                        {
+                                            @items.Total_Reported
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Distid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWisePaymentTotalReportedpopup('@items.Blockid','2')">@items.Total_Reported</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWisePaymentTotalReportedpopup('@items.Distid','1')">@items.Total_Reported</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.Pending_payment == "0")
+                                        {
+                                            @items.Pending_payment
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Distid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWisePandingpopup('@items.Blockid','2')">@items.Pending_payment</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWisePandingpopup('@items.Distid','1')">@items.Pending_payment</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.success_payment == "0")
+                                        {
+                                            @items.success_payment
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Distid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWiseSuccesspopup('@items.Blockid','2')">@items.success_payment</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWiseSuccesspopup('@items.Distid','1')">@items.success_payment</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.fail_payment == "0")
+                                        {
+                                            @items.fail_payment
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Distid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWiseFailurepopup('@items.Blockid','2')">@items.fail_payment</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return DistWiseFailurepopup('@items.Distid','1')">@items.fail_payment</a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalPaymentTotalReportedpopup">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Troupe Reported Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-right">Sl.No</th>
+                                    <th scope="col">Troupe Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Villages Performed</th>
+                                    <th scope="col">Event Title</th>
+                                    <th scope="col">Date Of Perform</th>
+                                    <th scope="col">Reported On</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmorePaymentTotalReportedpopup"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalPandingPaymentpopup">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Troupe Panding Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-right">Sl.No</th>
+                                    <th scope="col">Troupe Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Villages Performed</th>
+                                    <th scope="col">Event Title</th>
+                                    <th scope="col">Date Of Perform</th>
+                                    <th scope="col">Reported On</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmorePandingPaymentpopup"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalSuccessPaymentdpopup">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Troupe Success Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-right">Sl.No</th>
+                                    <th scope="col">Troupe Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Villages Performed</th>
+                                    <th scope="col">Event Title</th>
+                                    <th scope="col">Date Of Perform</th>
+                                    <th scope="col">Reported On</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreSuccessPaymentpopup"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalFailurePaymentdpopup">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Troupe Failure Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-right">Sl.No</th>
+                                    <th scope="col">Troupe Name</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Villages Performed</th>
+                                    <th scope="col">Event Title</th>
+                                    <th scope="col">Date Of Perform</th>
+                                    <th scope="col">Reported On</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreFailurePaymentpopup"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getDistrict();
+        var type = "@ViewBag.UserType";
+        if (type == "4") {
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            document.getElementById('ddlBlock').disabled = false;
+        }
+        else if (type == "2") {
+            document.getElementById('ddlDist').disabled = false;
+            document.getElementById('ddlBlock').disabled = false;
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+        }
+        else {
+            var blockId = "@ViewBag.Blockid";
+            let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            $("#ddlBlock").css("pointer-events", "none");
+        }
+        if ("@ViewBag.Blockid" != 0) {
+            $("#ddlBlock").val("@ViewBag.Blockid");
+            $('#ddlBlock').trigger('change');
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+            data: { blockid: blockid },
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    result = data.data;
+                }
+            }
+        });
+        return result;
+    }
+    function DistWisePaymentTotalReportedpopup(Distid, isdist) {
+        var Distid = Distid;
+        var isdist = isdist;
+        $('#successModalPaymentTotalReportedpopup').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWisePaymentTotalReportedpopup", "MISReports")',
+            data: { "Distid": Distid, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.TroupName + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.villagePerform + "</td><td>" + v1.EventTitle + "</td><td>" + v1.DateOfPerform + "</td><td>" + v1.reportedon + "</td></tr>";
+
+                });
+                $("#addmorePaymentTotalReportedpopup").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function DistWisePandingpopup(Distid, isdist) {
+        var Distid = Distid;
+        var isdist = isdist;
+        $('#successModalPandingPaymentpopup').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWisePaymentPandingpopup", "MISReports")',
+            data: { "Distid": Distid, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.TroupName + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.villagePerform + "</td><td>" + v1.EventTitle + "</td><td>" + v1.DateOfPerform + "</td><td>" + v1.reportedon + "</td></tr>";
+                });
+                $("#addmorePandingPaymentpopup").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function DistWiseSuccesspopup(Distid, isdist) {
+        var Distid = Distid;
+        var isdist = isdist;
+        $('#successModalSuccessPaymentdpopup').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWisePaymentSuccesspopup", "MISReports")',
+            data: { "Distid": Distid, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.TroupName + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.villagePerform + "</td><td>" + v1.EventTitle + "</td><td>" + v1.DateOfPerform + "</td><td>" + v1.reportedon + "</td></tr>";
+                });
+                $("#addmoreSuccessPaymentpopup").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function DistWiseFailurepopup(Distid, isdist) {
+        var Distid = Distid;
+        var isdist = isdist;
+        $('#successModalFailurePaymentdpopup').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWisePaymentFailurepopup", "MISReports")',
+            data: { "Distid": Distid, "isdist": isdist },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.TroupName + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.villagePerform + "</td><td>" + v1.EventTitle + "</td><td>" + v1.DateOfPerform + "</td><td>" + v1.reportedon + "</td></tr>";
+                });
+                $("#addmoreFailurePaymentpopup").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script>
+    function reset(){
+        window.location.href = "../MISreports/PaymentReport";
+    }
+</script>

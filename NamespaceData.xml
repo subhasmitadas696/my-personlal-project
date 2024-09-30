@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfNamespaceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <NamespaceModel>
+    <namespacename>CTMS.Repository.Repository</namespacename>
+    <name>AuthenticationRepository</name>
+  </NamespaceModel>
+  <NamespaceModel>
+    <namespacename>CTMS.Repository.Repository</namespacename>
+    <name>MasterRepository</name>
+  </NamespaceModel>
+  <NamespaceModel>
+    <namespacename>CTMS.Repository.Repository</namespacename>
+    <name>ApprovalConfigRepository</name>
+  </NamespaceModel>
+  <NamespaceModel>
+    <namespacename>CTMS.Repository.Repository</namespacename>
+    <name>ReportRepository</name>
+  </NamespaceModel>
+  <NamespaceModel>
+    <namespacename>CTMS.Repository.Repository</namespacename>
+    <name>RegistraionRepository</name>
+  </NamespaceModel>
+</ArrayOfNamespaceModel>

@@ -1,0 +1,441 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.SetPermission.SetPermissionModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "SetPermissionUser";
+}
+
+@section Scripts {
+    
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            $(".showhidedis").attr("style", "display:none");
+
+            var rows = $(".tablechk tr");
+            for (var i = 0; i < rows.length; i++) {
+                var row = $(rows).eq(i);
+                var cb = row.find("input:radio")
+                var name = "grp" + i;
+                $(cb).attr('name', name);
+            }
+
+            $(".checkParent").click(function () {
+                if ($(this).is(":checked")) {
+                    var isAllChecked = 0;
+                    $(".checkParent").each(function () {
+                        if (!this.checked) {
+                            isAllChecked = 1;
+                        }
+                    })
+                    $(this).closest('table').find("tbody").find(".checkChild").prop("checked", true);
+
+                } else {
+                    $(this).closest('table').find("tbody").find(".checkChild").prop("checked", false);
+                }
+            });
+            $(".checkChild").click(function () {
+                var totChk = 0;
+                var totChecked = 0;
+                $(this).closest('table').find('tbody').find('tr').each(function (index) {
+                    var Result = $(this).find("td").eq(0).find(".checkChild").is(":checked");
+                    totChk++;
+                    if (Result == true) {
+                        totChecked++;
+                    }
+                });
+                if (totChecked == totChk) {
+                    $(this).closest('table').find('thead').find('tr').find(".checkParent").prop("checked", true);
+                }
+                else {
+                    $(this).closest('table').find('thead').find('tr').find(".checkParent").prop("checked", false)
+                }
+            });
+            $("span.ripple.rippleEffect").remove();
+        })
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function check_uncheck_checkbox(isChecked) {
+            if (isChecked) {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = true;
+                });
+            }
+            else {
+                $('input[name="chkbox"]').each(function () {
+                    this.checked = false;
+                });
+            }
+        }
+        function validateForm() {
+
+
+            if ($("#ddlDesgn").val() == 0) {
+                $("#ddlDesgn").focus();
+                alert("Please Select Designation.");
+                return false;
+            }
+            else if ($("#ddlProjectLinkdesg").val() == 0) {
+                $("#ddlProjectLinkdesg").focus();
+                alert("Please Select Project Link Name.");
+
+                return false;
+            }
+
+        }
+        function validateFormUser() {
+            if ($("#ddlUser").val() == 0) {
+                $("#ddlUser").focus();
+                alert("Please Select User.");
+                return false;
+            }
+            else if ($("#ddlProjectLinkuser").val() == 0) {
+                $("#ddlProjectLinkuser").focus();
+                alert("Please Select Project Link Name.");
+
+                return false;
+            }
+
+        }
+
+    </script>
+
+
+
+    <script type="text/javascript" language="javascript">
+
+        function ShowHideDiv() {
+            var chkdesignation = document.getElementById("rdodesignation");
+            var dvdegination = document.getElementById("dvdegination");
+            var dvsetpermissionUser = document.getElementById("dvsetpermissionUser");
+            var dvuser = document.getElementById("dvuser");
+            dvdegination.style.display = chkdesignation.checked ? "block" : "none";
+            dvsetpermissionUser.style.display = chkdesignation.checked ? "none" : "block";
+            dvuser.style.display = chkdesignation.checked ? "none" : "block";
+
+        }
+
+
+    </script>
+    @*-------------------------------------------------Setpermission Submit & Update--------------------------------------------*@
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    var getdata = '';
+    var designationid;
+    var projectid;
+    var radioValidation = 0;
+
+        $('.btnupdate').click(function (e) {
+            userid = $("#ddlUser").val();
+            projectid = $("#ddlProjectLinkuser").val();
+            if ($("#ddlUser").val() == 0) {
+                $("#ddlUser").focus();
+                alert("Please Select User.");
+                return false;
+            }
+            else if ($("#ddlProjectLinkuser").val() == 0) {
+                $("#ddlProjectLinkuser").focus();
+                alert("Please Select Project Link Name.");
+
+                return false;
+            }
+            else if ($('input[name=chkbox]:checked').length == 0) {
+                alert("Please Check Primary Link.");
+                return false;
+            }
+            $(".tablechk input[type=checkbox]:checked").each(function () {
+                debugger;
+
+                var row = $(this).closest('tr');
+                var status = $(this).closest('table').find("tbody").find("input:radio[type=radio]:checked").val();
+                if (!status) {
+                    radioValidation = 1;
+                    new swal("Please select permission.");
+                    return false;
+                }
+                else {
+                    var row = $(this).closest("tr")[0];
+                    var rdoval = $(row).find('input[type="radio"]:checked').val();
+                    if (rdoval > 0 && rdoval != undefined && rdoval != null && rdoval != "") {
+                        getdata += userid + '|' + projectid + '|' + $(row).find('.hdnPlinkId').val() + '|' + $(row).find('input[type="radio"]:checked').val() + '^';
+                    }
+
+                    return true;
+                }
+            });
+            var datastring = {
+                setpermissionListUser: getdata,
+            };
+            if (radioValidation != 1) {
+                $("#btnupdate").prop('disabled', true);
+                $.ajax({
+                    type: "post",
+                    url: '@Url.Content("~/AdminConsole/SetPermission/SetPermissionDataUser")',
+                    data: JSON.stringify(datastring),
+                    datatype: "json",
+                    contentType: 'application/json',
+                    traditional: true,
+
+                    success: function (data) {
+                        if (data == "Set permission Successfully") {
+                            Swal.fire({
+                               title: "",
+                               text: "Set permission Successfully",
+                               icon: "success"
+                                }).then(() => {
+                                    window.location.href = window.location.origin + "@Url.Action("SetPermission", "SetPermission")";
+                                });
+                            getdata = '';
+
+
+                        }
+                        $("#btnupdate").prop('disabled', false);
+                    },
+                    error: function (error) {
+                        $("#btnupdate").prop('disabled', false);
+                    }
+
+                });
+
+            }
+            else {
+                return false;
+            }
+
+            $("span.ripple.rippleEffect").remove();
+        });
+</script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+        function ShowHide(tblPrimary, lnkTogle) {
+
+            if (document.getElementById(tblPrimary).style.display == 'none') {
+                document.getElementById(tblPrimary).style.display = 'block';
+                document.getElementById(lnkTogle).innerHTML = 'Hide';
+            }
+            else {
+                document.getElementById(tblPrimary).style.display = 'none';
+                document.getElementById(lnkTogle).innerHTML = 'Show';
+            }
+        }
+
+    </script>
+
+}
+@{
+    if (TempData["Result"] != null)
+    {
+        <script type="text/javascript">
+            alert('@(TempData["CommandStatus"])');
+        </script>
+    }
+
+}
+
+
+<div class="card card--lg">
+
+    <div class="card-body">
+        <div class="form-group row">
+
+            <div class="col-md-4 form-group">
+                <label class="control-label">Set Permission<span style="color:Red">*</span></label>
+                <div class="input-group">
+                    <label for="rdodesignation">
+                        <input type="radio" id="rdodesignation" name="permission" onclick="ShowHideDiv()" checked />
+                        By Designation
+                    </label>&nbsp;
+                    <label for="rdouser">
+                        <input type="radio" id="rdouser" name="permission" onclick="ShowHideDiv()" />
+                        By User
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div id="dvdegination" style="display: none">
+                <form id="frmsearchPrimaryLink" data-parsley-validate novalidate method="post" asp-action="BindSetPermission" asp-controller="SetPermission" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label class="control-label">Designation<span style="color:Red">*</span></label>
+                            <div class="input-group">
+                                <select asp-for="DesignId" name="DesignId" id="ddlDesgn" asp-items="@(new SelectList(ViewBag.Designation, "ROLEID", "ROLENAME"))" class="form-select">
+                                    <option value="0">--select Designation--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="control-label">Project Link Name<span style="color:Red">*</span></label>
+                            <div class="input-group">
+                                <select asp-for="INTPROJECTLINKID" asp-items="@(new SelectList(Model.ProjectList,"INTPROJECTLINKID","NVCHPROJECTLINKNAME"))" id="ddlProjectLinkdesg" class="form-select">
+                                    <option value="0">--Select Project Link--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="text-center">
+                            <button type="submit" name="submit" id="btnSearch" class="btn btn-success" value="Submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+            <div id="dvuser">
+                <form id="frmsearchPrimaryLink" data-parsley-validate novalidate method="post" asp-action="BindSetPermissionUser" asp-controller="SetPermission" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateFormUser()">
+                    <div class="form-group row">
+                        <div class="col-md-4 form-group">
+                            <label class="control-label">User<span style="color:Red">*</span></label>
+                            <div class="input-group">
+                                <select asp-for="UserId" name="UserId" id="ddlUser" asp-items="@(new SelectList(ViewBag.UserDetails, "intuserid", "vchusername"))" class="form-select">
+                                    <option value="0">--select User--</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label class="control-label">Project Link Name<span style="color:Red">*</span></label>
+                            <div class="input-group">
+                                <select asp-for="INTPROJECTLINKID" asp-items="@(new SelectList(Model.ProjectList,"INTPROJECTLINKID","NVCHPROJECTLINKNAME"))" id="ddlProjectLinkuser" class="form-select">
+                                    <option value="0">--Select Project Link--</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="text-center">
+                            <button type="submit" name="submit" id="btnSearchuser" class="btn btn-success" value="Submit">Search user</button>
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body table table-bordered cell-borde" id="dvsetpermissionUser">
+        @{
+            @if (Model.GlobalPrimaryListUser.Count != 0)
+            {
+                @foreach (var global in Model.GlobalPrimaryListUser.Select(s => new { s.GLOBALNAME, s.GLOBALID, s.PRIMARYLINKCOUNT, s.PRIMARYLINKPERMISSIONCOUNT }).Distinct())
+                {
+                    <div class="table">
+                        <div class="form-group row">
+                            <table data-toggle="table" class="table table-bordered table-padding cell-border" id="example1">
+                                <thead>
+                                    <tr>
+                                        <th style="width:555px">@global.GLOBALNAME</th>
+                                        <th><a class="btn btn-primary" id='lnk+@global.GLOBALID' onclick=ShowHide('tbl+@global.GLOBALID','lnk+@global.GLOBALID') href="#">Show</a> </th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                        </div>
+                        <table data-toggle="table" id='tbl+@global.GLOBALID' class="tablechk table-bordered table-padding showhidedis">
+                            <thead>
+                                <tr>
+                                    <th width="10px">
+                                        @if (global.PRIMARYLINKCOUNT == global.PRIMARYLINKPERMISSIONCOUNT)
+                                        {
+                                            <input type="checkbox" class="checkParent" checked="checked" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="checkParent" />
+                                        }
+                                    <td width="50px"><strong>SL#</strong></td>
+                                    <td class="pl-2"><strong>Primary Link</strong></td>
+                                    <td class="pl-2"><strong>Add</strong></td>
+                                    <td class="pl-2"><strong>Mange</strong></td>
+                                    <td class="pl-2"><strong>view</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var primarylist in Model.GlobalPrimaryListUser.Where(w => w.GLOBALNAME == @global.GLOBALNAME).Select((x, i) => new { Data = x, Index = i + 1 }))
+                                {
+                                    <tr>
+                                        @if (primarylist.Data.TINACCESS == "0" || primarylist.Data.TINACCESS == null)
+                                        {
+                                            <td>
+                                                <input type="checkbox" name="chkbox" value="@primarylist.Data.PRIMARYID" class="checkChild" />
+                                                <input type="hidden" value="@primarylist.Data.PRIMARYID" class="hdnPlinkId" />
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                <input type="checkbox" name="chkbox" value="@primarylist.Data.PRIMARYID" checked="checked" class="checkChild" />
+                                                <input type="hidden" value="@primarylist.Data.PRIMARYID" class="hdnPlinkId" />
+                                            </td>
+                                        }
+
+
+
+                                        <td>@primarylist.Index</td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => primarylist.Data.PRIMARYNAME)
+                                            @if (primarylist.Data.TINACCESS == "0" || primarylist.Data.TINACCESS == null)
+                                            {
+                                            <td><input asp-for="command.VCHACTION1" class='cboxRadio' type='radio' name='cboxRadioA+@global.GLOBALID+@primarylist.Index' value="1" /></td>
+                                            <td><input asp-for="command.VCHACTION2" class='cboxRadio' type='radio' name='cboxRadioM+@global.GLOBALID+@primarylist.Index' value="2" /></td>
+                                            <td><input asp-for="command.VCHACTION3" class='cboxRadio' type='radio' name='cboxRadioV+@global.GLOBALID+@primarylist.Index' value="3" /></td>
+                                        }
+
+                                        else if (primarylist.Data.TINACCESS == "1")
+                                        {
+                                            <td><input asp-for="command.VCHACTION1" class='cboxRadio' type='radio' name='cboxRadioA+@global.GLOBALID+@primarylist.Index' value="1" checked="checked" /></td>
+                                            <td><input asp-for="command.VCHACTION2" class='cboxRadio' type='radio' name='cboxRadioM+@global.GLOBALID+@primarylist.Index' value="2" /></td>
+                                            <td><input asp-for="command.VCHACTION3" class='cboxRadio' type='radio' name='cboxRadioV+@global.GLOBALID+@primarylist.Index' value="3" /></td>
+                                        }
+                                        else if (primarylist.Data.TINACCESS == "2")
+                                        {
+                                            <td><input asp-for="command.VCHACTION1" class='cboxRadio' type='radio' name='cboxRadioA+@global.GLOBALID+@primarylist.Index' value="1" /></td>
+                                            <td><input asp-for="command.VCHACTION2" class='cboxRadio' type='radio' name='cboxRadioM+@global.GLOBALID+@primarylist.Index' value="2" checked="checked" /></td>
+                                            <td><input asp-for="command.VCHACTION3" class='cboxRadio' type='radio' name='cboxRadioV+@global.GLOBALID+@primarylist.Index' value="3" /></td>
+                                        }
+                                        else if (primarylist.Data.TINACCESS == "3")
+                                        {
+                                            <td><input asp-for="command.VCHACTION1" class='cboxRadio' type='radio' name='cboxRadioA+@global.GLOBALID+@primarylist.Index' value="1" /></td>
+                                            <td><input asp-for="command.VCHACTION2" class='cboxRadio' type='radio' name='cboxRadioM+@global.GLOBALID+@primarylist.Index' value="2" /></td>
+                                            <td><input asp-for="command.VCHACTION3" class='cboxRadio' type='radio' name='cboxRadioV+@global.GLOBALID+@primarylist.Index' value="3" checked="checked" /></td>
+                                        }
+
+                                        </tr>
+
+                                    }
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                }
+
+
+                <div class="mt-4">
+                    <button type="button" class="btn btn-primary btnupdate" id="btnupdate">Update</button>
+                </div>
+
+
+            }
+            else
+            {
+                <h4>Record Not Found</h4>
+            }
+
+
+        }
+
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+

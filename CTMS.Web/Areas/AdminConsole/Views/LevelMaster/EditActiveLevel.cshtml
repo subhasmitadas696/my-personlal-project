@@ -1,0 +1,317 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.LevelMaster.CreateLevelMaster
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewData["Title"] = "AddLevelMaster";
+
+}
+
+
+
+
+@section Scripts {
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            BindParentLevel();
+            $('#dvparentLevel').hide();
+
+            $('#btnsubmit').click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                if ($("#ddlHierarchy").val() == "") {
+                    $("#ddlHierarchy").focus();
+                    new swal(" Hierarchy Name Can't be blank.");
+
+                    return false;
+                }
+                if ($("#txtLevelName").val() == "") {
+                    $("#txtLevelName").focus();
+                    new swal("Level Name Can't be blank.");
+
+                    return false;
+                }
+                if ($("#txtLeveldetailName").val() == "") {
+                    $("#txtLeveldetailName").focus();
+                    new swal("Alias Name Can't be blank.");
+
+                    return false;
+                }
+
+                var formData = {
+                    INTHIERARCHYID: $('#ddlHierarchy').val(),
+                    INTPARENTID: $('#ddlparentlevelId').val(),
+                    NVCHLABEL: $('#txtLevelName').val(),
+                    VCHALLIAS: $('#txtLeveldetailName').val(),
+                    INTCREATEDBY: $('#INTCREATEDBY').val(),
+                    INTUPDATEDBY: $('#INTUPDATEDBY').val(),
+                    INTLEVELID: $('#INTLEVELID').val(),
+                };
+
+                swal({
+                    title: "Are you sure?",
+                    text: "You want to Update",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes",
+                    closeOnConfirm: false
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/AdminConsole/LevelMaster/EditLevel', // Adjust the URL to your endpoint
+                            data: formData,
+                            success: function (response) {
+                                console.log(response);
+                                if (response === "Updated Successfully") {
+                                    swal({
+                                        title: "",
+                                        text: response,
+                                        type: "success"
+                                    }, function () {
+                                        window.location.href = "/AdminConsole/LevelMaster/ViewActiveLevel";
+                                    });
+                                } else if (response == "Already Exist") {
+                                    swal({
+                                        title: "",
+                                        text: response,
+                                        type: "warning"
+                                    }, function () {
+                                        return;
+                                    });
+                                }
+                                else {
+                                    swal({
+                                        title: "",
+                                        text: response,
+                                        type: "error"
+                                    }, function () {
+                                        return;
+                                    });
+                                }
+                            },
+                            error: function () {
+                                swal({
+                                    title: "",
+                                    text: 'An error occurred while processing the request.',
+                                    type: "error"
+                                }, function () {
+                                    return;
+                                });
+                            }
+                        });
+                    }
+
+                });
+            });
+
+        });
+    </script>
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function BindParentLevel() {
+            var HirerarchyId = $('#ddlHierarchy').val();
+            var data = {
+                HId: HirerarchyId
+
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelMaster/BindParentLevelByHierarchyId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#hdnparentid").val(response.length);
+                    var dvparentLeveldisplay = document.getElementById("dvparentLevel");
+                    $("#ddlparentlevelId").empty();
+                    if (response.length == 0 || @Model.INTPARENTID== 0) {
+                        $('#dvparentLevel').hide();
+                    } else {
+                        $('#dvparentLevel').show();
+                        $("#ddlparentlevelId").append($('<option value="0">--Select Parent Level--</option>'));
+                        if (response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                $("#ddlparentlevelId").append($('<option/>')
+                                    .val(response[i].intlevelid)
+                                    .html(response[i].nvchlabel)
+                                );
+
+                            }
+                            $('#ddlparentlevelId').val(@Model.INTPARENTID);
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+
+        }
+        function BindupdateParentLevel() {
+            var HirerarchyId = $('#ddlHierarchy').val();
+            var data = {
+                HId: HirerarchyId
+
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/LevelMaster/BindParentLevelByHierarchyId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    $("#hdnparentid").val(response.length);
+                    $("#ddlparentlevelId").empty();
+                    $("#ddlparentlevelId").append($('<option value="0">--Select Parent Level--</option>'));
+                    if (response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            $("#ddlparentlevelId").append($('<option/>')
+                                .val(response[i].intlevelid)
+                                .html(response[i].nvchlabel)
+                            );
+                            $('#ddlparentlevelId').val(@Model.INTPARENTID);
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+
+        }
+    </script>
+
+    
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'Email') {
+                AllowableCharacters = '1234567890@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\'';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            if (allow == 'Filename') {
+                AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            $("#btnReset").bind("click", function () {
+                var url = '@Url.Action("ViewActiveLevel", "LevelMaster")';
+                window.location.href = url;
+            });
+        });
+    </script>
+
+
+
+
+}
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="LevelMaster" asp-action="AddLevelMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="LevelMaster" asp-action="ViewActiveLevel">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="LevelMaster" asp-action="ViewInActiveLevel">
+            InActive
+        </a>
+    </div>
+    <div class="card-body">
+        <form id="frmupdateLevelMaster" data-parsley-validate novalidate method="post" asp-action="EditLevel" asp-controller="LevelMaster" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+            <div class="form-group row">
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Hirerarchy Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTHIERARCHYID" asp-items="@(new SelectList(Model.HierarchyList,"INTHIERARCHYID","NVCHHIERARCHYNAME"))" onchange=" return BindParentLevel();" id="ddlHierarchy" class="form-control">
+                            <option value="0">--Select Hirerarchy Name--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvparentLevel">
+                    <label class="control-label">Parent Level<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTPARENTID" id="ddlparentlevelId" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Level Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <input type="text" asp-for="NVCHLABEL" id="txtLevelName" name="NVCHLABEL" style="text-transform:uppercase" Onkeypress="return inputLimiter(event,'NameCharacters')" class="form-control" placeholder="Enter Level Name" autocomplete="off" maxlength="100" />
+                        <input asp-for="INTUPDATEDBY" id="INTUPDATEDBY" type="hidden" value=@Model.INTUPDATEDBY />
+                        <input asp-for="INTLEVELID" id="INTLEVELID" type="hidden" value="@Model.INTLEVELID" />
+                        <input type="hidden" id="hdnparentid" />
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Alias Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <input type="text" asp-for="VCHALLIAS" id="txtLeveldetailName" style="text-transform:uppercase" Onkeypress="return inputLimiter(event,'NameCharactersymbol')" class="form-control" placeholder="Enter Level Name" autocomplete="off" maxlength="100" />
+                        <input asp-for="INTCREATEDBY" type="hidden" value=@Model.INTCREATEDBY />
+                        <input type="hidden" id="hdnparentid" />
+                    </div>
+                </div>
+
+            </div>
+                        
+            <div class="row">
+                <div class="text-center">
+                    <span class="colon"></span>
+
+                    <button type="submit" name="submit" id="btnsubmit" class="btn btn-primary mb-1t white-text" title="Submit" value="Submit">Update</button>
+                    <button type="button" id="btnReset" value="Cancel" class="btn btn-danger"> Cancel </button>
+                </div>
+
+            </div>
+
+        </form>
+    </div>  
+</div>
+

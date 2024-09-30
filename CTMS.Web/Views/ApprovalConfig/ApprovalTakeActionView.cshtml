@@ -1,0 +1,403 @@
+﻿@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.Data;
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+<style>
+    .norecord {
+        text-align: center;
+        font-size: 24px;
+        color: red;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="mb-3 back-profile">
+    <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left pe-2"></i>Back to Profile</a>
+</div>
+<div class="card card--lg">
+    <div class="card-body">
+        <h6 class="view-form-details__title mt-0">Basic Information</h6> 
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <input type="hidden" id="hdnTroupeId" />
+                <label for="" class="control-label">Cultural Troupe Information</label><strong>@Data.TroupeInfo[0].GroupName</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Troupe Created on</label><strong>@Data.TroupeInfo[0].TroupeCreatedon</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">District</label>
+                <strong>@Data.TroupeInfo[0].DistrictName</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Block</label>
+                <strong>@Data.TroupeInfo[0].BlockName</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Gram Panchayat</label>
+                <strong>@Data.TroupeInfo[0].GPName</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Address</label>
+                <strong>@Data.TroupeInfo[0].Address</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Pincode</label>
+                <strong>@Data.TroupeInfo[0].Pincode</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Group Photo</label>
+                @if (@Data.TroupeInfo[0].GroupPhoto != "NA")
+                {
+                    <img height="100px" width="100px" src="~/TroupeDetails/@Data.TroupeInfo[0].UploadBannerFolder/GroupPhoto/@Data.TroupeInfo[0].GroupPhoto" class="uploaded-img">
+                }
+                else
+                {
+                    <strong>@Data.TroupeInfo[0].GroupPhoto</strong>
+                }
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Uploaded Video</label>
+                @if (@Data.TroupeInfo[0].UploadVideo != "NA")
+                {
+                    <a class="home-gallery__item vclass" id="capturedFrameLink" href="~/TroupeDetails/@Data.TroupeInfo[0].UploadBannerFolder/RegVideo/@Data.TroupeInfo[0].UploadVideo" target="_blank">
+                        <img class="vdo-fluid" height="100px" width="100px" id="capturedFrame" alt="KSSMS"><span class="home__gallery-icon"><span class="icon-gallery1-expand"></span></span>
+                    </a>
+                }
+                else
+                {
+                    <strong>@Data.TroupeInfo[0].UploadVideo</strong>
+                }
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Registered through 1860 society act</label>
+                <strong>@Data.TroupeInfo[0].Registeredsociety</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Registration No.</label>
+                <strong>@Data.TroupeInfo[0].RegDocNo</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Upload Registration Certificate</label>
+                @if (@Data.TroupeInfo[0].SocietyRegDoc != "NA")
+                {
+                    <a href="~/TroupeDetails/@Data.TroupeInfo[0].UploadBannerFolder/RegPhoto/@Data.TroupeInfo[0].SocietyRegDoc" class="text-danger h5" target="_blank" title="View Document" data-bs-toggle="tooltip">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </a>
+                }
+                else
+                {
+                    <strong>@Data.TroupeInfo[0].SocietyRegDoc</strong>
+                }
+            </div>
+        </div>
+        <h6 class="view-form-details__title">Art & Performance Details</h6>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Category</label>
+                <strong>@Data.TroupeInfo[0].CategoryName</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Sub-Category</label><strong>@Data.TroupeInfo[0].SubCategoryName</strong>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="" class="control-label">Cultural Troupe Banner</label>
+                @if (Data.TroupeInfo[0].UploadBannerFolder != "NA" && Data.TroupeInfo[0].BannerImg !="NA")
+                {
+                    <img src="~/TroupeDetails/@Data.TroupeInfo[0].UploadBannerFolder/Banner/@Data.TroupeInfo[0].BannerImg" class="uploaded-img" />
+                }
+                else
+                {
+                    @Data.TroupeInfo[0].BannerImg
+                }
+            </div>
+        </div>
+        <h6 class="view-form-details__title">Artist Information</h6>
+        @if (Data.MemberInfo.Count > 0)
+        {
+            <div class="table-responsive">
+                <div class="table-responsive--rounded">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 50px;">Sl#</th>
+                                <th scope="col">Member Name</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Aadhaar Number</th>
+                                <th scope="col">Mobile/Email</th>
+                                <th scope="col">Bank Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                            }
+                            @foreach (var list in Data.MemberInfo)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        @count
+                                    </td>
+                                    <td>
+                                        @list.MemberName
+                                        <div class="text-muted">
+                                            @if (list.IsLeader == 1)
+                                            {
+                                                @if (list.RoleId != 2)
+                                                {
+                                                    <p>[@list.RoleName, Leader]</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>[@list.RoleName,@list.Role, Leader]</p>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (list.RoleId != 2)
+                                                {
+                                                    <p>[@list.RoleName]</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>[@list.RoleName,@list.Role]</p>
+                                                }
+                                            }
+
+                                        </div>
+                                    </td>
+                                    <td>@list.Gender</td>
+                                    <td>@list.AadharNo</td>
+                                    <td>
+                                        <div>@list.MobileNo</div>
+                                        <div>@list.EmailId</div>
+                                    </td>
+                                    <td>
+                                        @list.BankName
+                                        <div class="text-muted">
+                                            @list.IFSC
+                                        </div>
+                                        <div class="text-muted">
+                                            @list.BranchName
+                                        </div>
+                                        <div class="text-muted">
+                                            @list.AccountNo
+                                        </div>
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="norecord"><strong>No Record Found</strong></div>
+        }
+
+
+        @if (Data.MemberInfo.Count > 0 && Data.TroupeInfo[0].ApprovedStatus == "0")
+        {
+            <div class="row">
+                <div class="mb-3 col-12">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="ApproveStatus" id="inlineRadio1"
+                               value="1">
+                        <label class="form-check-label" for="inlineRadio1">Approve</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="ApproveStatus" id="inlineRadio2"
+                               value="2">
+                        <label class="form-check-label" for="inlineRadio2">Reject</label>
+                    </div>
+                   
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="ApproveStatus" id="inlineRadio4"
+                               value="3">
+                        <label class="form-check-label" for="inlineRadio4">Not Appeared In Audition </label>
+                    </div>
+                </div>
+                <div class="col-xxl-8">
+                    <div class="form-floating mb-4 ">
+                        <textarea class="form-control" placeholder="Remark" id="txtRemark"
+                                  style="height: 100px"></textarea>
+                        <label for="floatingTextarea">Remark<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" title="Submit" id="FinalSubmit" class="btn btn-primary rounded-pill">Submit</button>
+            <button onclick="window.history.back();" title="Cancel" id="cancel" class="btn btn-secondary rounded-pill">Cancel</button>
+        }
+
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var anchorTags = document.querySelectorAll('a.vclass');
+        var Count = 1;
+        anchorTags.forEach(function (anchor) {
+            var hrefValue = anchor.getAttribute("href");
+            captureVideoFrame(hrefValue, Count);
+            Count += 1;
+        });
+    });
+    function captureVideoFrame(videoUrl, Count) {
+        var video = document.createElement("video");
+        video.src = videoUrl;
+        video.onloadedmetadata = function () {
+            video.currentTime = 1;
+            setTimeout(function () {
+                var imgElement = document.getElementById("capturedFrame");
+                imgElement.src = getVideoFrameAsDataURL(video);
+                var linkElement = document.getElementById("capturedFrameLink");
+                linkElement.addEventListener("click", function () {
+                    window.open(videoUrl, '_blank');
+                });
+            }, 10);
+        };
+    }
+    function getVideoFrameAsDataURL(video) {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = 100;
+        canvas.height = 100;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL("image/jpeg");
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#hdnTroupeId').val(@Data.TroupeInfo[0].TroupeId);
+    });
+    $("#FinalSubmit").on("click", function () {
+            var record = new Object();
+            record.Troupeid = $('#hdnTroupeId').val();
+            record.Remark = $('#txtRemark').val();
+            record.ApprovedStatus = $('input[name="ApproveStatus"]:checked').val();
+            const radioButtonss = document.getElementsByName("ApproveStatus");
+            let checked = false;
+            for (let i = 0; i < radioButtonss.length; i++) {
+                if (radioButtonss[i].checked) {
+                    checked = true;
+                    break;
+                }
+        }
+            if (!checked) {
+                new Swal("error", "Please Select Any Action!", "");
+                return false;
+            }
+            else if ($('#txtRemark').val() == "") {
+                new swal("error", "Please Enter Your Remark!", "");
+                $('#txtRemark').focus();
+            }
+            else {
+                var labelName = $('label[for="' + $('input[name="ApproveStatus"]:checked').attr('id') + '"]').text();
+                if (labelName == "Not Appeared In Audition ") {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "The Troupe " + labelName + "!",
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Submit'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            btnsubmit(record);
+                        }
+                    });
+                }
+                else {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You want to " + labelName + " Troupe Details.",
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Submit'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            btnsubmit(record);
+                        }
+                    });
+                }
+            }
+
+
+    });
+
+    function btnsubmit(Data) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ApprovalTakeAction", "ApprovalConfig")',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: Data,
+            success: function (newdata) {
+                newdata = JSON.parse(newdata);
+                if (newdata.data == 10) {
+                    new swal({
+                        icon: 'success',
+                        title: "",
+                        text: "Troupe Details Approved Successfully",
+                        type: "success"
+                    }).then(function () {
+                        var url = '@Url.Action("ApprovalViewPending", "ApprovalConfig")';
+                            location.href = url;
+                    });
+
+                }
+                else if (newdata.data == 11) {
+                    new swal({
+                        icon: 'success',
+                        title: "",
+                        text: "Troupe Details Rejected Successfully",
+                        type: "success"
+                    }).then(function () {
+                        var url = '@Url.Action("ApprovalViewPending", "ApprovalConfig")';
+                            location.href = url;
+                    });
+                }
+                else if (newdata.data == 12) {
+                    new swal({
+                        icon: 'success',
+                        title: "",
+                        text: "Application Is On Hold",
+                        type: "success"
+                    }).then(function () {
+                        var url = '@Url.Action("ApprovalViewPending", "ApprovalConfig")';
+                            location.href = url;
+                    });
+                }
+                else {
+                    new swal({
+                        icon: 'success',
+                        title: "",
+                        text: "Troupe Is Not Comming To Audition",
+                        type: "success"
+                    }).then(function () {
+                        var url = '@Url.Action("ApprovalViewPending", "ApprovalConfig")';
+                            location.href = url;
+                    });
+
+                }
+            },
+            error: function (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!!',
+                    text: error
+                });
+            }
+        });
+
+    }
+</script>

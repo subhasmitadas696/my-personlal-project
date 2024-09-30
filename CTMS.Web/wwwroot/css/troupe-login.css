@@ -1,0 +1,100 @@
+.login-container {
+    background: url(../images/pattern.png) no-repeat;
+    background-position: 100% 0;
+    background-size: 518px;
+    background-color: var(--bs-body-bg);
+}
+
+.login-container .section__heading {
+    color: var(--bs-primary);
+    margin-bottom: 1rem;
+}
+.card--login__title {
+    color: var(--bs-primary);
+    margin-bottom: 2rem;
+    position: relative;
+    text-align: center;
+}
+.card--login__title::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -.5rem;
+    transform: translateX(-50%);
+    height: 2px;
+    width: 50px;
+    border-radius: .125rem;
+    background: var(--title-border);
+}
+.icon-form-field .form-control {
+    padding-right: 2.5rem;
+}
+.form-floating__icon-right {
+    position: absolute;
+    top: .8rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    z-index: 1;
+} 
+#togglePassword:hover  {
+    color: var(--bs-primary);
+    cursor: pointer;
+}
+.captchabox__text {
+    background: var(--bs-primary);
+    padding: 0.8rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    flex-grow: 1;
+    margin-right: 1rem;
+}
+.captchabox__refresh {
+    font-size: 1.5rem; 
+    transition: .3s;
+    cursor: pointer;
+    display: inline-block;
+}
+.captchabox__refresh:hover {
+    color: var(--bs-primary);
+    transform: rotate(90deg);
+}
+.card--login__link:hover {
+    text-decoration: none;
+}
+.otp-inputs {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center; 
+    margin: calc(24px + (32 - 24) * (100vw - 375px) / (1920 - 375))  0;
+}
+.otp-inputs__box {
+    border: 1px solid var(--bs-border-color);
+    outline: none;
+    border-radius: .5rem;
+    width: 36px;
+    height: 36px;
+    text-align: center;
+    padding: .5rem; 
+} 
+.otp-inputs__box:focus {
+    border: 1px solid var(--bs-primary);
+}
+.hr-divider {
+    margin: calc(24px + (40 - 24) * (100vw - 375px) / (1920 - 375))  0;
+}
+.list-group-item {
+    padding-left: 0;
+}
+@media only screen and (max-width: 320px) {
+    .captchabox__text {
+        margin-right: 0.2rem;
+        flex: 0 0 88px;
+        padding: 0.8rem 0.5rem;
+    }
+    
+    .form-floating > label {
+        padding: 1rem 0.15rem;
+    }
+    
+}

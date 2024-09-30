@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    var Data = ViewBag.NewsAndUpdate;
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+<link href="~/css/news-and-update.css" rel="stylesheet" />
+<div class="innerpage-container-breadcrumb">
+    <div class="container">
+        <h2 class="page-heading">News and Update</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../Home/Index">Home</a></li>
+                <li class="breadcrumb-item active">News and Update</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        <div class="news-list">
+            @if (Data != null)
+            {
+                foreach (var item in Data)
+                {
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-img">
+                                <img src="~/@item.NewsPhotoPath " alt="Kala Sanskruti Sangha Management System" class="img-fluid" />
+                            </div>
+                            <div class="mb-2 text-muted"><i class="bi bi-calendar3"></i> @item.NewsPublishDate</div>
+                            <h5 class="card-title">
+                                <a href="javascript:;" class="stretched-link" target="_blank">
+                                    @(Lang == "or" ? item.NewsTitleOD : item.NewsTitle)
+                                </a>
+                            </h5>
+                            <p class="card-text mb-2">
+                                @(Lang == "or" ? item.NewsDescriptionOD : item.NewsDescription)
+                            </p>
+                            <small class="text-body-secondary media-source"><em>@(Lang == "or" ? "ମିଡିଆ ଉତ୍ସ" : "Media Source")</em>: <a href="javascript:;"><strong>@(Lang == "or" ? item.NewsSourceOD : item.NewsSource)</strong></a></small>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+

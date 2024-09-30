@@ -1,0 +1,569 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@{
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    var Data = ViewBag.Notification;
+}
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>KSSMS</title>
+    <link rel="icon" type="image/x-icon" href="~/images/favicon.ico">
+    <link rel="stylesheet" href="~/css/icons.css">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/styles.css">
+    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="~/lib/select2-bootstrap-5-theme/select2-bootstrap-5-theme.min.css" />
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="@Url.Content("~/css/dataTables.bootstrap.min.css")" />
+    <link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    
+
+    <style>
+        .noRecord {
+            display: inline-block;
+            margin: 0.25rem;
+            background-color: #f5f5f5;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        .pagination {
+            float: right;
+            margin: 10px;
+        }
+        .close {
+            border: none;
+            background: transparent;
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .unclickable {
+            pointer-events: none;
+        }
+        .nav_menulinks a.active {
+            color: #FFC20E;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <h1>
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index" asp-area="" title="Government of Odisha">
+                        <img src="~/images/logo.png" alt="Government of Odisha" class="navbar-brand__img">
+                    </a>
+                </h1>
+                <h5 class="page-name">
+                    @ViewData["Title"]
+                </h5>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+                        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="dropdown loged-in-dropdown ms-3">
+                    <a class="dropdown-toggle d-flex" data-bs-toggle="dropdown" aria-expanded="false" href="javascript:;">
+                        <i class="bi bi-person"></i>
+                        @if (User.FindFirst("UID")?.Value != null)
+                        {
+                            <span>
+                                <span class="loged-in-dropdown__name">@User.FindFirst("FULLNAME")?.Value.ToString()</span>
+                                <small class="text-secondary">@User.FindFirst("URTYPE")?.Value.ToString()</small>
+                            </span>
+                        }
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="../ApprovalConfig/Dashboard">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="#">My Account</a></li>
+                        <li><a class="dropdown-item" href="../ChangePassword/ChangePassword">Change Password</a></li>
+                        <li>
+                            <a href="javascript:void(0);" title="Logout" data-bs-toggle="modal" data-bs-target="#signOutModal" class="dropdown-item">
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- header end-->
+    <div class="container-fluid bg-light">
+        <div class="body-container">
+            <div class="sidebar" id="sideBar">
+                <ul class="nav pt-4 flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" asp-controller="Home" asp-action="Index" asp-area="AdminConsole"><i class="bi bi-grid"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#Master_1" data-bs-toggle="collapse"
+                           aria-expanded="false"><i class="bi bi-grid"></i>Master Management</a>
+                        <div class="collapse" id="Master_1" data-bs-parent="#sideBar">
+                            <ul class="nav d-block">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="ManageMaster_1" data-bs-target="#Master_1" asp-controller="HirerachyMaster" asp-action="AddHirerarchy" asp-area="AdminConsole">
+                                        <i class=""></i>Hierarchy Master
+                                    </a>
+
+                                    <a class="nav-link" id="ManageMaster_5" data-bs-target="#Master_1" asp-controller="FunctionMaster" asp-action="AddFunctionMaster" asp-area="AdminConsole">
+                                        <i class=""></i>Function Master
+                                    </a>
+                                    <a class="nav-link" id="ManageMenu_1" data-bs-target="#Master_1" asp-controller="designationMaster" asp-action="AddDesignationMaster" asp-area="AdminConsole">
+                                        <i class=""></i>Designation Master
+                                    </a> 
+                                    <a class="nav-link" id="ManageMenu_1" data-bs-target="#Master_1" asp-controller="ProjectLink" asp-action="AddProjectLink" asp-area="AdminConsole">
+                                        <i class=""></i>Project Link
+                                    </a>
+
+                                    <a class="nav-link" id="ManageMenu_1" data-bs-target="#Master_1" asp-controller="AdminMaster" asp-action="AddCategory" asp-area="">
+                                        <i class=""></i>Category Master
+                                    </a>
+                                    <a class="nav-link" id="ManageMenu_1" data-bs-target="#Master_1" asp-controller="AdminMaster" asp-action="AddSubCategory" asp-area="">
+                                        <i class=""></i>Sub Category Master
+                                    </a>
+                                    <a class="nav-link" id="ManageMenu_1" data-bs-target="#Master_1" asp-controller="AdminMaster" asp-action="AddScheme" asp-area="">
+                                        <i class=""></i>Scheme Master
+                                    </a>
+                                    <a class="nav-link" id="ManageMenu_1" data-bs-target="#Master_1" asp-controller="PaymentStructure" asp-action="AddPaymentStructure" asp-area="">
+                                        <i class=""></i>Payment Structure
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#Master_2" data-bs-toggle="collapse"
+                           aria-expanded="false"><i class="bi bi-grid"></i>Manage Menu</a>
+                        <div class="collapse" id="Master_2" data-bs-parent="#sideBar">
+                            <ul class="nav d-block">
+                                <li class="nav-item">
+                                   
+                                    <a class="nav-link" id="ManageMenu_2" data-bs-target="#Master_2" asp-controller="GlobalLink" asp-action="AddGlobalLink" asp-area="AdminConsole">
+                                        <i class=""></i>Global Link
+                                    </a>
+                                    <a class="nav-link" id="ManageMenu_3" data-bs-target="#Master_2" asp-controller="PrimaryLink" asp-action="AddPrimaryLink" asp-area="AdminConsole">
+                                        <i class=""></i>Primary Link
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#Master_3" data-bs-toggle="collapse"
+                           aria-expanded="false"><i class="bi bi-grid"></i>Manage User</a>
+                        <div class="collapse" id="Master_3" data-bs-parent="#sideBar">
+                            <ul class="nav d-block">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="ManageUser_1" data-bs-target="#Master_2" asp-controller="User" asp-action="AddUser" asp-area="AdminConsole">
+                                        <i class=""></i>Create New User
+                                    </a>
+                                    <a class="nav-link" id="ManageUser_2" data-bs-target="#Master_2" asp-controller="SetPermission" asp-action="SetPermission" asp-area="AdminConsole">
+
+                                        <i class=""></i>Set User Permission
+                                    </a>
+                                    <a class="nav-link" id="ManageUser_3" data-bs-target="#Master_2" asp-controller="SetPermission" asp-action="RemoveUserPermission" asp-area="AdminConsole">
+
+                                        <i class=""></i>Remove User Permission
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <main class="content-body">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h5 class="modal-title text-primary" id="signOutModalLabel">Sign Out</h5>
+                    <p class="mb-4">Are you sure you want to sign out?</p>
+                    <a onclick="return clearSession();" asp-controller="Authentication" asp-action="OutLogin" asp-area="" class="btn btn-primary">Sign Out</a>
+                    <button type="button" class="btn btn-secondary mr-2" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/app.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/dataTables.buttons.min.js"></script>
+    <script src="~/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/js/buttons.print.min.js"></script>
+    <script src="~/js/buttons.html5.min.js"></script>
+    <script src="~/js/jszip.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/custom.min.js"></script>
+    <script src="~/js/moment.min-new.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script>
+         function getDistrict() {
+            var thisHtml = '<option value="0"> --Select--</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetDistrict',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlDist').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlDist').html(thisHtml);
+                    }
+                }
+            });
+        }
+
+         $("#ddlDist").change(function () {
+            var thisHtml1 = '<option value="0"> --Select--</option>';
+            var thisHtml = '<option value="0"> --Select--</option>';
+            if ($('#ddlDist').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetBlock',
+                    data: { DistCode: $('#ddlDist').val(), },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlBlock').html(thisHtml);
+                            $('#ddlGp').html(thisHtml1);
+                        }
+                        else {
+                            $('#ddlBlock').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlBlock').html(thisHtml);
+                $('#ddlGp').html(thisHtml);
+            }
+        });
+
+        function getCategory() {
+            var thisHtml = '<option value="0">--Select--</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetCategory',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlCategory').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlCategory').html(thisHtml);
+                    }
+                }
+            });
+        }
+        $("#ddlCategory").change(function () {
+            var thisHtml = '<option value="0">--Select--</option>';
+            if ($('#ddlCategory').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetSubCategory',
+                    data: { CatId: $('#ddlCategory').val() },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlSubCategory').html(thisHtml);
+                        }
+                        else {
+                            $('#ddlSubCategory').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlSubCategory').html(thisHtml);
+            }
+        });
+        function getDepartment() {
+            var thisHtml = '<option value="0">--Select--</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetDepartment',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+
+                        $('#ddlDepartment').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlDepartment').html(thisHtml);
+                    }
+                }
+            });
+        }
+        function Scheme(Department) {
+            var thisHtml = '<option value="0">--Select--</option>';
+            if ($('#ddlDepartment').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetSCHEME',
+                    data: { Deptid: $('#ddlDepartment').val(), },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+                            $('#ddlScheme').html(thisHtml);
+                        }
+                        else {
+                            $('#ddlScheme').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlScheme').html(thisHtml);
+            }
+        }
+    </script>
+    <script>
+        function MobileNumber(cntr) {
+            var Mobile = /^[6-9][0-9]{9}$/;
+            var entered_no = cntr;
+            if (!Mobile.test(entered_no)) {
+                return false;
+            }
+            else
+                return true;
+        }
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function Datatable() {
+            let dtable = $('#datatable').DataTable({
+                "destroy": true,
+                "language": {
+                    "emptyTable": 'No  Record Found.!',
+                    "zeroRecords": 'No  Record Found.!',
+                    "processing": 'Loading Data',
+                },
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "dom": '<"row"<"col-sm-12 col-md-6 text-right"lB><"col-sm-12 col-md-6 text-right"f>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                "deferRender": false,
+                "processing": true,
+                "searching": true,
+                "bSort": false,
+                "columnDefs": [{
+                    "targets": [0],
+                    "visible": true,
+                    "searchable": false
+                }],
+                columnDefs: [{
+                    targets: 0,
+                    autoWidth: true,
+                    searchable: true,
+                    orderable: false,
+                    render: function (data, type, row, info) {
+                        return parseInt(info.row) + 1;
+                    }
+                }],
+                buttons:
+                    [{
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i> Print',
+                        title: $('h1').text(),
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        footer: true,
+                        className: 'buttons-print btn-ps btn-sm',
+                        customize: function (win) {
+                            $(win.document.head).append("<link href='/css/styles.css' rel='stylesheet'><link href='/css/Print.css' rel='stylesheet'><link rel='stylesheet' href='/css/bootstrap.min.css'>");
+                            let datetime = moment().format('DD MMM YYYY hh:mm');
+                            let createdby = '@User.FindFirst("FULLNAME")?.Value.ToString()  ' + ',' + ' @User.FindFirst("URTYPE")?.Value.ToString()';
+                            $(win.document.body).prepend("<header><nav class='navbar navbar-expand-xl'><div class='container-fluid'><h1><a class='navbar-brand' title='Government of Odisha'><img src='/images/logo.png' alt='Government of Odisha' class='navbar-brand__img'></a></h1><h5 class='page-name'>@ViewData["Title"]</h5></div></nav><div class='row'><div class='col-sm-6 float-start'><label><span class='font-bold'>Created On:</span>" + datetime + "</label></div><div class='col-sm-6 float-end'><label><span class='font-bold'>Created By:</span>" + createdby + "</label></div></div></header>");
+                            $(win.document.body).find('table').addClass('table-bordered');
+                        },
+                        autoPrint: true
+                    },
+                    {
+                        extend: 'excel',
+                        title: '@ViewData["Title"]',
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        className: 'btn btn-success btn-sm mx-1',
+                        text: '<i class="icon-excel"></i> Excel',
+                        className: 'buttons-excel  btn-cs btn-sm',
+                    }, 'pdf']
+                ,
+                initComplete: function () {
+                    $('.buttons-csv').html('<i class="bi bi-filetype-csv"></i>');
+                    $('.buttons-excel').html('<i class="bi bi-file-earmark-excel-fill"></i>');
+                    $('.buttons-pdf').html('<i class="bi bi-filetype-pdf"></i>');
+                    $('.buttons-print').html('<i class="bi bi-file-earmark-text-fill"></i>');
+                    $('.buttons-print').attr('data-toggle', 'tooltip');
+                    $('.buttons-excel').attr('data-toggle', 'tooltip');
+                    $('.buttons-print').attr('title', 'print table');
+                    $('.buttons-excel').attr('title', 'export to excel');
+                    $('.buttons-print').attr('data-placement', 'right');
+                    $('.buttons-excel').attr('data-placement', 'right');
+                    $('.buttons-print').tooltip({
+                        placement: 'bottom',
+                        title: function () {
+                            return "Print";
+                        }
+                    });
+                    $('.buttons-excel').tooltip({
+                        placement: 'right',
+                        title: function () {
+                            return "Export To Excel";
+                        }
+                    });
+                }
+            });
+        }
+        function Datatable1() {
+            let dtable = $('#datatable1').DataTable({
+                "destroy": true,
+                "language": {
+                    "emptyTable": 'No Matching Record Found.!',
+                    "zeroRecords": 'No Matching Record Found.!',
+                    "processing": 'Loading Data',
+                },
+                "dom": '<"row"<"col-sm-12 col-md-6 text-right"lB><"col-sm-12 col-md-6 text-right"f>><"row"<"col-sm-12"tr>><"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                "deferRender": true,
+                "processing": true,
+                "searching": true,
+                "bSort": true,
+                "paging": true,
+                'order': [[1, 'desc']],
+                "info": true,
+                "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                    $("td:first", nRow).html(iDisplayIndex + 1);
+                    return nRow;
+                },
+                buttons:
+                    [{
+                        extend: 'print',
+                        text: '<i class="fa fa-print"></i> Print',
+                        title: $('h1').text(),
+                        exportOptions: {
+                            columns: ':not(.no-print)'
+                        },
+                        footer: true,
+                        className: 'buttons-print btn-ps btn-sm',
+                        customize: function (win) {
+                            $(win.document.head).append("<link href='/css/styles.css' rel='stylesheet'><link href='/css/print.css' rel='stylesheet'>");
+                            $(win.document.body).css('text-align', 'center'); // Center-align the entire body
+                        },
+                        autoPrint: true
+                    },
+                    {
+                        extend: 'excel',
+                        title: 'MisReport',
+                        className: 'btn btn-success btn-sm mx-1',
+                        text: '<i class="icon-excel"></i> Excel',
+                        className: 'buttons-excel  btn-cs btn-sm',
+                    }, 'pdf']
+                ,
+                initComplete: function () {
+                    $('.buttons-csv').html('<i class="bi bi-filetype-csv"></i>')
+                    $('.buttons-excel').html('<i class="bi bi-file-earmark-excel-fill"></i>')
+                    $('.buttons-pdf').html('<i class="bi bi-filetype-pdf"></i>')
+                    $('.buttons-print').html('<i class="bi bi-file-earmark-text-fill"></i>')
+                    $('.buttons-print').attr('data-toggle', 'tooltip');
+                    $('.buttons-excel').attr('data-toggle', 'tooltip');
+                    $('.buttons-print').attr('title', 'print table');
+                    $('.buttons-excel').attr('title', 'export to excel');
+                }
+            });
+        }
+        $(document).ready(function () {
+            setTimeout(() => {
+                $('.dataTable').parent().parent().addClass('dt-row');
+            }, 1000);
+        })
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

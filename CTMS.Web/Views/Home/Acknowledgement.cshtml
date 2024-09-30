@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Acknowledgement";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+
+<div class="innerpage-container">
+    <div class="card text-center card--lg registration-complete">
+        <div class="card-body">
+            <div class="success-checkmark">
+                <div class="check-icon">
+                    <span class="icon-line line-tip"></span>
+                    <span class="icon-line line-long"></span>
+                    <div class="icon-circle"></div>
+                    <div class="icon-fix"></div>
+                </div>
+            </div>
+            <h2>Registration Completed</h2>
+            <h4>Ack no: @ViewBag.AcknowledgementNo</h4>
+            <p class="registration-complete__message">
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+                the industry's standard dummy text
+            </p>
+            <div class="text-center">
+                <a href="../Home/Index" class="rounded-pill btn btn-secondary me-2" title="Homepage">Homepage</a>
+                <a href="../Authentication/LogIn" class="rounded-pill btn btn-primary" title="Login">Login</a>
+            </div>
+        </div>
+    </div>
+</div> 

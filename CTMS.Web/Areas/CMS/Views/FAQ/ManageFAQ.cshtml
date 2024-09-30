@@ -1,0 +1,263 @@
+@{
+    ViewData["Title"] = "FAQ Information";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/styles.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="tropue-basic-info-tab" asp-area="CMS" asp-controller="FAQ" asp-action="ManageFAQ">
+            Add FAQ
+        </a>
+        <a class="nav-link" id="artist-info-tab" asp-area="CMS" asp-controller="FAQ" asp-action="ViewManageFAQ">
+            FAQ Details
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">FAQ Information</h5>
+        <form id="form">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="Question" name="Question" class="form-control" placeholder="Enter Question">
+                        <label for="Question">Question<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" id="QuestionOD" name="QuestionOD" class="form-control" placeholder="Enter Question(Odia)">
+                        <label for="QuestionOD">Question(Odia)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="Answer" name="Answer" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="Answer">Answer<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <textarea type="text" id="AnswerOD" name="AnswerOD" class="form-control" style="height: 121px;" oninput="avoidFirstSpace(event)"></textarea>
+                        <label for="AnswerOD">Answer(Odia)<span class="text-danger">*</span></label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row g-2">
+                <div class="text-center my-4">
+                    <button type="button" class="btn btn-secondary btn-lg" id="btn_Submit" onclick="Save_ManageFAQ()">
+                        Save
+                    </button>
+                    <button type="reset" class="btn btn-danger btn-lg" onclick="Reset()">
+                        Reset
+                    </button>
+                </div>
+            </div>
+            <input id="hdnManageFAQ" type="hidden" value="0" />
+        </form>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $('#Question').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#Answer').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#QuestionOD').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#AnswerOD').on('keypress', function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9,\\|\\.\\?\\(\\)\\{\\}\\&\\[\\]\\'\"\\]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_ManageFAQ(id);
+            $("#btn_Submit").text("Update");
+
+        }
+    });
+    function Edit_ManageFAQ(id) {
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("RO_ManageFAQ", "FAQ", new { area = "CMS" })',
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+                $("#hdnManageFAQ").val(data1.Id);
+                $('#Question').val(data1.Question);
+                $('#QuestionOD').val(data1.QuestionOD);
+                $('#Answer').val(data1.Answer);
+                $('#AnswerOD').val(data1.AnswerOD);
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    } $("#form").validate({
+        rules: {
+            Question: {
+                required: true
+            },
+            QuestionOD: {
+                required: true
+            },
+            Answer: {
+                required: true
+            },
+            AnswerOD: {
+                required: true
+            },
+
+
+        },
+        messages: {
+            Question: {
+                required: "Please enter Question"
+            },
+            QuestionOD: {
+                required: "Please enter Question in Odia"
+            },
+            Answer: {
+                required: "Please enter Answer"
+            },
+            AnswerOD: {
+                required: "Please enter Answer in Odia"
+            },
+        },
+        errorPlacement: function (error, element) {
+            error.insertAfter(element.parent());
+        },
+        highlight: function (element) {
+            $(element).removeClass("is-valid")
+            $(element).parent().addClass('text-danger')
+            $(element).addClass("is-invalid")
+        },
+        unhighlight: function (element) {
+            $(element).parent().removeClass('text-danger')
+            $(element).removeClass("is-invalid");
+            $(element).addClass("is-valid")
+        }
+    });
+    function Save_ManageFAQ() {
+        if ($("#form").valid()) {
+
+            var ManageFAQ = {
+                Id: $('#hdnManageFAQ').val(),
+                Question: $("#Question").val(),
+                QuestionOD: $("#QuestionOD").val(),
+                Answer: $("#Answer").val(),
+                AnswerOD: $("#AnswerOD").val(),
+            };
+            var msg = "";
+            if ($('#hdnManageFAQ').val() == 0) {
+                msg = 'save';
+            } else {
+                msg = 'update';
+            }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want " + msg + " this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, ' + msg + ' it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ManageFAQ", "FAQ", new { area = "CMS" })',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("RequestVerificationToken",
+                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                },
+                data: ManageFAQ,
+                content: 'application/json;charset=utf-8',
+                dataType: "json",
+                success: function (result) {
+                    if (result.data.result != 88) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var url = '@Url.Action("ViewManageFAQ", "FAQ", new { area = "CMS" })';
+                                location.href = url;
+                            }
+                        })
+                    }
+                    else {
+                         Swal.fire({
+                        icon: 'warning',
+                        title: 'warning',
+                        text: 'Record Already Exist!!!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var url = '@Url.Action("ManageFAQ", "FAQ", new { area = "CMS" })';
+                             location.href = url;
+                        }
+                    })
+                    }
+
+                },
+                error: function (result) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: result.responseText,
+                        text: result.responseMessage,
+                    });
+                },
+            });
+                }
+                return false;
+            })
+        }
+    }
+</script>
+<script>
+    function Reset(){
+        $('#hdnManageFAQ').val("").removeClass("is-valid");
+        $("#Question").val("").removeClass("is-valid");
+        $("#QuestionOD").val("").removeClass("is-valid");
+        $("#Answer").val("").removeClass("is-valid");
+        $("#AnswerOD").val("").removeClass("is-valid");
+    }
+</script>

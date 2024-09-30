@@ -1,0 +1,515 @@
+﻿@{
+    ViewData["Title"] = "KSSMS";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+}
+<link href="~/css/styles.css" rel="stylesheet" />
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="tropue-basic-info-tab" asp-controller="Event" asp-action="ManageEvent">
+            Add Event
+        </a>
+        <a class="nav-link " id="artist-info-tab" asp-controller="Event" asp-action="ViewEvent">
+            Event Details
+        </a>
+        <a class="nav-link " id="artist-info-tab" asp-controller="Event" asp-action="ManageEventCalender">
+            Add Event Calender
+        </a>
+    </div>
+    <div class="card-body">
+        <h5 class="view-form-details__title mt-0">Event Information</h5>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDepartment" name="ddlDepartment">
+                        <option value="0" selected>Select Department</option>
+                       
+                    </select>
+                    <label for="block">Department</label>
+                    <span class="text-danger" id="errddlDepartment"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlScheme" name="ddlScheme">
+                        <option value="0" selected>Select Scheme</option>
+
+                    </select>
+                    <label for="block">Scheme</label>
+                    <span class="text-danger" id="errddlScheme"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtTitle" name="txtTitle">
+                    <label for="tname">Event Title</label>
+                    <span class="text-danger" id="errtxtTitle"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtDescription" name="txtDescription">
+                    <label for="tname">Event Description</label>
+                    <span class="text-danger" id="errtxtDescription"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+
+                    <input type="text" name="txtStartDt" data-date-format="dd-mm-yyyy" id="txtStartDt" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="">
+
+                    <label for="tname">Event Start Date</label>
+                    <span class="text-danger" id="errtxtStartDt"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="time" id="txtStarttime" name="txtStarttime" placeholder="From Date" class="form-control" />
+                    <label for="tname">Event Start Time</label>
+                    <span class="text-danger" id="errtxtStarttime"></span>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-floating">
+
+                    <input type="text" name="txtEndDt" data-date-format="dd-mm-yyyy" id="txtEndDt" class="form-control date-picker" placeholder="From Date" autocomplete="off" value="">
+                    <label for="tname">Event End Date</label>
+                    <span class="text-danger" id="errtxtEndDt"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <input type="time" id="txtEndtime" name="txtEndtime" class="form-control" />
+                    <label for="tname">Event End Time</label>
+                    <span class="text-danger" id="errtxtStartTime"></span>
+                </div>
+            </div>
+        </div>
+        <h5 class="view-form-details__title mt-0"> Event Location</h5>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlDist" name="ddlDist">
+                        <option value="0" selected>Select District</option>
+                    </select>
+                    <label for="tdist">District</label>
+                    <span class="text-danger" id="errddlDist"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlBlock" name="ddlBlock">
+                        <option value="0" selected>Select Block</option>
+                    </select>
+                    <label for="block">Block</label>
+                    <span class="text-danger" id="errddlBlock"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating">
+                    <select class="form-select" id="ddlGp" name="ddlGp">
+                        <option value="0" selected>Select Gram Panchayat</option>
+                    </select>
+                    <label for="block"> Gram Panchayat</label>
+                    <span class="text-danger" id="errddlGp"></span>
+                </div>
+            </div>
+        </div>
+            
+        
+
+        <div class="text-center mt-4 mt-md-5">
+            <input type="button" class="rounded-pill btn btn-primary btn-lg" id="FinalSubmit" onclick="Save_ManageEvent()"
+                    title="Submit" value="Submit" />
+            <input id="hdnManageEvent" type="hidden" value="0" />
+
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    function Save_ManageEvent() {
+
+
+        if ($("#ddlDepartment").val() != 0) {
+            $('#ddlDepartment').removeClass("is-invalid");
+            $('#errddlDepartment').text("");
+        }
+        else {
+            $('#ddlDepartment').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDepartment').text("Please Select Department!");
+            $('#ddlDepartment').focus();
+            return false;
+        }
+
+        if ($("#ddlScheme").val() != 0) {
+            $('#ddlScheme').removeClass("is-invalid");
+            $('#errddlScheme').text("");
+        }
+        else {
+            $('#ddlScheme').addClass("form-control shadow-sm is-invalid");
+            $('#errddlScheme').text("Please Select Scheme!");
+            $('#ddlScheme').focus();
+            return false;
+        }
+        if ($("#txtTitle").val().trim() != "") {
+            $('#txtTitle').removeClass("is-invalid");
+            $('#errtxtTitle').text("");
+        }
+        else {
+            $('#txtTitle').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtTitle').text("Please Enter Event Title");
+            $('#txtTitle').focus();
+            return false;
+        }
+        if ($("#txtDescription").val().trim() != "") {
+            $('#txtDescription').removeClass("is-invalid");
+            $('#errtxtDescription').text("");
+        }
+        else {
+            $('#txtDescription').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtDescription').text("Please Enter Event Description");
+            $('#txtDescription').focus();
+            return false;
+        }
+        if ($("#txtStartDt").val().trim() != "") {
+            $('#txtStartDt').removeClass("is-invalid");
+            $('#errtxtStartDt').text("");
+        }
+        else {
+            $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStartDt').text("Please Enter Event Start Date");
+            $('#txtStartDt').focus();
+            return false;
+        }
+
+        if ($("#txtStarttime").val().trim() != "") {
+            $('#txtStarttime').removeClass("is-invalid");
+            $('#errtxtStarttime').text("");
+        }
+        else {
+            $('#txtStarttime').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStarttime').text("Please Enter Event Start Time");
+            $('#txtStarttime').focus();
+            return false;
+        }
+        if ($("#txtEndDt").val().trim() != "") {
+            $('#txtEndDt').removeClass("is-invalid");
+            $('#errtxtEndDt').text("");
+        }
+        else {
+            $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtEndDt').text("Please Enter Event End Date");
+            $('#txtEndDt').focus();
+            return false;
+        }
+        if ($("#txtEndtime").val().trim() != "") {
+            $('#txtEndtime').removeClass("is-invalid");
+            $('#errtxtStartTime').text("");
+        }
+        else {
+            $('#txtEndtime').addClass("form-control shadow-sm is-invalid");
+            $('#errtxtStartTime').text("Please Enter Event End Time");
+            $('#txtEndtime').focus();
+            return false;
+        }
+
+        if ($("#ddlDist").val() != 0) {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        }
+        else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+            return false;
+        }
+        if ($("#ddlBlock").val() != 0) {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').text("");
+        }
+        else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please Select Block!");
+            $('#ddlBlock').focus();
+            return false;
+        }
+        if ($("#ddlGp").val() != 0) {
+            $('#ddlGp').removeClass("is-invalid");
+            $('#errddlGp').text("");
+        }
+        else {
+            $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+            $('#errddlGp').text("Please Select Gram Panchayat!");
+            $('#ddlGp').focus();
+            return false;
+        }
+
+
+        var EventData = new FormData();
+        var alert;
+        if ($("#hdnManageEvent").val() != "0") {
+            EventData.append("ActionCode", "U");
+            EventData.append("EventId", $("#hdnManageEvent").val());
+            alert = "You want to Update to Event Details.";
+        }
+        else {
+            EventData.append("ActionCode", "I");
+            alert = "You want to save to Event Details.";
+        }
+
+        EventData.append("DepartmentId", $('#ddlDepartment').val());
+        EventData.append("SchemeId", $('#ddlScheme').val());
+        EventData.append("EventTitle", $('#txtTitle').val());
+        EventData.append("EventDescription", $('#txtDescription').val());
+        EventData.append("StartDate", $('#txtStartDt').val());
+        EventData.append("StartTime", $('#txtStarttime').val());
+        EventData.append("EndDate", $('#txtEndDt').val());
+        EventData.append("EndTime", $('#txtEndtime').val());
+        EventData.append("Distid", $('#ddlDist').val());
+        EventData.append("BlockId", $('#ddlBlock').val());
+        EventData.append("GPId", $('#ddlGp').val());
+
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: alert,
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Submit'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Event/ManageEvent",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: EventData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (result) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/Event/ViewEvent";
+                            }
+                        })
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+            }
+        });
+
+
+    }
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        getDepartment();
+        function getUrlVars() {
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                vars[key] = decodeURIComponent(value);
+            });
+            return vars;
+        }
+        var id = getUrlVars()["strid"];
+
+        if (id != undefined || id != null) {
+            Edit_Event(id);
+            $('#FinalSubmit').val("Update");
+            $("#hdnManageEvent").val(id);
+        }
+        $('.date-picker').datepicker({
+            format: 'dd-M-yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        getDistrict();
+    });
+    function getDepartment() {
+        var thisHtml = '<option value="0">--Select--</option>';
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDepartment',
+            data: {},
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    var result = data.data;
+
+                        for (var i = 0; i < result.length; i++) {
+                            thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                        }
+
+                    $('#ddlDepartment').html(thisHtml);
+                }
+                else {
+                    $('#ddlDepartment').html(thisHtml);
+                }
+            }
+        });
+    }
+    $("#ddlDepartment").change(function () {
+        Scheme($('#ddlDepartment option:selected').val());
+    });
+    function Edit_Event(id) {
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("GetSingleEvent", "Event")',
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);              
+                $('#ddlDepartment').val(data1[0].DepartmentId);
+                Scheme($('#ddlDepartment option:selected').val());
+                $('#ddlScheme').val(data1[0].SchemeId);
+                $('#txtTitle').val(data1[0].EventTitle);
+                $('#txtDescription').val(data1[0].EventDescription);
+                $('#txtStartDt').val(data1[0].StartDate);
+                $('#txtStarttime').val(data1[0].StartTime);
+                $('#txtEndDt').val(data1[0].EndDate);
+                $('#txtEndtime').val(data1[0].EndTime);
+                $('#ddlDist').val(data1[0].Distid);
+
+                Fillblock($('#ddlDist option:selected').val());
+
+                $('#ddlBlock').val(data1[0].BlockId);
+
+                FillGP($('#ddlBlock option:selected').val());
+                $('#ddlGp').val(data1[0].GPId);
+
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+    }
+    function Scheme(Department) {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlDepartment').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetSCHEME',
+                data: { Deptid: $('#ddlDepartment').val(), },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+
+                        $('#ddlScheme').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlScheme').html(thisHtml);
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlScheme').html(thisHtml);
+        }
+    }
+    function Fillblock(distid) {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlDist').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetBlock',
+                data: { DistCode: $('#ddlDist').val(), },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+
+
+                        $('#ddlBlock').html(thisHtml);
+
+                    }
+                    else {
+                        $('#ddlBlock').html(thisHtml);
+                    }
+                }
+            });
+        }
+    }
+    function FillGP(block) {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlBlock').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetGP',
+                data: { BlockCode: $('#ddlBlock').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlGp').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlGp').html(thisHtml);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlGp').html(thisHtml);
+        }
+    }
+</script>

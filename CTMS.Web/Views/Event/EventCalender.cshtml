@@ -1,0 +1,1029 @@
+﻿@{
+    ViewData["Title"] = "Event Calendar";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    var UserType = ViewBag.urtype;
+}
+<link href='~/css/calendar.css' rel='stylesheet' />
+<script src='~/js/calendar.js'></script>
+<link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+@Html.AntiForgeryToken()
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+            <h5 class="text-primary mb-0">Event Information</h5>
+            <ul class="event-calender-legends">
+                <li class="completed">Completed</li>
+                <li class="upcoming">Upcoming</li>
+                <li class="reschedule">Reschedule</li>
+                <li class="cancelled">Cancelled</li>
+            </ul>
+        </div>
+        <div id='calendar'></div>
+    </div>
+</div>
+<!--#region  When click on Date on each cell on Calender-->
+
+<div id="divmodal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="divmodal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="view-form-details__title my-0">Event Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="divmodalclose" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="row g-4 mb-4">
+                    
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlScheme" name="ddlScheme">
+                                <option value="0" selected>Select Scheme</option>
+
+                            </select>
+                            <label for="block">Scheme<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlScheme"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="txtTitle" name="txtTitle" onkeypress="return IsCharacter(event)">
+                            <label for="tname">Event Title<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtTitle"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="txtDescription" name="txtDescription" onkeypress="return IsCharacter(event)">
+                            <label for="tname">Event Description<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtDescription"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+
+                            <input type="text" name="txtStartDt" id="txtStartDt" class="form-control" placeholder="From Date" autocomplete="off" value="" disabled>
+                            <label for="tname">Event Start Date<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtStartDt"></span>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" name="txtEndDt" id="txtEndDt" class="form-control" placeholder="From Date" autocomplete="off" value="" onkeypress="return isDate(event)">
+
+                            <label for="tname">Event End Date<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtEndDt"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="txtAVamount" name="txtAVamount" disabled>
+                            <label for="txtSamount">Available Balance in Rs.<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtAvamount"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="txtSamount" name="txtSamount" onkeypress="return IsNumber(event)">
+                            <label for="txtSamount">Sanctioned Amount in Rs.<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errtxtSamount"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <a class="rounded-pill btn btn-primary btn-lg" id="ViewRateChart" href="../Event/RateChartForEvent" target="_blank" title="ViewRateChart">
+                                View Rate Chart
+                            </a>
+                        </div>
+                    </div>
+                  
+                </div>
+                <h5 class="view-form-details__title mt-0">Event Location</h5>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlDist" name="ddlDist">
+                                <option value="0" selected>Select District</option>
+                            </select>
+                            <label for="tdist">District<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlDist"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select class="form-select" id="ddlBlock" name="ddlBlock">
+                                <option value="0" selected>Select Block</option>
+                            </select>
+                            <label for="block">Block<span class="text-danger">*</span></label>
+                            <span class="text-danger" id="errddlBlock"></span>
+                        </div>
+                    </div>
+                  
+                </div>
+                <div class="text-center mt-4 mt-md-5">
+                    <input type="button" class="rounded-pill btn btn-primary btn-lg" id="FinalSubmit" onclick="Save_ManageEvent()"
+                           title="Save" value="Save" />
+                    <button class="btn btn-outline-primary rounded-pill btn-lg ms-2" type="reset" id="btncancel">Cancel</button>
+                    <input id="hdnManageEvent" type="hidden" value="0" />
+                    <input id="hdneventStartDt" type="hidden" value="0" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="myModal" class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="myModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="view-form-details__title my-0">Event Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="mymodalclose" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="hdnAuditProjectId" name="hdnAuditId" value="" />
+
+                <div class="row g-3 mb-4" id="tblpopup">
+                    <div class="col-md-6">
+                        <label class="control-label">Event Title</label>
+                        <strong id="lblTitle" class="text-primary"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Event Description</label>
+                        <strong id="lblEventName"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Department</label>
+                        <strong id="lblDepartment"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Scheme</label>
+                        <strong id="lblScheme"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Event Date</label>
+                        <strong id="lblEventDate"></strong>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="control-label">Location</label>
+                        <strong id="lblEventLocation"></strong>
+                    </div>
+                </div>
+                <div class="text-center" id="buttondiv">
+                    <button id="btn_Reschedule1" onclick="Rescheduleclick()" class="btn btn-primary">Reschedule</button>
+                    <button id="btn_Cancel" class="btn btn-outline-primary" onclick="Cancelclick()">Cancel Event</button>
+                    <button id="btn_Completed" class="btn btn-outline-success" onclick="completeclick()">Completed</button>
+                    <input id="hdnResceduleEventstatus" type="hidden" value="2" />
+                    <input id="hdnCancelEventstatus" type="hidden" value="3" />
+                    <input id="hdnCompleteEventstatus" type="hidden" value="1" />
+                    <input type="hidden" id="hdnevenid" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+document.getElementById('txtSamount').addEventListener('keydown', function(event) {
+    if (event.key === '.') {
+        event.preventDefault();
+    }
+});
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+            data: { blockid: blockid },
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    result = data.data;
+                }
+            }
+        });
+        return result;
+    }
+    $(document).ready(function () {
+       
+        Scheme(0)
+        $(function () {
+            $('#txtStartDt').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: moment(new Date()).format("DD-MMM-YYYY")
+            }).on('dp.change', function (e) {
+                $('#txtEndDt').datetimepicker('destroy');
+                $('#txtEndDt').datetimepicker({
+                    format: 'DD-MMM-YYYY',
+                    minDate: new Date(e.date)
+                });
+                $('#txtEndDt').val('');
+            });
+            $('#txtEndDt').datetimepicker({
+                format: 'DD-MMM-YYYY'
+            });
+
+        });
+        getDistrict();
+        var type = "@ViewBag.urtype";
+        var id = "@ViewBag.Blockid";
+        if (type == "DSSO") {
+            var blockId = "@ViewBag.Blockid";
+            $("#ddlDist").val(blockId);
+            $('#ddlDist').trigger('change');
+            $("#ddlDist").prop("disabled", true);
+        }
+        if (id != "" && id != null && type == "BSSO") {
+            var blockId = "@ViewBag.Blockid";
+            let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+            $("#ddlDist").prop("disabled", true);
+            $("#ddlBlock").prop("disabled", true);
+        }
+    });
+   
+
+    function Rescheduleclick() {
+        $('#FinalSubmit').val("Reschedule");
+        $("#hdnManageEvent").val($("#hdnevenid").val())
+        EditEvent($("#hdnManageEvent").val())
+    }
+    function Cancelclick() {
+        var status = $("#hdnCancelEventstatus").val();
+        Delete_Event($("#hdnevenid").val(), status)
+
+    }
+    function completeclick() {
+        var status = $("#hdnCompleteEventstatus").val();
+        Delete_Event($("#hdnevenid").val(), status)
+
+    }
+    function Clear() {
+
+        $("#divmodal").modal('hide');
+
+        $("#hdnManageEvent").val('0');
+        $("#hdnevenid").val('');
+        $('#ddlDepartment').val(0);
+        $('#ddlScheme').val(0);
+        $('#ddlScheme').val(0);
+        $('#txtTitle').val('');
+        $('#txtDescription').val('');
+        $('#txtStartDt').val('');
+        $('#txtStarttime').val('');
+        $('#txtEndDt').val('');
+        $('#txtEndtime').val('');
+        $('#txtSamount').val('');
+        $('#txtAVamount').val('');       
+        $('#ddlGp').val(0);
+        $('#errddlDepartment').text("");
+        $('#errddlScheme').text("");
+        $('#errtxtTitle').text("");
+        $('#errtxtDescription').text("");
+        $('#errtxtStartDt').text("");
+        $('#errtxtStarttime').text("");
+        $('#errtxtEndDt').text("");
+        $('#errtxtEndTime').text("");        
+        $('#errddlBlock').text("");
+        $('#errddlGp').text("");
+        $('#errtxtAvamount').text("");
+        $('#errtxtSamount').text("");
+        $('#txtSamount').removeClass("is-invalid");
+        $('#ddlDepartment').prop('disabled', false);
+        $('#ddlScheme').prop('disabled', false);
+        $('#txtTitle').prop('disabled', false);
+        $('#txtDescription').prop('disabled', false);
+        $('#ddlGp').prop('disabled', false);
+        $('#ddlScheme').removeClass("is-invalid");
+        $('#txtTitle').removeClass("is-invalid");
+        $('#txtDescription').removeClass("is-invalid");
+        $('#txtEndDt').removeClass("is-invalid");
+        $('#txtSamount').removeClass("is-invalid");
+        if ('@UserType' === "DSSO") {
+            $('#ddlBlock').val(0);
+        }
+
+    }
+    $("#mymodalclose").click(function () {
+
+        $("#myModal").modal('hide');
+        $("#hdnevenid").val('');
+
+
+    });
+
+    $("#divmodalclose").click(function () {
+
+        Clear();
+
+    });
+    $("#btncancel").click(function () {
+
+        Clear();
+
+    });
+
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var eventss = [];
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Event/eventlist',
+            data: {},
+            type: "get",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("XSRF-TOKEN",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            async: false,
+            success: function (data) {
+                if (data.data != null) {
+                    $.each(data.data, function (i, item) {
+                        var date = new Date(item.startDate);
+                        var edate = new Date(item.endDate);
+
+                        var fmonth = date.getMonth() + 1;
+                        if (fmonth < 10) {
+                            fmonth = '0' + fmonth;
+                        }
+                        var emonth = edate.getMonth() + 1;
+                        if (emonth < 10) {
+                            emonth = '0' + emonth;
+                        }
+                        var fday = date.getDate();
+                        if (fday < 10) {
+                            fday = '0' + fday;
+                        }
+                        var eday = edate.getDate();
+                        if (eday < 10) {
+                            eday = '0' + eday;
+                        }
+                       
+
+                        var event = new Object();
+                        event.id = item.eventId;
+                        event.start = date.getFullYear() + '-' + fmonth + '-' + fday;
+                        event.end = edate.getFullYear() + '-' + emonth + '-' + (eday+1);
+                        event.className = item.statusColour;
+                        event.title = item.eventTitle;
+                        eventss.push(event);
+
+
+                    })
+
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+                    var yyyy = today.getFullYear();
+                    today = yyyy + '-' + mm + '-' + dd;
+
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                        },
+                        initialDate: today,
+                        navLinks: true, 
+                        selectable: true,
+                        selectMirror: true,
+                        select: function (arg) {
+                            var Curdate = new Date(new Date().toDateString());
+                            if (arg.start < Curdate) {
+                                new swal('You cannot add a back-dated event.')
+                            }
+                            else {
+                                $('#FinalSubmit').val("Submit");
+                                $("#divmodal").modal('show');
+                                var startDate = arg.start; 
+                                var formattedStartDate = moment(startDate).format('DD-MMM-YYYY'); 
+
+                                $('#txtStartDt').val(formattedStartDate); 
+                            }
+                            calendar.unselect()
+                        },
+                        eventClick: function (arg) {
+                            var evid = arg.event._def.publicId
+                            $("#hdnevenid").val(evid);
+                            ViewEvent(evid)
+                        },
+                        editable: false,
+                        dayMaxEvents: true, 
+                        events: eventss
+                    });
+                    calendar.render();
+                }
+            }
+        })
+    });
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    }
+   
+    function Save_ManageEvent() {
+
+       
+        var Cdate = moment(new Date()).format("DD-MMM-YYYY");
+        var ed = new Date($("#txtEndDt").val().trim());
+        var sd = new Date($("#txtStartDt").val().trim());
+
+       
+
+        var EventData = new FormData();
+
+        if ($("#hdnManageEvent").val() != "0") {
+            if ($("#txtEndDt").val().trim() != "") {
+
+                if (ed < Cdate) {
+                    $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                    $('#errtxtEndDt').text("Event End Date must be greter than or equal to current date");
+                    $('#txtEndDt').focus();
+                    return false;
+                }
+                else {
+
+                    $('#txtEndDt').removeClass("is-invalid");
+                    $('#errtxtEndDt').text("");
+                }
+
+            }
+            else {
+                $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEndDt').text("Please Enter Event End Date");
+                $('#txtEndDt').focus();
+                return false;
+            }
+            if (sd > ed) {
+
+                $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEndDt').text("Event End Date must be greter than or equal to Event Start Date ");
+                $('#txtEndDt').focus();
+                return false;
+            }
+            else {
+                $('#txtEndDt').removeClass("is-invalid");
+                $('#errtxtEndDt').text("");
+            }
+            if ($("#txtSamount").val() != 0) {
+                $('#txtSamount').removeClass("is-invalid");
+                $('#errtxtSamount').text("");
+            }
+            else {
+                $('#txtSamount').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSamount').text("Please enter the Sanctioned amount!");
+                $('#txtSamount').focus();
+                return false;
+            }
+            if (parseInt($("#txtSamount").val()) < parseInt($('#txtAVamount').val())) {
+                $('#txtSamount').removeClass("is-invalid");
+                $('#errtxtSamount').text("");
+            }
+            else {
+                $('#txtSamount').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSamount').text("The Sanctioned amount cannot be higher than the Available amount!");
+                $('#txtSamount').focus();
+                return false;
+            }
+            EventData.append("ActionCode", "U");
+            EventData.append("EventId", $("#hdnManageEvent").val());
+            EventData.append("Status", $("#hdnResceduleEventstatus").val());
+            alert = "You want to reschedule event.";
+        }
+        else {
+            if ($("#ddlDepartment").val() != 0) {
+                $('#ddlDepartment').removeClass("is-invalid");
+                $('#errddlDepartment').text("");
+            }
+            else {
+                $('#ddlDepartment').addClass("form-control shadow-sm is-invalid");
+                $('#errddlDepartment').text("Please Select Department!");
+                $('#ddlDepartment').focus();
+                return false;
+            }
+
+            if ($("#ddlScheme").val() != 0) {
+                $('#ddlScheme').removeClass("is-invalid");
+                $('#errddlScheme').text("");
+            }
+            else {
+                $('#ddlScheme').addClass("form-control shadow-sm is-invalid");
+                $('#errddlScheme').text("Please Select Scheme!");
+                $('#ddlScheme').focus();
+                return false;
+            }
+            if ($("#txtTitle").val().trim() != "") {
+                $('#txtTitle').removeClass("is-invalid");
+                $('#errtxtTitle').text("");
+            }
+            else {
+                $('#txtTitle').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtTitle').text("Please Enter Event Title");
+                $('#txtTitle').focus();
+                return false;
+            }
+            if ($("#txtDescription").val().trim() != "") {
+                $('#txtDescription').removeClass("is-invalid");
+                $('#errtxtDescription').text("");
+            }
+            else {
+                $('#txtDescription').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtDescription').text("Please Enter Event Description");
+                $('#txtDescription').focus();
+                return false;
+            }
+            if ($("#txtStartDt").val().trim() != "") {
+                var sd = new Date($("#txtStartDt").val().trim());
+
+                if (sd < Cdate) {
+                    $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+                    $('#errtxtStartDt').text("Event Start Date must be greter than or equal to current date");
+                    $('#txtStartDt').focus();
+                    return false;
+                }
+                else {
+                    $('#txtStartDt').removeClass("is-invalid");
+                    $('#errtxtStartDt').text("");
+                }
+            }
+            else {
+                $('#txtStartDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtStartDt').text("Please Enter Event Start Date");
+                $('#txtStartDt').focus();
+                return false;
+            }
+
+
+
+            
+            if ($("#txtEndDt").val().trim() != "") {
+                var ed = new Date($("#txtEndDt").val().trim());
+                if (ed < Cdate) {
+                    $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                    $('#errtxtEndDt').text("Event End Date must be greter than or equal to current date");
+                    $('#txtEndDt').focus();
+                    return false;
+                }
+                else {
+
+                    $('#txtEndDt').removeClass("is-invalid");
+                    $('#errtxtEndDt').text("");
+                }
+
+            }
+            else {
+                $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEndDt').text("Please Enter Event End Date");
+                $('#txtEndDt').focus();
+                return false;
+            }
+            
+            if (sd > ed) {
+
+                $('#txtEndDt').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtEndDt').text("Event End Date must be greter than or equal to Event Start Date ");
+                $('#txtEndDt').focus();
+                return false;
+            }
+            else {
+                $('#txtEndDt').removeClass("is-invalid");
+                $('#errtxtEndDt').text("");
+            }
+            if ($("#txtSamount").val() != 0) {
+                if (parseInt($("#txtSamount").val()) < 0) {
+                    $('#txtSamount').addClass("form-control shadow-sm is-invalid");
+                    $('#errtxtSamount').text("The Sanctioned amount cannot be lower than 0!");
+                    $('#txtSamount').focus();
+                    return false;
+                }
+                else {
+                    $('#txtSamount').removeClass("is-invalid");
+                    $('#errtxtSamount').text("");
+                }
+            }
+            else {
+                $('#txtSamount').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSamount').text("Please enter the Sanctioned amount!");
+                $('#txtSamount').focus();
+                return false;
+            }
+            if (parseInt($("#txtSamount").val()) < parseInt($('#txtAVamount').val())) {
+                $('#txtSamount').removeClass("is-invalid");
+                $('#errtxtSamount').text("");
+            }
+            else {
+                $('#txtSamount').addClass("form-control shadow-sm is-invalid");
+                $('#errtxtSamount').text("The Sanctioned amount cannot be higher than the Available amount!");
+                $('#txtSamount').focus();
+                return false;
+            }
+            if ($("#ddlDist").val() != 0) {
+                $('#ddlDist').removeClass("is-invalid");
+                $('#errddlDist').text("");
+            }
+            else {
+                $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+                $('#errddlDist').text("Please Select District!");
+                $('#ddlDist').focus();
+                return false;
+            }
+            if ($("#ddlBlock").val() != 0) {
+                $('#ddlBlock').removeClass("is-invalid");
+                $('#errddlBlock').text("");
+            }
+            else {
+                $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+                $('#errddlBlock').text("Please Select Block!");
+                $('#ddlBlock').focus();
+                return false;
+            }
+            if ($("#ddlGp").val() != 0) {
+                $('#ddlGp').removeClass("is-invalid");
+                $('#errddlGp').text("");
+            }
+            else {
+                $('#ddlGp').addClass("form-control shadow-sm is-invalid");
+                $('#errddlGp').text("Please Select Gram Panchayat!");
+                $('#ddlGp').focus();
+                return false;
+            }
+            EventData.append("ActionCode", "I");
+            EventData.append("Status", "0");
+            alert = "You want to save event details.";
+        }
+
+       
+        EventData.append("SchemeId", $('#ddlScheme').val());
+        EventData.append("EventTitle", $('#txtTitle').val());
+        EventData.append("SanctionedAmount", $('#txtSamount').val());
+        EventData.append("EventDescription", $('#txtDescription').val());
+        EventData.append("StartDate", $('#txtStartDt').val());
+       
+        EventData.append("EndDate", $('#txtEndDt').val());
+      
+        EventData.append("Distid", $('#ddlDist').val());
+        EventData.append("BlockId", $('#ddlBlock').val());
+        EventData.append("GPId", $('#ddlGp').val());
+
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: alert,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Save'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ManageEvent", "Event")',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: EventData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.data == 10) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: result.responseText,
+                                text: result.responseMessage,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var url = '@Url.Content("~/")' + 'Event/EventCalender';
+                                    location.href = url;
+                                }
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: result.responseText,
+                                text: result.responseMessage,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var url = '@Url.Content("~/")' + 'Event/EventCalender';
+                                    location.href = url;
+                                }
+                            })
+                        }
+
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+            }
+        });
+
+
+    }
+  
+    function EditEvent(id) {
+
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("GetSingleEvent", "Event")',
+            data: { "Id": id },
+            success: function (Result) {
+                var data1 = JSON.parse(Result);
+                $("#mymodalclose").click();
+                $("#divmodal").modal('show');
+                Scheme(0);
+                $('#ddlScheme').val(data1[0].SchemeId);
+                $('#txtTitle').val(data1[0].EventTitle);
+                $('#txtSamount').val(data1[0].SanctionedAmount);
+                $('#txtDescription').val(data1[0].EventDescription);
+                $('#txtStartDt').val(moment(data1[0].StartDate).format("DD-MMM-YYYY"));
+                $("#hdneventStartDt").val(moment(data1[0].StartDate).format("DD-MMM-YYYY"));
+                $('#txtEndDt').val(moment(data1[0].EndDate).format("DD-MMM-YYYY"));
+                $('#ddlDist').val(data1[0].Distid);
+                Fillblock($('#ddlDist option:selected').val());
+                $('#ddlBlock').val(data1[0].BlockId);
+                FillGP($('#ddlBlock option:selected').val());
+                $('#ddlGp').val(data1[0].GPId);
+                $('#ddlDepartment').prop('disabled', true);
+                $('#ddlScheme').prop('disabled', true);
+                $('#txtTitle').prop('disabled', true);
+                $('#txtDescription').prop('disabled', true);
+                $('#ddlBlock').prop('disabled', true);
+                $('#ddlGp').prop('disabled', true);
+                $('#txtSamount').prop('disabled', true);
+                $('#txtStartDt').removeAttr('disabled');
+                $('#ddlScheme').trigger("change");
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+
+    }
+    function ViewEvent(id) {
+
+        $.ajax({
+            type: "Get",
+            dataType: "json",
+            url: '@Url.Action("GetSingleEvent", "Event")',
+            data: { "Id": id },
+            success: function (Result) {               
+                var data1 = JSON.parse(Result);
+                var selectedItem = null;
+                for (var i = 0; i < data1.length; i++) {
+                    if (data1[i].EventId == id) {
+                        selectedItem = data1[i];
+                        break; // Exit the loop once the item is found
+                    }
+                }
+                if (selectedItem.Status == 1 || selectedItem.Status == 3) {
+                    $("#buttondiv").hide();
+                } else {
+                    $("#buttondiv").show();
+                }
+                $("#myModal").modal('show');
+                $('#lblTitle').text(selectedItem.EventTitle);
+                $('#lblEventName').text(selectedItem.EventDescription);
+                $('#lblEventDate').text(moment(selectedItem.StartDateTime).format("DD MMM YYYY") + ' to ' + moment(selectedItem.EndDateTime).format("DD MMM YYYY"));
+                $('#lblEventLocation').text('Dist : ' + selectedItem.DistName + ', Block : ' + selectedItem.BlockName);
+                $('#lblDepartment').text(selectedItem.Department.replace(/&amp;/g, "&"));
+                $('#lblScheme').text(selectedItem.Scheme);
+                if (moment(moment(selectedItem.EndDateTime).format("DD MMM YYYY")).isAfter(moment(new Date()).format("DD MMM YYYY"))) {
+                    $('#btn_Completed').hide();
+                    $('#btn_Reschedule1').show();
+                    $('#btn_Cancel').show();
+                } else {
+                    $('#btn_Reschedule1').hide();
+                    $('#btn_Cancel').hide();
+                    $('#btn_Completed').show();
+                }
+            },
+            error: function (Message) {
+                alert(Message);
+            }
+        });
+
+    }
+    function Fillblock(distid) {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlDist').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetBlock',
+                data: { DistCode: $('#ddlDist').val(), },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+
+
+                        $('#ddlBlock').html(thisHtml);
+
+                    }
+                    else {
+                        $('#ddlBlock').html(thisHtml);
+                    }
+                }
+            });
+        }
+    }
+    function FillGP(block) {
+        var thisHtml = '<option value="0">--Select--</option>';
+        if ($('#ddlBlock').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetGP',
+                data: { BlockCode: $('#ddlBlock').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlGp').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlGp').html(thisHtml);
+
+                    }
+                }
+            });
+        }
+        else {
+            $('#ddlGp').html(thisHtml);
+        }
+    }
+    function Delete_Event(id, status) {
+        if (status == 1) {
+            var msg = "completed"
+        }
+        else {
+            var msg = "cancelled"
+        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to make this event as " + msg +"",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Save'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Event/DeleteEvent?Id=' + id + '&Status=' + status,
+                    type: 'post',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function (result) {
+                        if (status == 1) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: result.responseText,
+                                text: "Event " + msg + " " +result.responseMessage,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var url = '@Url.Content("~/")' + 'Event/EventCalender';
+                                    location.href = url;
+                                }
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'success',
+                                title: result.responseText,
+                                text: "Event " + msg + " " + result.responseMessage,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    var url = '@Url.Content("~/")' + 'Event/EventCalender';
+                                    location.href = url;
+                                }
+                            })
+                        }
+                    },
+                    error: function (result) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: result.responseText,
+                            text: result.responseMessage,
+                        });
+                    },
+                });
+
+            }
+            return false;
+        })
+    }
+    $("#ddlScheme").change(function () {
+        if ($('#ddlScheme').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Event/GetSchemeWiseEventDetails',
+                data: { deptid: $('#ddlDepartment').val(), scehemeid: $('#ddlScheme').val(), distid: $('#ddlDist').val(), blockid: $('#ddlBlock').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        let res = data.data;
+                        $('#txtAVamount').val(res.TOTALFUND);
+                        $('#errtxtAvamount').text("");
+                    }
+                    else {
+                        $('#txtAVamount').val(0);
+                        $('#errtxtAvamount').text("No Available funds for the selected Scheme");
+                    }
+                }
+            });
+        }
+        else {
+            $('#txtAVamount').val(0);
+            $('#errtxtAvamount').text("No Available funds for the selected Scheme");
+        }
+    });
+    $("#ddlBlock").change(function () {
+        if ($('#ddlBlock').val() != 0) {
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Event/GetSchemeWiseEventDetails',
+                data: { deptid: $('#ddlDepartment').val(), scehemeid: $('#ddlScheme').val(), distid: $('#ddlDist').val(), blockid: $('#ddlBlock').val() },
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        let res = data.data;
+                        $('#txtAVamount').val(res.TOTALFUND);
+                        $('#errtxtAvamount').text("");
+                    }
+                    else {
+                        $('#txtAVamount').val(0);
+                        $('#errtxtAvamount').text("No Available funds for the selected Block");
+                    }
+                }
+            });
+        }
+        else {
+            $('#txtAVamount').val(0);
+            $('#errtxtAvamount').text("No Available funds for the selected Block");
+        }
+    });
+</script>

@@ -1,0 +1,137 @@
+﻿@model List<CTMS.Model.Entities.AdminMaster.Subcategory> 
+
+@{
+    ViewData["Title"] = "View SubCategory"; 
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+
+}
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a href="../AdminMaster/AddSubCategory" class="nav-link">
+            Add
+        </a>
+        <a href="../AdminMaster/ViewSubCategory" class="nav-link active">
+            View
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table table-borderless" id="datatable">
+                    <thead>
+                        <tr>
+                            <th>
+                                Sl.No
+                            </th>
+                            <th>
+                                Category Name
+                            </th>
+                            <th>
+                                Sub Category Name(EN)
+                            </th>
+                            <th>
+                                Sub Category Name(ODIA)
+                            </th>
+                            <th class="no-print">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        LoadData();
+    });
+
+    function LoadData() {
+        $.ajax({
+            url: '@Url.Content("~/")' + 'AdminMaster/ViewSubCategoryDt',
+            type: 'GET',
+            dataType: "json",
+            beforeSend: function (xhr) {
+                $("#overlay").show();
+            },
+            success: function (data) {
+                var tableBody = $('#bindtable');
+                tableBody.empty();
+                if (data != null) {
+                    $.each(data, function (i, subCategory) {
+                        var trows = "<tr>";
+                        trows = trows + "<td>" + (i + 1) + "</td>";
+                        trows = trows + "<td>" + subCategory.categoryName + "</td>";
+                        trows = trows + "<td>" + subCategory.subCategoryName + "</td>";
+                        trows = trows + "<td>" + subCategory.odiaSubCategoryName + "</td>";
+                        trows = trows + "<td>" + "<a href='../AdminMaster/AddSubCategory?subCategoryId=" + subCategory.subCategoryId + "'><i class='bi bi-pencil-square' title='Edit'></i></a>&nbsp;<a onclick='deleteSubCategory(" + subCategory.subCategoryId + ")'><i class='bi bi-trash' title='Delete' style='color: red; cursor: pointer;'></i></a>" + "</td>";
+                        trows = trows + "</tr>";
+                        $('#bindtable').append(trows);
+                    });
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+                Datatable();
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                swal.fire({
+                    title: "Error",
+                    text: "An error occurred. Please try again later.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function deleteSubCategory(subCategoryId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    url: '@Url.Action("DeleteSubCategory", "AdminMaster", new {area=""})',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("RequestVerificationToken",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: { "SubCategoryId": subCategoryId },
+                    success: function (response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Sub Category Deleted Successfully!',
+                            'success'
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                var url = '@Url.Action("ViewSubCategory", "AdminMaster", new { area = "" })';
+                                location.href = url;
+                            }
+                            else if (result.isDenied) {
+                                Swal.fire('Changes are not saved', '', 'info')
+                            }
+                        })
+                    }
+                });
+            }
+            return false;
+        })
+    }
+</script>

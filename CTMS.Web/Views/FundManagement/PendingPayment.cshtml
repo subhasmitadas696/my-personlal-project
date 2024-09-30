@@ -1,0 +1,197 @@
+﻿@{
+    ViewData["Title"] = "Payment";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    var Data = ViewBag.PendingPayment;
+}
+<style>
+
+    .urgentBox {
+        background-image: url(../images/urgentBg.png);
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        font-size: 12px;
+        color: #555;
+        padding: 7px;
+        display: block;
+        right: 0;
+        margin: 0;
+        line-height: .5em;
+        width: 60px;
+    }
+
+        .urgentBox label {
+            color: #fff;
+            bottom: 0;
+            text-align: center;
+            margin: 2px;
+        }
+
+    .modal-lg, .modal-xl {
+        max-width: 850px;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="pending" asp-controller="FundManagement" asp-action="PendingPayment" asp-area="">
+            Pending
+        </a>
+        <a class="nav-link" id="pending" asp-controller="FundManagement" asp-action="SuccessPayment" asp-area="">
+            Paid
+        </a>
+        <a class="btn btn-primary btn-sm ms-auto mb-2 " data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <form asp-controller="FundManagement" asp-action="PendingPayment" asp-area="" method="get">
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" value="@ViewBag.FromDate" id="sdate" name="sdate" placeholder="" />
+                                <label for="sdate">From Date</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" value="@ViewBag.ToDate" id="edate" name="edate" placeholder="" />
+                                <label for="edate">To Date</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-primary btn-lg " id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;">
+                            <input class="btn btn-primary btn-lg " id="btnclrfilter" type="reset" value="Reset" style="margin-top:10px;margin-left:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table table-borderless" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl#</th>
+                            <th scope="col">Group Name</th>
+                            <th scope="col">Event Title</th>
+                            <th scope="col">Date Of Perform</th>
+                            <th scope="col">Reporting Time</th>
+                            <th scope="col">Address</th>
+                            <th class="dip no-print" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                        @{
+                            int count = 1;
+                        }
+                        @if (Data != null)
+                        {
+                            foreach (var item in Data)
+                            {
+                                <tr>
+
+                                    <td>@count</td>
+                                    <td>@item.GroupName</td>
+                                    <td>@item.EventTitle</td>
+                                    <td>@item.DateOfPerform</td>
+                                    <td>@item.ReportingTime</td>
+                                    <td>@item.DistrictName<div class="text-muted">@item.BlockName</div><div class="text-muted">@item.GPName</div></td>
+                                    <td>
+                                        <a class="btn btn-outline-primary btn-sm rounded-pill" data-toggle="modal" data-assignevent-id="@item.AssignEventId" data-id="@item.TroupeId" data-status="@item.STATUS" onclick="return Takeaction(this)"><i title="Take Action" style="color:blue;cursor:pointer;"></i>Pay</a>
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        $('#edate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        });
+        Datatable();
+    });
+    $('#btnclrfilter').click(function () {
+        $('#sdate').val("");
+        $('#edate').val("");
+        $('#sdate').datetimepicker('destroy');
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        window.location.href = '/FundManagement/PendingPayment'; 
+    });
+    function Takeaction(obj) {
+        let TroupeId = $(obj).data('id');
+        let STATUS = $(obj).data('status');
+        let AssignEventId = $(obj).data('assignevent-id');
+
+        let postData = {
+            TroupeId: TroupeId,
+            STATUS: STATUS,
+            AssignEventId: AssignEventId
+        };
+        $.ajax({
+            type: 'GET',
+            url: '../FundManagement/TroupePayment',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            data: postData,
+            success: function (response) {
+                var actionUrl = '../FundManagement/TroupePayment?TroupeId=' + TroupeId + '&STATUS=' + STATUS + '&AssignEventId=' + AssignEventId;
+                window.location.href = actionUrl;
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+    $('#btnclrfilter').click(function () {
+        $('#sdate').val("");
+        $('#edate').val("");
+        $('#sdate').datetimepicker('destroy');
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+    });
+</script>
+
+

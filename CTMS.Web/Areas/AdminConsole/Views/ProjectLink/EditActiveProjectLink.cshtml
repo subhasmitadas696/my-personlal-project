@@ -1,0 +1,202 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.ProjectMaster.Project
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewBag.Title = "Add Project Link";
+}
+
+
+@section Scripts {
+    <script type="text/javascript" language="javascript">
+        function validateForm() {
+            
+        }
+
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'Email') {
+                AllowableCharacters = '1234567890@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\&';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            if (allow == 'Filename') {
+                AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+
+        $(function () {
+            $("#btnReset").bind("click", function () {
+                var url = '@Url.Action("ViewActiveProjectLink", "ProjectLink")';
+                window.location.href = url;
+
+            });
+        });
+    </script>
+
+
+
+}
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="ProjectLink" asp-action="AddProjectLink">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="ProjectLink" asp-action="ViewActiveProjectLink">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="ProjectLink" asp-action="ViewInActiveProjectLink">
+            InActive
+        </a>
+    </div>
+                <div class="card-body">
+                    <form id="frmCreateHierarchy" data-parsley-validate novalidate method="post" asp-action="UpdateProjectLink" asp-controller="ProjectLink" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+                        <div class="form-group row">
+
+                            <div class="col-md-4 form-group">
+                                <label class="control-label">Project Link Name<span style="color:Red">*</span></label>
+                                <div class="input-group">
+                                    <input asp-for="NVCHPROJECTLINKNAME" type="text" id="txtprojectname" name="NVCHPROJECTLINKNAME"
+                                           class="form-control" Onkeypress="return inputLimiter(event,'NameCharactersAndNumbers')"
+                                           placeholder="Enter Project Link Name" autocomplete="off" maxlength="50" autofocus />
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 form-group">
+                                <label class="control-label">Project Link Description<span style="color:Red">*</span></label>
+                                <div class="input-group">
+                                    <textarea asp-for="NVCHPROJECTLINKDESC" type="text" id="txtprojectdesc" name="NVCHPROJECTLINKDESC" Onkeypress="return inputLimiter(event,'Description')" class="form-control" placeholder="EnterProject  Description" autocomplete="off" maxlength="200">
+                                    </textarea>
+                                </div>
+                                <input asp-for="INTPROJECTLINKID" id="INTPROJECTLINKID" type="hidden" value=@Model.INTPROJECTLINKID />
+                                <input asp-for="INTUPDATEDBY" id="INTUPDATEDBY" type="hidden" value=@Model.INTUPDATEDBY />
+                            </div>
+
+                        </div>
+
+                        
+                        <div class="mt-4">
+                            <div class="text-center">
+                                <span class="colon"></span>
+                                <button type="submit" name="submit" id="btnsubmit" class="btn btn-primary mb-1t white-text" title="Submit" value="Submit">Update</button>
+                                <button type="button" class="btn btn-danger" title="Reset" id="btnReset"> Cancel </button>
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            
+</div>
+
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+    $('#btnsubmit').click(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        if ($("#txtprojectname").val() == "") {
+            $("#txtprojectname").focus();
+            new swal(" Project Link Name Can't be blank.");
+            return false;
+
+        }
+        if ($("#txtprojectdesc").val() == "") {
+            $("#txtprojectdesc").focus();
+            new swal("Project Link Description Can't be blank.");
+
+            return false;
+        }
+
+        var formData = {
+            NVCHPROJECTLINKNAME: $('#txtprojectname').val(),
+            NVCHPROJECTLINKDESC: $('#txtprojectdesc').val(),
+            INTUPDATEDBY: $('#INTUPDATEDBY').val(),
+            INTPROJECTLINKID: $('#INTPROJECTLINKID').val(),
+        };
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You want to Update",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/AdminConsole/ProjectLink/UpdateProjectLink',
+                    data: formData,
+                    success: function (response) {
+                        console.log(response);
+                        if (response === "Updated Successfully") {
+                            Swal.fire({
+                                title: "",
+                                text: response,
+                                icon: "success"
+                            }).then(() => {
+                                window.location.href = "/AdminConsole/ProjectLink/ViewActiveProjectLink";
+                            });
+                        } else if (response === "Already Exist") {
+                            Swal.fire({
+                                title: "",
+                                text: response,
+                                icon: "warning"
+                            }).then(() => {
+                                return;
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "",
+                                text: response,
+                                icon: "error"
+                            }).then(() => {
+                                return;
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: "",
+                            text: 'An error occurred while processing the request.',
+                            icon: "error"
+                        }).then(() => {
+                            return;
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>

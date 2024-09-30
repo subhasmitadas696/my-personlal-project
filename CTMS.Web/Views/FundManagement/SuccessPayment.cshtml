@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Payment";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    var Data = ViewBag.SuccessPayment;
+}
+<style>
+
+    .urgentBox {
+        background-image: url(../images/urgentBg.png);
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        font-size: 12px;
+        color: #555;
+        padding: 7px;
+        display: block;
+        right: 0;
+        margin: 0;
+        line-height: .5em;
+        width: 60px;
+    }
+
+        .urgentBox label {
+            color: #fff;
+            bottom: 0;
+            text-align: center;
+            margin: 2px;
+        }
+
+    .modal-lg, .modal-xl {
+        max-width: 850px;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="pending" asp-controller="FundManagement" asp-action="PendingPayment" asp-area="">
+            Pending
+        </a>
+        <a class="nav-link active" id="pending" asp-controller="FundManagement" asp-action="SuccessPayment" asp-area="">
+            Paid
+        </a>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <form asp-controller="FundManagement" asp-action="SuccessPayment" asp-area="" method="get">
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" value="@ViewBag.FromDate" id="sdate" name="sdate" placeholder="" />
+                                <label for="sdate">From Date</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" value="@ViewBag.ToDate" id="edate" name="edate" placeholder="" />
+                                <label for="edate">To Date</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-primary btn-lg " id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;">
+                            <input class="btn btn-primary btn-lg " id="btnclrfilter" type="reset" value="Reset" style="margin-top:10px;margin-left:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table table-borderless" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sl#</th>
+                            <th scope="col">Group Name</th>
+                            <th scope="col">Event Title</th>
+                            <th scope="col">Date Of Perform</th>
+                            <th scope="col">Reporting Time</th>
+                            <th scope="col">Address</th>
+                            <th class="dip no-print" scope="col">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bindtable">
+                        @{
+                            int count = 1;
+                        }
+                        @if (Data != null)
+                        {
+                            foreach (var item in Data)
+                            {
+                                <tr>
+
+                                    <td>@count</td>
+                                    <td>@item.GroupName</td>
+                                    <td>@item.EventTitle</td>
+                                    <td>@item.DateOfPerform</td>
+                                    <td>@item.ReportingTime</td>
+                                    <td>@item.DistrictName<div class="text-muted">@item.BlockName</div><div class="text-muted">@item.GPName</div></td>
+                                    <td><a style="color:Blue;cursor: pointer;" class="btn btn-outline-primary btn-sm rounded-pill" data-toggle="modal" onclick="return PaymentDetails(@item.AssignEventId)">Details</a></td>
+                                </tr>
+                                count++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModal22">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Payment Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Group Name</th>
+                                    <th scope="col">Event Title</th>
+                                    <th scope="col">Date Of Perform</th>
+                                    <th scope="col">Payment Amount</th>
+                                    <th scope="col">Payment Type</th>
+                                    <th scope="col">Payment Date</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmore"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        $('#edate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        });
+        Datatable();
+    });
+    $('#btnclrfilter').click(function () {
+        $('#sdate').val("");
+        $('#edate').val("");
+        $('#sdate').datetimepicker('destroy');
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        window.location.href = '/FundManagement/SuccessPayment';
+    });
+    function PaymentDetails(AssignEventId) {
+        var AssignEventId = AssignEventId;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("SuccessPaymentDetails", "FundManagement")',
+            data: { "AssignEventId": AssignEventId },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + v1.GroupName + "</td><td>" + v1.EventTitle + "</td><td>" + v1.DateOfPerform + "</td><td>" + v1.PaymentAmount + "</td><td>" + v1.PAYMENT_TYPE_MODE + "</td><td>" + v1.PaymentDate + "</td><td>Success</td></tr>";
+                });
+                $("#addmore").html(List)
+            }
+        })
+    }
+</script>
+
+

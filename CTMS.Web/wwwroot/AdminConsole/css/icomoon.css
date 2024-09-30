@@ -1,0 +1,160 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('.././fonts/icomoon.eot?ozi15z');
+  src:  url('.././fonts/icomoon.eot?ozi15z#iefix') format('embedded-opentype'),
+    url('.././fonts/icomoon.ttf?ozi15z') format('truetype'),
+    url('.././fonts/icomoon.woff?ozi15z') format('woff'),
+    url('.././fonts/icomoon.svg?ozi15z#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-AddresseeAssignment:before {
+  content: "\e90f";
+}
+.icon-assistance:before {
+  content: "\e910";
+}
+
+.icon-collapse:before {
+  content: "\e911";
+}
+.icon-dashboard:before {
+  content: "\e912";
+}
+.icon-DayWise:before {
+  content: "\e913";
+}
+.icon-desktopapplication:before {
+  content: "\e914";
+}
+.icon-despatch:before {
+  content: "\e915";
+}
+.icon-EmailReport:before {
+  content: "\e916";
+}
+.icon-help-desk:before {
+  content: "\e917";
+}
+.icon-IssueRegister:before {
+  content: "\e918";
+}
+.icon-LetterAttachment:before {
+  content: "\e919";
+}
+.icon-Letter-Despatch:before {
+  content: "\e91a";
+}
+.icon-LetterSearch:before {
+  content: "\e91b";
+}
+.icon-master:before {
+  content: "\e91c";
+}
+.icon-message:before {
+  content: "\e91d";
+}
+.icon-mis_report:before {
+  content: "\e91e";
+}
+.icon-MobileApplication:before {
+  content: "\e91f";
+}
+.icon-MonthWiseReport:before {
+  content: "\e920";
+}
+.icon-question:before {
+  content: "\e921";
+}
+.icon-ReceivingUtilization:before {
+  content: "\e922";
+}
+.icon-register:before {
+  content: "\e923";
+}
+.icon-RPA:before {
+  content: "\e924";
+}
+.icon-search1:before {
+  content: "\e925";
+}
+.icon-search_glass:before {
+  content: "\e926";
+}
+.icon-SectionWiseStatus:before {
+  content: "\e927";
+}
+.icon-SMSReport:before {
+  content: "\e928";
+}
+.icon-training:before {
+  content: "\e929";
+}
+.icon-WebApplication:before {
+  content: "\e92a";
+}
+.icon-mail:before {
+  content: "\e908";
+}
+.icon-fax:before {
+  content: "\e909";
+}
+.icon-telephone:before {
+  content: "\e90a";
+}
+.icon-letter1:before {
+  content: "\e90b";
+}
+.icon-offices:before {
+  content: "\e90c";
+}
+.icon-user-download:before {
+  content: "\e90d";
+}
+.icon-user:before {
+  content: "\e90e";
+}
+.icon-citizen:before {
+  content: "\e900";
+}
+.icon-daily_download:before {
+  content: "\e901";
+}
+.icon-daily_transcation:before {
+  content: "\e902";
+}
+.icon-daily_upload:before {
+  content: "\e903";
+}
+.icon-letter:before {
+  content: "\e904";
+}
+.icon-letter_size:before {
+  content: "\e905";
+}
+.icon-refresh:before {
+  content: "\e906";
+}
+.icon-search:before {
+  content: "\e907";
+}
+.icon-newletter:before {
+  content: "\e908";
+}

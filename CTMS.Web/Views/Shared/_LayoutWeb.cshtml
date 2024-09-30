@@ -1,0 +1,618 @@
+﻿@using System.Security.Claims
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@{
+    string Lang = Convert.ToString(@Thread.CurrentThread.CurrentCulture.Name);
+    var Data = ViewBag.Notification;
+}
+@functions
+{
+    public string? GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kala Sanskruti Sangha Management System</title>
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" href="~/css/icons.css">
+    <link href="~/css/wow.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/styles.css">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
+    <link href="~/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+</head>
+
+<body>
+
+
+    <!-- header -->
+    <header class="website-header">
+        <div class="header-utilities">
+            <div class="container">
+                <div class="row">
+                    <div class="col-10 col-md">
+                        @Localizer["Toll-Free Number"]: <span class="text-primary">1800-102-0340</span>
+                    </div>
+                    <div class="col-2 col-md ms-md-auto text-end">
+                        <span class="header-utilities__setting-toggle d-md-none"><i class="bi bi-three-dots-vertical"></i></span>
+                        <div class="header-utilities__setting d-none d-md-flex text-nowrap ">
+                            <span class="header-utilities__setting-item">
+                                <span class="theme-changer" id="themeChanger">
+                                    <i class="icon-sun">
+                                        <span class="d-sm-none">Light</span>
+                                    </i>
+                                    <i class="icon-moon">
+                                        <span class="d-sm-none">Dark</span>
+                                    </i>
+                                </span>
+                            </span>
+                            <span class="font-changer small-border header-utilities__setting-item">
+                                <a href="javascript:;" id="decrease-font" title="Decrese Font"><i class="bi bi-dash"></i></a>
+                                <a href="javascript:;" id="reset-font" title="Reset Font" class="active">A</a>
+                                <a href="javascript:;" id="increase-font" title="Increase Font"><i class="bi bi-plus"></i></a>
+                            </span>
+                            <partial name="_Culture" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container justify-content-end">
+                <h1 class="me-auto mb-0">
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index" asp-area="" title="Government of Odisha">
+                        <img src="~/images/logo.png" alt="Government of Odisha" class="navbar-brand__img">
+                    </a>
+                </h1>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+                        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-xl-5">
+                        <li class="nav-item">
+                            <a class="nav-link" id="home" onclick="Active(this.id)" aria-current="page" asp-controller="Home" asp-action="Index" asp-area="">@Localizer["Home"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="About" onclick="Active(this.id)" asp-controller="Home" asp-action="AboutUs" asp-area="" title="About">@Localizer["About"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="Faq" onclick="Active(this.id)" asp-controller="Home" asp-action="Faq" asp-area="" title="FAQs">@Localizer["FAQs"]</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="dropdown mx-3">
+                    <button title="Login" class="btn btn-outline-primary rounded-pill dropdown-toggle login-btn btn--animation" data-bs-toggle="dropdown">@Localizer["Login"]</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-controller="Authentication" asp-action="TroupeLogIn" asp-area="" title="Troupe Login">@Localizer["Troupe Login"]</a></li>
+                        <li><a class="dropdown-item" asp-controller="Authentication" asp-action="LogIn" asp-area="" title="Administrative Login">@Localizer["Administrative Login"]</a></li>
+                    </ul>
+                </div>
+                <a asp-controller="Registration" asp-action="TroupeRegistration" asp-area="" title="Register" class="btn btn-primary rounded-pill registration-btn btn--animation">@Localizer["Registration"]</a>
+
+            </div>
+        </nav>
+    </header>
+
+    <div id="topSpace"></div>
+    <div id="msgAnnouncement">
+        <div id="an1" class="align-items-center bg-primary d-flex px-3 py-2 text-white">
+            <i class="bi bi-bell"></i>
+            <h6 class="mb-0 ps-2 d-none d-sm-block">@Localizer["Notifications"]</h6>
+        </div>
+        <div id="an2" class="announcement">
+            <ul class="d-flex align-items-center announcement__list" id="notification">
+            </ul>
+        </div>
+        <a id="an3" asp-controller="Home" asp-action="NotificationDetails" class="view-all-notification-btn">
+            @Localizer["View All"]
+        </a>
+    </div>
+    <!-- header end-->
+    @RenderBody()
+
+    <!-- footer -->
+    <footer class="footer">
+        <div class="footer__links">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <h5 class="footer__heading">@Localizer["Important Links"]</h5>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="AboutUs" asp-area="" title="About us">@Localizer["About us"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Faq" asp-area="" title="FAQs">@Localizer["FAQs"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="ContactUs" asp-area="" title="Contact Us">@Localizer["Contact Us"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="NewsAndUpdate" asp-area="" title="News & Update">@Localizer["News &amp; Update"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="NotificationDetails" asp-area="" title="Notification">@Localizer["Notifications"]</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <h5 class="footer__heading">@Localizer["Help &amp; Support"]</h5>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="SupportedDocuments" asp-area="" title="Supported Documents">@Localizer["Supported Documents"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="TermsCondition" asp-area="" title="Terms & Conditions">@Localizer["Terms &amp; Conditions"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="PrivacyPolicy" asp-area="" title="Privacy Policy">@Localizer["Privacy Policy"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="HyperlinkPolicy" asp-area="" title="Hyperlinking Policy">@Localizer["Hyperlinking Policy"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="CopyrightPolicy" asp-area="" title="Copyright Policy">@Localizer["Copyright Policy"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Disclaimer" asp-area="" title="Disclaimer">@Localizer["Disclaimer"]</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <h5 class="footer__heading">@Localizer["Address"]</h5>
+                        <address>
+                            <p>@Localizer["Directorate of Culture, Sanskruti Bhawan, Backside of Bhanjakala Mandap"]</p>
+                            <span> @Localizer["Phone"]: <a href="tel:+06742539031" title="Contact" class="contact-link">06742539031</a></span>
+                            <br />
+                            <span>@Localizer["Email"]: <a href="mailto:directorateofculture@gmail.com" title="Email" class="contact-link">directorateofculture@gmail.com</a></span>
+                        </address>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer__copyright">
+            <small>&copy; <span id="currentyear"></span> @Localizer["Odisha KSSMS. All Rights Reserved"]</small>
+        </div>
+    </footer>
+    <!-- Sign Out Modal -->
+    <div class="modal fade" id="signOutModal" tabindex="-1" role="dialog" aria-labelledby="signOutModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="signOutModalLabel">Sign Out</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to sign out?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <a asp-controller="Authentication" asp-action="TroupLogout" class="btn btn-primary">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- js -->
+
+    <script src="~/js/wow.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/app.js"></script>
+    <script src="~/js/printthis.js"></script>
+    <script src="~/js/jszip.min.js"></script>
+    <script src="~/js/custom.js"></script>
+    <script src="~/js/custom.min.js"></script>
+    <script src="~/js/moment.min-new.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+    
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        new WOW().init();
+        $(document).ready(function () {
+            $(".header-utilities__setting-toggle").click(function () {
+                $(".header-utilities__setting").toggleClass('d-none');
+            });
+
+            setTimeout(() => {
+                let $tickerList = $('.announcement__list'),
+                    $tickerListWrapper = $('#msgAnnouncement .announcement'),
+                    tickerListWidth = $tickerList.width();
+                $tickerList.css('animation-duration', (tickerListWidth / 100) * 3 + 's');
+                $tickerList.addClass('animation');
+                $tickerList.clone().appendTo($tickerListWrapper);
+            }, 100)
+        });
+
+        // theme
+        var darkThemeActive = false;
+        const themeChanger = document.querySelector("#themeChanger");
+        themeChanger.addEventListener('click', changeTheme)
+        function changeTheme() {
+            darkThemeActive = !darkThemeActive;
+            localStorage.setItem('themeDark', darkThemeActive);
+
+            if (darkThemeActive) {
+                document.querySelector('body').classList.add('theme-dark');
+            } else {
+                document.querySelector('body').classList.remove('theme-dark');
+            }
+        };
+
+        function getTheme() {
+            darkThemeActive = JSON.parse(localStorage.getItem('themeDark'));
+            if (darkThemeActive) {
+                document.querySelector('body').classList.add('theme-dark');
+            } else {
+                document.querySelector('body').classList.remove('theme-dark');
+            }
+        }
+        document.addEventListener("DOMContentLoaded", getTheme);
+        var getNumericFontSize = null;
+        var min = 12;
+        var max = 19;
+        var reset = 16;
+        const decreaseFont = document.getElementById('decrease-font');
+        const increaseFont = document.getElementById('increase-font');
+        const resetFont = document.getElementById('reset-font');
+
+        decreaseFont.addEventListener('click', fontDecrease)
+        increaseFont.addEventListener('click', fontIncrease)
+        resetFont.addEventListener('click', fontReset)
+
+
+        function fontDecrease() {
+            var p = document.getElementsByTagName('body');
+            decreaseFont.classList.add('active')
+            resetFont.classList.remove('active')
+            increaseFont.classList.remove('active')
+            for (let i = 0; i < p.length; i++) {
+                if (p[i].style.fontSize) {
+                    var s = parseInt(p[i].style.fontSize.replace("px", ""));
+                } else {
+                    var s = 14;
+                }
+                if (s != min) {
+                    s -= 1;
+                }
+                p[i].style.fontSize = s + "px"
+            }
+        }
+
+        // increase font size
+        function fontIncrease() {
+            var p = document.getElementsByTagName('body');
+            decreaseFont.classList.remove('active')
+            resetFont.classList.remove('active')
+            increaseFont.classList.add('active')
+            for (let i = 0; i < p.length; i++) {
+                if (p[i].style.fontSize) {
+                    var s = parseInt(p[i].style.fontSize.replace("px", ""));
+                } else {
+                    var s = 14;
+                }
+                if (s != max) {
+                    s += 1;
+                }
+                p[i].style.fontSize = s + "px"
+            }
+        }
+
+        // reset font size
+        function fontReset() {
+            var p = document.getElementsByTagName('body');
+            decreaseFont.classList.remove('active')
+            resetFont.classList.add('active')
+            increaseFont.classList.remove('active')
+            for (let i = 0; i < p.length; i++) {
+                if (p[i].style.fontSize) {
+                    var s = parseInt(p[i].style.fontSize.replace("px", ""));
+                } else {
+                    var s = 16;
+                }
+                if (s != reset) {
+                    s = 16;
+                }
+                p[i].style.fontSize = s + "px"
+            }
+        }
+
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const footerHeight = document.querySelector('footer').offsetHeight;
+        const innerpageContainer = document.querySelector('.innerpage-container');
+        const innerpageContainerBreadcrumb = document.querySelector('.innerpage-container-breadcrumb');
+        function scrollHeader() {
+            var doc = document.documentElement;
+            var w = window;
+            var prevScroll = w.scrollY || doc.scrollTop;
+            var curScroll;
+            var direction = 0;
+            var prevDirection = 0;
+
+            var checkScroll = function () {
+                curScroll = w.scrollY || doc.scrollTop;
+                if (curScroll > prevScroll) {
+                    direction = 2;
+                    $('.headerFix').removeClass('headerFixTop');
+                }
+                else if (curScroll < prevScroll) {
+                    direction = 1;
+                    $('.headerFix').addClass('headerFixTop');
+                }
+                if (direction !== prevDirection) {
+                    toggleHeader(direction, curScroll);
+                }
+                prevScroll = curScroll;
+            };
+            var toggleHeader = function (direction, curScroll) {
+                if (direction === 2 && curScroll > 119) {
+                    $('.website-header').addClass('headerFix');
+                    prevDirection = direction;
+                }
+                else if (direction === 1 && curScroll < 120) {
+                    $('.website-header').removeClass('headerFix headerFixTop');
+                    prevDirection = direction;
+                };
+
+            };
+            window.addEventListener('scroll', checkScroll);
+        }
+
+        scrollHeader()
+
+        $(document).ready(function () {
+            setTimeout(() => {
+                var headerheight = $('.website-header').outerHeight();
+                $("#topSpace").css({ "margin-top": headerheight });
+            }, 200)
+        });
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        // gallery
+
+        $(document).ready(function () {
+            getNotification();
+        });
+        function Active(activeid) {
+            $("#"+activeid).addClass("active");
+        }
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+
+        function MobileNumber(cntr) {
+            var Mobile = /^[6-9][0-9]{9}$/;
+            var entered_no = cntr;
+            if (!Mobile.test(entered_no)) {
+                return false;
+            }
+            else
+                return true;
+        }
+
+        function getCategory() {
+            var thisHtml = '<option value="0"> @Localizer["--Select--"]</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetCategory',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlCategory').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlCategory').html(thisHtml);
+                    }
+                }
+            });
+        }
+        function getDistrict() {
+            var thisHtml = '<option value="0"> @Localizer["--Select--"]</option>';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Master/GetDistrict',
+                data: {},
+                type: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        if ('@Lang' == "or") {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                            }
+                        }
+                        else {
+                            for (var i = 0; i < result.length; i++) {
+                                thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                            }
+                        }
+                        $('#ddlDist').html(thisHtml);
+                    }
+                    else {
+                        $('#ddlDist').html(thisHtml);
+                    }
+                }
+            });
+        }
+        $("#ddlCategory").change(function () {
+            var thisHtml = '<option value="0"> @Localizer["--Select--"]</option>';
+            if ($('#ddlCategory').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetSubCategory',
+                    data: { CatId: $('#ddlCategory').val() },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].KeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlSubCategory').html(thisHtml);
+                        }
+                        else {
+                            $('#ddlSubCategory').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlSubCategory').html(thisHtml);
+            }
+        });
+        $("#ddlDist").change(function () {
+            var thisHtml1 = '<option value="0"> @Localizer["--Select--"]</option>';
+            var thisHtml = '<option value="0"> @Localizer["--Select--"]</option>';
+            if ($('#ddlDist').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetBlock',
+                    data: { DistCode: $('#ddlDist').val(), },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+
+                            $('#ddlBlock').html(thisHtml);
+                            $('#ddlGp').html(thisHtml1);
+                        }
+                        else {
+                            $('#ddlBlock').html(thisHtml);
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlBlock').html(thisHtml);
+                $('#ddlGp').html(thisHtml);
+            }
+        });
+        $("#ddlBlock").change(function () {
+            var thisHtml = '<option value="0"> @Localizer["--Select--"]</option>';
+            if ($('#ddlBlock').val() != 0) {
+                $.ajax({
+                    url: '@Url.Content("~/")' + 'Master/GetGP',
+                    data: { BlockCode: $('#ddlBlock').val() },
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        if (data.state == "success") {
+                            var result = data.data;
+                            if ('@Lang' == "or") {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].OdTextVal + '</option>';
+                                }
+                            }
+                            else {
+                                for (var i = 0; i < result.length; i++) {
+                                    thisHtml += '<option value="' + result[i].NewKeyVal + '">' + result[i].TextVal + '</option>';
+                                }
+                            }
+                            $('#ddlGp').html(thisHtml);
+                        }
+                        else {
+                            $('#ddlGp').html(thisHtml);
+
+                        }
+                    }
+                });
+            }
+            else {
+                $('#ddlGp').html(thisHtml);
+            }
+        });
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function getNotification() {
+            var thisHtml = '';
+            $.ajax({
+                url: '@Url.Content("~/")' + 'Home/GetNotification',
+                data: {},
+                type: "get",
+                dataType: "json",
+                success: function (data) {
+                    if (data.state == "success") {
+                        var result = data.data;
+                        var lang = '@Lang';
+                        if (result.length > 0) {
+                            for (var i = 0; i < result.length; i++) {
+                                var description = (lang === 'or') ? result[i].TitleOd : result[i].Title;
+                                thisHtml += '<li class="announcement__list__item"><a onclick="return Details(' + result[i].Id + ')" class="announcement__list__link">' + description + '</a></li>';
+                            }
+                            $('#notification').html(thisHtml);
+                        }
+                        else {
+                            $('#msgAnnouncement').hide();
+                        }
+                        
+                    }
+                    else {
+                        $('#notification').html(thisHtml);
+                    }
+                }
+            });
+        }
+        function Details(obj) {
+            var actionUrl = '../Home/NotificationDetails?id=' + obj;
+            window.location.href = actionUrl;
+        }
+    </script>
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        function avoidFirstSpace(event) {
+            const inputElement = event.target;
+            const inputValue = inputElement.value;
+
+            if (inputValue.length > 0 && inputValue.charCodeAt(0) === 32) {
+                inputElement.value = inputValue.slice(1);
+            }
+            if (inputElement.type === 'number') {
+                inputElement.value = inputValue.trimStart();
+            }
+            if (inputValue.startsWith('-')) {
+                inputElement.value = inputValue.substring(1);
+            }
+        }
+    </script>
+</body>
+
+</html>

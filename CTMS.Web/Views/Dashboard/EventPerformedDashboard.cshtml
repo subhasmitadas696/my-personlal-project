@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "MembersDashboard";
+    Layout = "~/Views/Shared/_LayoutPublic.cshtml";
+    var troupedetails = ViewBag.TroupeDetails;
+    var membersdetails = ViewBag.EventPerformDetails;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<link href="~/css/profile-dashboard.css" rel="stylesheet" />
+<div class="col text-end  me-2 me-2">
+    <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+</div>
+<main class="content-body">
+    @if (troupedetails != null)
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <div class="table-responsive--rounded">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center" style="width: 50px;">Sl#</th>
+                                    <th scope="col">Event Title</th>
+                                    <th scope="col">DateOfPerform</th>
+                                    <th scope="col">GramPanchayat Name</th>
+                                    <th scope="col">Village Name</th>
+                                    <th scope="col">Reporting Date</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int count = 1;
+                                }
+                                @foreach (var items in membersdetails)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            @count
+                                        </td>
+                                        <td>
+                                            @items.EventTitle
+
+                                        </td>
+                                        <td>@items.DateOfPerform</td>
+                                        <td>
+                                            <div>@items.GPName</div>
+                                        </td>
+                                        <td>
+                                            @items.VLGNAME
+
+                                        </td>
+                                        <td>
+                                            @items.ReportedDate
+
+                                        </td>
+                                        <td>
+                                            @items.Status
+                                        </td>
+                                        
+                                    </tr>
+                                    count = count + 1;
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h1>No Records Found</h1>
+    }
+</main>

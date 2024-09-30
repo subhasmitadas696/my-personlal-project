@@ -1,0 +1,233 @@
+﻿@{
+    ViewData["Title"] = "KSSMS";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+
+    .urgentBox {
+        background-image: url(../images/urgentBg.png);
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        font-size: 12px;
+        color: #555;
+        padding: 7px;
+        display: block;
+        right: 0;
+        margin: 0;
+        line-height: .5em;
+        width: 60px;
+    }
+
+        .urgentBox label {
+            color: #fff;
+            bottom: 0;
+            text-align: center;
+            margin: 2px;
+        }
+
+    .modal-lg, .modal-xl {
+        max-width: 850px;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="pending" onclick="LoadData(0, this.id)" href="javascript:;">
+            Pending
+        </a>
+        <a class="nav-link" id="approved" onclick="LoadData(1,this.id)" href="javascript:;">
+            Approved
+        </a>
+        <a class="nav-link" id="rejected" onclick="LoadData(2,this.id)" href="javascript:;">
+            Reject
+        </a>
+        <a class="nav-link" id="hold" onclick="LoadData(3,this.id)" href="javascript:;">
+            Hold
+        </a>
+        <a class="nav-link" id="nca" onclick="LoadData(4,this.id)" href="javascript:;">
+            Not Commig To Audition
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div class="table-responsive--rounded">
+                @if (@User.FindFirst("RoleId")?.Value == "3")
+                {
+                    <h6 class="content-body__heading">Block Wise Troupes Details</h6>
+                }
+                else if (@User.FindFirst("RoleId")?.Value == "4")
+                {
+                    <h6 class="content-body__heading">District Wise Troupes Details</h6>
+                }
+                else
+                {
+                    <h6 class="content-body__heading">State Wise Troupes Details</h6>
+                }
+                <div class="table-responsive--rounded">
+                    <div class="table-responsive">
+                        <table class="table table-borderless" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Sl#</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">No. of Members</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Registration Date</th>
+                                    @if (@User.FindFirst("RoleId")?.Value != "5")
+                                    {
+                                        <th class="dip no-print" scope="col">Action</th>
+                                    }
+
+                                </tr>
+                            </thead>
+                            <tbody id="bindtable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="successModal22" class="modal customodal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="successModal22"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body" id="viewdiv">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">@Localizer["Member Details"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col">@Localizer["SL"]</th>
+                                <th scope="col">@Localizer["MemberName"]</th>
+                                <th scope="col">@Localizer["Role"]</th>
+                                <th scope="col">@Localizer["AadhaarNo"]</th>
+                                <th scope="col">@Localizer["BankDetails"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="Popupview"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        LoadData(0, "pending");
+
+    });
+    function Takeaction(Troupeid) {
+        $('#hdnRequestId').val(Troupeid);
+        $('#myModalTakeAction').modal('show');
+
+    }
+    function LoadData(ID, activeid) {
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => link.classList.remove('active'));
+        document.getElementById(activeid).classList.add('active');
+        if (ID !== 0) {
+            $(".dip").css("display", "");
+        } else {
+            $(".dip").css("display", "");
+        }
+        var record = new Object();
+        record.ApprovedStatus = ID;
+
+        $.ajax({
+            data: record,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("ApprovalView", "ApprovalConfig")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#bindtable').empty();
+                var slno = 0;
+                var htm = '';
+                var objAyyList = data.data;
+                if (objAyyList != null) {
+                    for (var i = 0; i < objAyyList.length; i++) {
+                        slno = slno + 1;
+                        htm += '<tr>';
+                        htm += '<td>' + slno + '</td>';
+                        htm += '<td>' + objAyyList[i].GroupName + '</td>';
+                        htm += '<td><a style="color:Blue;cursor: pointer;" data-toggle="modal"  onclick="return MemberDetails(' + objAyyList[i].TroupeId + ')">' + objAyyList[i].MemberCount + '</a></td>';
+                        htm += '<td>' + objAyyList[i].DistrictName + '<div class="text-muted">' + objAyyList[i].blockname + '</div>' + '<div class="text-muted" >' + objAyyList[i].gpname + '</div>' + '<div class="text-muted">[' + objAyyList[i].pincode + ']</div>' + '</td>';
+                        htm += '<td>' + objAyyList[i].RegistrationDate + '</td>';
+                        if (@User.FindFirst("RoleId")?.Value != "5") {
+                            if (objAyyList[i].ApprovedStatus !== 0) {
+                                htm += '<td><a class="btn btn-outline-primary btn-sm rounded-pill" data-toggle="modal" data-id="' + objAyyList[i].ENCTroupeId + '" data-status="' + objAyyList[i].ApprovedStatus + '" onclick="return Details(this)"><i title="Details" style="color:blue;cursor:pointer;"></i>Details</a></td>';
+                                htm += '';
+                            } else {
+                                htm += '<td><a class="btn btn-outline-primary btn-sm rounded-pill" data-toggle="modal" data-id="' + objAyyList[i].ENCTroupeId + '" data-status="' + objAyyList[i].ApprovedStatus + '" onclick="return Takeaction(this)"><i title="Take Action" style="color:blue;cursor:pointer;"></i>Action</a></td>';
+                            }
+                        }
+
+                        htm += '</tr>';
+                    }
+                }
+                else {
+                    htm += '<tr><td colspan="9"><center><b>No Record found</b></center></td></tr>';
+                }
+
+                $('#bindtable').append(htm);
+               
+                Datatable();
+            }
+        });
+    }
+    function MemberDetails(Troupeid) {
+        var TROUPEID = Troupeid;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("GetMemberDetails", "Registration")',
+            data: { "TROUPEID": TROUPEID },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+
+                    Count = Count + 1;
+                    if (v1.IsLeader == 1) {
+                        
+                        List += "<tr><td width='5%'>" + Count + "</td><td>" + v1.MemberName + "<div class='text-muted'>[Leader]</td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.BankName + "<div class=text-muted>" + v1.IFSC + "</div>" + "<div class=text-muted>" + v1.BranchName + "</div>" + "<div class=text-muted>" + v1.AccountNo + "</div>" + "</td></tr>";
+                    }
+                    else {
+                        List += "<tr><td width='5%'>" + Count + "</td><td>" + v1.MemberName + "</td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.BankName + "<div class=text-muted>" + v1.IFSC + "</div>" + "<div class=text-muted>" + v1.BranchName + "</div>" + "<div class=text-muted>" + v1.AccountNo + "</div>" + "</td></tr>";
+                    }
+                });
+
+                $("#Popupview").html(List)
+
+            }
+        })
+    }
+    function Takeaction(obj) {
+        let Troupeid = $(obj).data('id');
+        let Status = $(obj).data('status');
+        var actionUrl = '../ApprovalConfig/ApprovalTakeActionView?TroupeId=' + Troupeid + '&Status=' + Status;
+        window.location.href = actionUrl;
+    }
+    function Details(obj) {
+        let Troupeid = $(obj).data('id');
+        let Status = $(obj).data('status');
+        var actionUrl = '../ApprovalConfig/ApprovalTakeActionView?TroupeId=' + Troupeid + '&Status=' + Status;
+        window.location.href = actionUrl;
+    }
+</script>
+
+

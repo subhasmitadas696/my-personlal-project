@@ -1,0 +1,129 @@
+﻿@model CTMS.Model.Entities.ReportMaster.BlockWiseRegistration
+@{
+    ViewData["Title"] = "District wise Troupe Registration Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.Detail;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="MISReports" asp-action="Block_Dist_Reg_ReportsViewSec" asp-area="" class="nav-link active">
+            District wise Troupe Registration Report
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <form method="post" asp-controller="MISReports" asp-action="Block_Dist_Reg_ReportsViewSec">
+                <div class="collapse" id="collapseFilter">
+                    <div class="border p-3 rounded mb-3 bg-light">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlDist" asp-for="DistId">
+                                        <option value="0" selected>Select District</option>
+                                    </select>
+                                    <label for="tdist">District</label>
+                                    <span class="text-danger" id="errddlDist"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlBlock" asp-for="BlockId">
+                                        <option value="0" selected>Select Block</option>
+                                    </select>
+                                    <label for="block">Block</label>
+                                    <span class="text-danger" id="errddlBlock"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlGp" asp-for="GPId">
+                                        <option value="0" selected>Select Gram Panchayat</option>
+                                    </select>
+                                    <label for="block"> Gram Panchayat</label>
+                                    <span class="text-danger" id="errddlGp"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="btn btn-primary btn-lg py-3" id="btnsrchfilter" type="submit" value="Search">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                <th scope="col">Troupe Address</th>
+                                <th scope="col">Troupe Name</th>
+                                <th scope="col">Created On</th>
+                                <th scope="col" style="width: 80px;">Members</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                                string cclass = "";
+                            }
+                            @foreach (var items in Data)
+                            {
+                                cclass = (@items.ApprovedStatus == 0) ? "text-danger" : "text-success";
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>
+                                        @items.GPName
+                                        <div class="text-muted">@items.Address</div>
+                                        <div class="text-muted">[@items.pincode]</div>
+                                    </td>
+                                    <td>@items.GroupName</td>
+                                    <td>@items.GrpCreatedOn</td>
+                                    <td>
+                                        <ul>
+                                            @foreach (var member in items.MemberName.Split(","))
+                                            {
+                                                <li>@member</li>
+                                            }
+                                        </ul>
+                                    </td>
+                                    <td class="@cclass"><b>@items.TStatus</b></td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getDistrict();
+        var distid = "@ViewBag.DistId";
+        $("#ddlDist").val(distid);
+        $('#ddlDist').trigger('change');
+        var blockid = "@ViewBag.Blockid";
+        $("#ddlBlock").val(blockid);
+        $('#ddlBlock').trigger('change');
+        var gpid = "@ViewBag.GPId";
+        $("#ddlGp").val(gpid);
+    });
+</script>

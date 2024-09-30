@@ -1,0 +1,176 @@
+
+@{
+ViewData["Title"] = "ApprovalConfig";
+}
+<div class="row">
+		@Html.AntiForgeryToken()
+			@*Write code here*@
+</div>
+			@section scripts {
+				 
+	<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $("#form").validate({
+            rules: {
+                BLOCKID: {
+                    required: true
+                },
+                BLOCKCODE: {
+                    required: true
+                },
+                BLOCKNAME: {
+                    required: true
+                },
+                DISTCODE: {
+                    required: true
+                },
+                LGDTYPE: {
+                    required: true
+                },
+                CREATEDBY: {
+                    required: true
+                },
+                CREATEDON: {
+                    required: true
+                },
+                UPDATEDBY: {
+                    required: true
+                },
+                UPDATEDON: {
+                    required: true
+                },
+                DELETEDFLAG: {
+                    required: true
+                },
+                EXPECTEDENUMERATOR: {
+                    required: true
+                },
+                EXPECTEDSUPERVISOR: {
+                    required: true
+                },
+                EXPECTEDRVENUMERATOR: {
+                    required: true
+                },
+                EXPECTEDRVSUPERVISOR: {
+                    required: true
+                },
+                EXPECTEDSURVEYCENTER: {
+                    required: true
+                },
+                BLOCKNAMEOD: {
+                    required: true
+                },
+                            },
+            messages: {
+                BLOCKID: {
+                    required: "Please enter BLOCKID"
+                 },
+                BLOCKCODE: {
+                    required: "Please enter BLOCKCODE"
+                 },
+                BLOCKNAME: {
+                    required: "Please enter BLOCKNAME"
+                 },
+                DISTCODE: {
+                    required: "Please enter DISTCODE"
+                 },
+                LGDTYPE: {
+                    required: "Please enter LGDTYPE"
+                 },
+                CREATEDBY: {
+                    required: "Please enter CREATEDBY"
+                 },
+                CREATEDON: {
+                    required: "Please enter CREATEDON"
+                 },
+                UPDATEDBY: {
+                    required: "Please enter UPDATEDBY"
+                 },
+                UPDATEDON: {
+                    required: "Please enter UPDATEDON"
+                 },
+                DELETEDFLAG: {
+                    required: "Please enter DELETEDFLAG"
+                 },
+                EXPECTEDENUMERATOR: {
+                    required: "Please enter EXPECTEDENUMERATOR"
+                 },
+                EXPECTEDSUPERVISOR: {
+                    required: "Please enter EXPECTEDSUPERVISOR"
+                 },
+                EXPECTEDRVENUMERATOR: {
+                    required: "Please enter EXPECTEDRVENUMERATOR"
+                 },
+                EXPECTEDRVSUPERVISOR: {
+                    required: "Please enter EXPECTEDRVSUPERVISOR"
+                 },
+                EXPECTEDSURVEYCENTER: {
+                    required: "Please enter EXPECTEDSURVEYCENTER"
+                 },
+                BLOCKNAMEOD: {
+                    required: "Please enter BLOCKNAMEOD"
+                 },
+                
+           },
+            	
+            highlight: function (element) {	
+                $(element).removeClass("is-valid")		
+                $(element).parent().addClass('error')		
+                $(element).addClass("is-invalid")	
+            },	
+            unhighlight: function (element) {	
+                $(element).parent().removeClass('error')	
+                $(element).removeClass("is-invalid");	
+                $(element).addClass("is-valid")	
+            }	
+        });
+			function Sava_ApprovalConfig() {
+			if ($("#form").valid()) {
+					
+					var BlockMaster ={ 
+			BLOCKID:$("#BLOCKID").val(),
+					BLOCKCODE:$("#BLOCKCODE").val(),
+					BLOCKNAME:$("#BLOCKNAME").val(),
+					DISTCODE:$("#DISTCODE").val(),
+					LGDTYPE:$("#LGDTYPE").val(),
+					CREATEDBY:$("#CREATEDBY").val(),
+					CREATEDON:$("#CREATEDON").val(),
+					UPDATEDBY:$("#UPDATEDBY").val(),
+					UPDATEDON:$("#UPDATEDON").val(),
+					DELETEDFLAG:$("#DELETEDFLAG").val(),
+					EXPECTEDENUMERATOR:$("#EXPECTEDENUMERATOR").val(),
+					EXPECTEDSUPERVISOR:$("#EXPECTEDSUPERVISOR").val(),
+					EXPECTEDRVENUMERATOR:$("#EXPECTEDRVENUMERATOR").val(),
+					EXPECTEDRVSUPERVISOR:$("#EXPECTEDRVSUPERVISOR").val(),
+					EXPECTEDSURVEYCENTER:$("#EXPECTEDSURVEYCENTER").val(),
+					BLOCKNAMEOD:$("#BLOCKNAMEOD").val(),
+					
+				};
+			$.ajax({
+				type: "POST",
+				url: "/Report/ApprovalConfig",
+			beforeSend: function (xhr) {
+					xhr.setRequestHeader("XSRF-TOKEN",
+						$('input:hidden[name="__RequestVerificationToken"]').val());
+				},
+			data:BlockMaster,
+			content: 'application/json;charset=utf-8',
+			dataType: "json",
+			success: function (result) {
+						Swal.fire({
+							icon: 'success',
+							title: result.responseText,
+							text: result.responseMessage,
+						});
+					},
+			error: function (result) {
+						Swal.fire({
+							icon: 'error',
+							title: result.responseText,
+							text: result.responseMessage,
+						});
+					}, 
+			});
+			}
+		}
+		</script>
+}

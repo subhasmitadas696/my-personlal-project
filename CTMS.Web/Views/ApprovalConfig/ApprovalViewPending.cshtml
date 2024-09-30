@@ -1,0 +1,274 @@
+﻿@{
+    ViewData["Title"] = " Troupe Approval Pending";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style type="text/css">
+    .urgentBox {
+        background-image: url(../images/urgentBg.png);
+        background-repeat: no-repeat;
+        background-position: right bottom;
+        font-size: 12px;
+        color: #555;
+        padding: 7px;
+        display: block;
+        right: 0;
+        margin: 0;
+        line-height: .5em;
+        width: 60px;
+    }
+
+        .urgentBox label {
+            color: #fff;
+            bottom: 0;
+            text-align: center;
+            margin: 2px;
+        }
+
+    .modal-lg, .modal-xl {
+        max-width: 850px;
+    }
+</style>
+@Html.AntiForgeryToken()
+<div class="card card--lg">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link" id="pending" onclick="LoadData(0, this.id)">
+            Pending
+        </a>
+        <a class="nav-link" id="approved" asp-controller="ApprovalConfig" asp-action="ApprovalViewApproved" asp-area="">
+            Approved
+        </a>
+        <a class="nav-link" id="rejected" asp-controller="ApprovalConfig" asp-action="ApprovalViewRejected" asp-area="">
+            Reject
+        </a>
+      
+        <a class="nav-link" id="nca" asp-controller="ApprovalConfig" asp-action="ApprovalViewNCTA" asp-area="">
+            Not Appeared In Audition
+        </a>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <div>
+            <div class="collapse" id="collapseFilter">
+                <div class="border p-3 rounded mb-3 bg-light">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="sdate" name="sdate" placeholder="" autocomplete="off" />
+                                <label for="sdate">From Date</label>
+                                <span class="text-danger" id="errddlDist"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="edate" name="edate" placeholder="" autocomplete="off" />
+                                <label for="edate">To Date</label>
+                                <span class="text-danger" id="errddlBlock"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="btn btn-primary btn-lg " id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;">
+                            <input class="btn btn-primary btn-lg " id="btnclrfilter" type="reset" value="Reset" style="margin-top:10px;margin-left:10px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive--rounded table-responsive--datatable">
+            <div class="table-responsive">
+                <table class="table table-borderless" id="datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center" style="width: 40px;">Sl#</th>
+                            <th scope="col">Cultural Troupe Name</th>
+                            <th scope="col" style="width: 80px;">Members</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Registered On</th>
+                            @if (@User.FindFirst("RoleId")?.Value != "5")
+                            {
+                                <th class="dip no-print" scope="col" style="width: 80px;">Action</th>
+                            }
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="successModal22" class="modal customodal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="successModal22"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body" id="viewdiv">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">@Localizer["Member Details"]</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col">@Localizer["SL"]</th>
+                                <th scope="col">@Localizer["MemberName"]</th>
+                                <th scope="col">@Localizer["Role"]</th>
+                                <th scope="col">@Localizer["AadhaarNo"]</th>
+                                <th scope="col">@Localizer["BankDetails"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="Popupview"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        $('#edate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        });
+        LoadData(0, "pending");
+    });
+    function Takeaction(Troupeid) {
+        $('#hdnRequestId').val(Troupeid);
+        $('#myModalTakeAction').modal('show');
+
+    }
+    $('#btnsrchfilter').click(function () {
+        LoadData(0, "pending");
+    });
+    $('#btnclrfilter').click(function () {
+        $('#sdate').val("");
+        $('#edate').val("");
+        $('#sdate').datetimepicker('destroy');
+        $('#sdate').datetimepicker({
+            format: 'DD-MMM-YYYY'
+        }).on('dp.change', function (e) {
+            $('#edate').datetimepicker('destroy');
+            $('#edate').datetimepicker({
+                format: 'DD-MMM-YYYY',
+                minDate: new Date(e.date)
+            });
+            $('#edate').val('');
+        });
+        LoadData(0, "pending");
+        location.reload();
+    });
+    function LoadData(ID, activeid) {
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => link.classList.remove('active'));
+        document.getElementById(activeid).classList.add('active');
+        if (ID !== 0) {
+            $(".dip").css("display", "");
+        } else {
+            $(".dip").css("display", "");
+        }
+        var record = new Object();
+        record.ApprovedStatus = ID;
+        record.FromDate = $('#sdate').val().trim();
+        record.ToDate = $('#edate').val().trim();
+        $.ajax({
+            data: record,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("ApprovalViewPending", "ApprovalConfig")',
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $('#datatable tbody').html('');
+                $('#datatable').DataTable().destroy();
+                var slno = 0;
+                var htm = '';
+                var objAyyList = data.data;
+                if (data.state == "success") {
+                    if (objAyyList != null) {
+                        for (var i = 0; i < objAyyList.length; i++) {
+                            slno = slno + 1;
+                            htm += '<tr>';
+                            htm += '<td>' + slno + '</td>';
+                            htm += '<td>' + objAyyList[i].GroupName + '</td>';
+                            htm += '<td><a style="color:Blue;cursor: pointer;" data-toggle="modal"  onclick="return MemberDetails(' + objAyyList[i].TroupeId + ')">' + objAyyList[i].MemberCount + '</a></td>';
+                            htm += '<td>' + objAyyList[i].gpname + '</div>' + '<div class="text-muted">[' + objAyyList[i].pincode + ']</div>' + '</td>';
+                            htm += '<td>' + objAyyList[i].RegistrationDate + '</td>';
+                            if (@User.FindFirst("RoleId")?.Value != "5") {
+                                if (objAyyList[i].ApprovedStatus !== 0) {
+                                    htm += '<td><a class="btn btn-outline-primary btn-sm rounded-pill" data-toggle="modal" data-id="' + objAyyList[i].ENCTroupeId + '" data-status="' + objAyyList[i].ApprovedStatus + '" onclick="return Details(this)"><i title="Details" style="color:blue;cursor:pointer;"></i>Details</a></td>';
+                                    htm += '';
+                                } else {
+                                    htm += '<td><a class="btn btn-outline-primary btn-sm rounded-pill" data-toggle="modal" data-id="' + objAyyList[i].ENCTroupeId + '" data-status="' + objAyyList[i].ApprovedStatus + '" onclick="return Takeaction(this)"><i title="Take Action" style="color:blue;cursor:pointer;"></i>Action</a></td>';
+                                }
+                            }
+
+                            htm += '</tr>';
+                        }
+                    }
+                    else {
+                        htm += '';
+                    }
+                }
+                $('#datatable tbody').html(htm);
+                setTimeout(function () { Datatable(); },2000);
+            }
+        });
+        
+    }
+    function MemberDetails(Troupeid) {
+        var TROUPEID = Troupeid;
+        $('#successModal22').modal('show');
+        $.ajax({
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("GetMemberDetails", "Registration")',
+            data: { "TROUPEID": TROUPEID },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+
+                    Count = Count + 1;
+                    if (v1.IsLeader == 1) {
+                        List += "<tr><td width='5%'>" + Count + "</td><td>" + v1.MemberName + "<div class='text-muted'>[Leader]</td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.BankName + "<div class=text-muted>" + v1.IFSC + "</div>" + "<div class=text-muted>" + v1.BranchName + "</div>" + "<div class=text-muted>" + v1.AccountNo + "</div>" + "</td></tr>";
+                    }
+                    else {
+                        List += "<tr><td width='5%'>" + Count + "</td><td>" + v1.MemberName + "</td><td>" + v1.Role + "</td><td>" + v1.AadharNo + "</td><td>" + v1.BankName + "<div class=text-muted>" + v1.IFSC + "</div>" + "<div class=text-muted>" + v1.BranchName + "</div>" + "<div class=text-muted>" + v1.AccountNo + "</div>" + "</td></tr>";
+                    }
+                });
+                $("#Popupview").html(List)
+            }
+        })
+    }
+    function Takeaction(obj) {
+        let Troupeid = $(obj).data('id');
+        let Status = $(obj).data('status');
+        var actionUrl = '../ApprovalConfig/ApprovalTakeActionView?TroupeId=' + Troupeid + '&Status=' + Status;
+        window.location.href = actionUrl;
+    }
+    function Details(obj) {
+        let Troupeid = $(obj).data('id');
+        let Status = $(obj).data('status');
+        var actionUrl = '../ApprovalConfig/ApprovalTakeActionView?TroupeId=' + Troupeid + '&Status=' + Status;
+        window.location.href = actionUrl;
+    }
+</script>
+
+

@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+} 
+<style>
+    .heading-details::after {
+        content: "";
+        position: absolute;
+        bottom: -0.5rem;
+        left: 0; 
+        height: 3px;
+        width: 85px;
+        border: 0.5rem;
+        background: var(--bs-primary);
+        transition: .3s;
+        top:2.3rem
+    }
+    .address-details {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        margin-top: 2.3rem;
+    }
+    .address-details1 i {
+        font-size: 2.5rem;
+        color: var(--bs-primary);
+        opacity:0.5;
+    }
+    .contact-details {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .contact-details1 i {
+        font-size: 2.5rem;
+        color: var(--bs-primary);
+        opacity: 0.5;
+    }
+    .contact-details2 a{
+        color:#000000;
+    }
+    .contact-details2 a:hover {
+        color: var(--bs-primary);
+    }
+    .email-details {
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+    }
+    .email-details1 i {
+        font-size: 2.5rem;
+        color: var(--bs-primary);
+        opacity: 0.5;
+    }
+    .email-details2 a {
+        color: #000000;
+    }
+    .email-details2 a:hover {
+        color: var(--bs-primary);
+    }
+</style>
+<div class="innerpage-container-breadcrumb">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="page-heading">@Localizer["Contact Us"]</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../Home/Index">@Localizer["Home"]</a></li>
+                    <li class="breadcrumb-item active">@Localizer["Contact Us"]</li>
+                </ol>
+            </nav>
+        </div> 
+    </div>
+</div>
+<div class="innerpage-container">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-md-6">
+                <h3 class="heading-details position-relative">@Localizer["Contact Details"]</h3>
+                <div class="address-details">
+                    <div class="address-details1">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <div class="address-details2">
+                        <h5 class="address-details__heading">@Localizer["Address"]:</h5>
+                        <p>
+                            @Localizer["Directorate of Culture, Sanskruti Bhawan, Backside of Bhanjakala Mandap"]
+                        </p>
+                    </div>
+                </div>
+                <div class="contact-details">
+                    <div class="contact-details1">
+                        <i class="bi bi-telephone"></i>
+                    </div>
+                    <div class="contact-details2">
+                        <h5 class="contact-details__heading">@Localizer["Phone"]:</h5>
+                        <a href="tel:0674 253 9031" class="text-decoration-none">0674 253 9031 </a>
+                    </div> 
+                </div>
+                <div class="email-details">
+                    <div class="email-details1">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <div class="email-details2">
+                        <h5 class="email-details__heading">@Localizer["E-mail"]: </h5>
+                        <a href="mailto:directorateofculture@gmail.com" class="text-decoration-none">directorateofculture@gmail.com </a>
+                    </div> 
+                </div> 
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14970.839372627668!2d85.830599!3d20.270865!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a19a75d2eab8477%3A0xedb34a8ac9d79065!2sOdisha%20State%20Secretariat!5e0!3m2!1sen!2sin!4v1699438344915!5m2!1sen!2sin" width="" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

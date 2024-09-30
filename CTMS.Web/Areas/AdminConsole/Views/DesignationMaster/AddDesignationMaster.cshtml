@@ -1,0 +1,264 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.DesignationMaster.DesignationMasters
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+    ViewBag.Title = "AddDesignationMaster";
+}
+
+
+@section Scripts {
+
+}
+<div class="card card--lg main-card" id="divaddform">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="DesignationMaster" asp-action="AddDesignationMaster">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="DesignationMaster" asp-action="ViewActiveDesignation">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="DesignationMaster" asp-action="ViewInActiveDesignation">
+            InActive
+        </a>
+    </div>
+    <div class="card-body">
+        <form id="frmCreateDesignation" data-parsley-validate novalidate method="post" asp-action="AddDesignationMaster" asp-controller="DesignationMaster" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlDesgn" asp-items="@(new SelectList(ViewBag.Designation, "ROLEID", "ROLENAME"))">
+                            <option value="0">--select--</option>
+                        </select>
+                        <label class="control-label" id="lblDig">UserType<span class="text-danger">*</span></label>
+                        <span class="text-danger" id="errtxtAddress"></span>
+                    </div>
+                </div>
+                <div class="col-md-4" id="divDist" style="display:none">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlDist" name="ddlDist">
+                            <option value="0" selected>Select District</option>
+                        </select>
+                        <label for="tdist">
+                            District<span class="text-danger">*</span>
+                        </label>
+                        <small class="text-danger" id="errddlDist"></small>
+                    </div>
+                </div>
+                <div class="col-md-4" id="divBlock" style="display:none">
+                    <div class="form-floating">
+                        <select class="form-select" id="ddlBlock" name="ddlBlock">
+                            <option value="0">Select Block</option>
+                        </select>
+                        <label for="block">Block/ULB<span class="text-danger">*</span></label>
+                        <span class="text-danger" id="errddlBlock"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+
+                    <div class="form-floating">
+
+                        <input id="txtDesignation"
+                               class="form-control" Onkeypress="return inputLimiter(event,'NameCharacters')"
+                               placeholder="Enter Designation Name" autocomplete="off" maxlength="100" autofocus />
+                        <label class="control-label">Designation Name<span style="color:Red">*</span></label>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+            <input asp-for="INTCREATEDBY" type="hidden" value='@ViewBag.CREATEDBY' />
+            <div class="mt-4">
+                <span class="colon"></span>
+                <button type="submit" name="submit" id="btnsubmit" class="btn btn-primary rounded-pill btn-lg" title="Submit" onclick="return Validate();"> Submit</button>
+                <button type="button" class="btn btn-secondary rounded-pill btn-lg" title="Reset" onclick="return ClearField();"> Reset </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        getDistrict();
+        $('#ddlDist').trigger('change')
+        $('#btnsubmit').click(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            if ($('#ddlDesgn').val() == '0') {
+                new swal("", "Please select UserType !", "error");
+                $("#ddlDesgn").focus();
+                return false;
+
+            }
+            if ($('#ddlDesgn').val() == '3') {
+                if ($('#ddlDist').val() == 0) {
+                    new swal("", 'Please select District!', "error");
+                    $('#ddlDist').focus();
+                    return false;
+                }
+                if ($('#ddlBlock').val() == 0) {
+                    new swal("", 'Please select Block!', "error");
+                    $('#ddlBlock').focus();
+                    return false;
+                }
+
+            }
+            if ($('#ddlDesgn').val() == '4') {
+                if ($('#ddlDist').val() == 0) {
+                    new swal("", 'Please select District!', "error");
+                    $('#ddlDist').focus();
+                    return false;
+                }
+
+            }
+            if ($("#txtDesignation").val() == "") {
+                new swal("", "Designation Name Can't be blank.", "error");
+                $("#txtDesignation").focus();
+                return false;
+            }
+
+
+
+            var formData = {
+                USERTYPE: $('#ddlDesgn').val(),
+                DISTID: $('#ddlDist').val(),
+                BLOCKID: $('#ddlBlock').val(),
+                DESIGNATIONNAME: $('#txtDesignation').val(),
+                INTCREATEDBY: $('#INTCREATEDBY').val()
+            };
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to Save",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes",
+                closeOnConfirm: false
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    $.ajax({
+                       type: 'POST',
+                       url: '@Url.Action("AddDesignationMaster","DesignationMaster")', // Adjust the URL to your endpoint
+                       data: formData,
+                       success: function (response) {
+                           Swal.fire({
+                               title: "",
+                               text: response,
+                               icon: "success"
+                           }).then(() => {
+                               window.location.href = window.location.origin + "@Url.Action("ViewActiveDesignation", "DesignationMaster")";
+                           });
+                       },
+                        error: function () {
+                             Swal.fire({
+                                 title: "",
+                                 text: 'An error occurred while processing the request.',
+                                 icon: "error"
+                             });
+                       }
+                    });
+                }
+            });
+
+
+        });
+    });
+    function validateDistrictSelection() {
+        var selectedValue = $('#ddlDist').val();
+        if (selectedValue !== "0") {
+            $('#ddlDist').removeClass("is-invalid");
+            $('#errddlDist').text("");
+        } else {
+            $('#ddlDist').addClass("form-control shadow-sm is-invalid");
+            $('#errddlDist').text("Please Select District!");
+            $('#ddlDist').focus();
+        }
+    }
+    $('#ddlBlock').on('change', validateBlockSelection);
+    function validateBlockSelection() {
+        var selectedValue = $('#ddlBlock').val();
+        if (selectedValue !== "0") {
+            $('#ddlBlock').removeClass("is-invalid");
+            $('#errddlBlock').text("");
+        } else {
+            $('#ddlBlock').addClass("form-control shadow-sm is-invalid");
+            $('#errddlBlock').text("Please Select Block!");
+            $('#ddlBlock').focus();
+        }
+    }
+
+    $('#ddlDesgn').change(function () {
+        if ($('#ddlDesgn').val() == '4') {
+            $('#divBlock').hide();
+            $('#ddlBlock').val('0');
+            $('#divDist').removeAttr('style');
+            $('#ddlDist').show();
+        }
+
+        else if ($('#ddlDesgn').val() == '3') {
+            $('#divDist').show();
+            $('#divBlock').show();
+        }
+
+        else {
+            $('#divDist').hide();
+            $('#divBlock').hide();
+            $('#ddlBlock').val('0');
+            $('#ddlDist').val('0');
+        }
+    });
+
+
+
+    function inputLimiter(e, allow) {
+        var AllowableCharacters = '';
+
+        if (allow == 'NameCharactersymbol') {
+            AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+        }
+        if (allow == 'NameCharacters') {
+            AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+        }
+        if (allow == 'Email') {
+            AllowableCharacters = '1234567890@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.';
+        }
+        if (allow == 'Description') {
+            AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+        }
+        if (allow == 'NameCharactersAndNumbers') {
+            AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\'';
+        }
+        if (allow == 'Numbers') {
+            AllowableCharacters = '1234567890';
+        }
+        if (allow == 'Decimal') {
+            AllowableCharacters = '1234567890.';
+        }
+        if (allow == 'Filename') {
+            AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+        }
+        var k;
+        k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+        if (k != 13 && k != 8 && k != 0) {
+            if ((e.ctrlKey == false) && (e.altKey == false)) {
+                return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+            }
+            else {
+                return true;
+            }
+        }
+        else {
+            return true;
+        }
+    }
+    function ClearField() {
+        $('#txtDesignation').val('');
+        $('#ddlBlock').val('0');
+        $('#ddlDist').val('0');
+        $('#ddlDesgn').val('0');
+    }
+</script>

@@ -1,0 +1,542 @@
+﻿@model CTMS.Model.Entities.ReportMaster.DistWise_TroupeReport
+@{
+    ViewData["Title"] = " Art form wise Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var Data = ViewBag.Distwise_TroupeRegDetails;
+}
+<style>
+    .text-end a {
+        text-decoration: none;
+        gap: 0.5rem;
+        color: var(--bs-black);
+    }
+</style>
+<div class="card card--lg main-card">
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a asp-controller="MISReports" asp-action="Distwise_TroupeReg" asp-area="" class="nav-link active">
+            Art form wise Report
+        </a>
+        <div class="col text-end  me-2 me-2">
+            <a href="javascript:;" onclick="window.history.back()"><i class="bi bi-arrow-left"></i>Back </a>
+        </div>
+        <a class="btn btn-primary btn-sm ms-auto mb-2" data-bs-toggle="collapse" href="#collapseFilter" role="button">
+            Filter <i class="bi bi-filter"></i>
+        </a>
+    </div>
+    @if (Data != null)
+    {
+        <div class="card-body">
+            <form method="get" asp-controller="MISReports" asp-action="Distwise_TroupeReg">
+                <div class="collapse" id="collapseFilter">
+                    <div class="border p-3 rounded mb-3 bg-light">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlDist" disabled asp-for="Distid">
+                                        <option value="0" selected>--Select--</option>
+                                    </select>
+                                    <label for="tdist">District</label>
+                                    <span class="text-danger" id="errddlDist"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <select class="form-select" id="ddlBlock" disabled asp-for="Blockid">
+                                        <option value="0" selected>--Select--</option>
+                                    </select>
+                                    <label for="block">Block</label>
+                                    <span class="text-danger" id="errddlBlock"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input class="btn btn-primary btn-lg" id="btnsrchfilter" type="submit" value="Search" style="margin-top:10px;margin-left:10px;">
+                                <a class="btn btn-primary btn-lg" id="reset" onclick="reset()" style="margin-top:10px;margin-left:10px;">Reset</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive--rounded table-responsive--datatable">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center" style="width: 40px">Sl#</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">SubCategory</th>
+                                <th scope="col">Registration</th>
+                                <th scope="col">Member</th>
+                                <th scope="col">Pending</th>
+                                <th scope="col">Approved</th>
+                                <th scope="col">Rejected</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int count = 1;
+                            }
+                            @foreach (var items in Data)
+                            {
+                                <tr>
+                                    <td class="text-center">@count</td>
+                                    <td>
+                                        @if (@ViewBag.CatId == 0)
+                                        {
+                                            @items.CategoryName
+                                        }
+                                        else
+                                        {
+                                            @items.CategoryName
+                                        }
+                                    </td>
+                                    <td>@items.SubCategoryName</td>
+                                    <td>
+                                        @if (@items.Toal_Reg == "0")
+                                        {
+                                            @items.Toal_Reg
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Categoryid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalRegDistWise('@items.SubCategoryid','2')">@items.Toal_Reg</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalRegDistWise('@items.Categoryid','1')">@items.Toal_Reg</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.Total_Members == "0")
+                                        {
+                                            @items.Total_Members
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Categoryid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalMembersDistWise('@items.SubCategoryid','2')">@items.Total_Members</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalMembersDistWise('@items.Categoryid','1')">@items.Total_Members</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.Total_Pending == "0")
+                                        {
+                                            @items.Total_Pending
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Categoryid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalPendingDistWise('@items.SubCategoryid','2')">@items.Total_Pending</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalPendingDistWise('@items.Categoryid','1')">@items.Total_Pending</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.Total_Approved == "0")
+                                        {
+                                            @items.Total_Approved
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Categoryid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalApprovedDistWise('@items.SubCategoryid','2')">@items.Total_Approved</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalApprovedDistWise('@items.Categoryid','1')">@items.Total_Approved</a>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@items.Total_Rejected == "0")
+                                        {
+                                            @items.Total_Rejected
+                                        }
+                                        else
+                                        {
+                                            @if (@items.Categoryid == 0)
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalRejectedDistWise('@items.SubCategoryid','2')">@items.Total_Rejected</a>
+                                            }
+                                            else
+                                            {
+                                                <a style="color:Blue;cursor: pointer;" data-toggle="modal" onclick="return NoOfTotalRejectedDistWise('@items.Categoryid','1')">@items.Total_Rejected</a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                count++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalDistTotalReg">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">District Wise Troupe Registration Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreDistWiseTotlReg"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalDistWiseTotalMembers">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Member Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Member Name</th>
+                                    <th scope="col">Role in Troupe</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Aadhaar Number</th>
+                                    <th scope="col">Bank Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreDistWiseTotlmembers"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalDistWiseTotalPending">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Pending Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreDistWiseTotalPending"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalTotalApprovedDistWise">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Approved Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreTotlTotalApprovedDistWise"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" aria-labelledby="Action Modal" aria-hidden="true" id="successModalDistWiseTotalrejecteded">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary">Total Rejected Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="table-responsive--rounded table-responsive--datatable">
+                    <div class="table-responsive content-vertical-scroll">
+                        <table class="table" id="datatable1">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Sl.No</th>
+                                    <th scope="col">Cultural Troupe Name</th>
+                                    <th scope="col">Troupe Created On</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Total Members</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addmoreDistWiseTotalrejecteded"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    $(document).ready(function () {
+        Datatable();
+        getDistrict();
+        var type = "@ViewBag.UserType";
+        if (type == "4") {
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            document.getElementById('ddlBlock').disabled = false;
+        }
+        else if (type == "2") {
+            document.getElementById('ddlDist').disabled = false;
+            document.getElementById('ddlBlock').disabled = false;
+            var distid = "@ViewBag.DistId";
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+        }
+        else {
+            var blockId = "@ViewBag.Blockid";
+            let distid = getDistrictbyblockid(blockId);
+            $("#ddlDist").val(distid);
+            $('#ddlDist').trigger('change');
+            $("#ddlBlock").val(blockId);
+            $('#ddlBlock').trigger('change');
+            $("#ddlDist").css("pointer-events", "none");
+            $("#ddlBlock").css("pointer-events", "none");
+        }
+        if ("@ViewBag.Blockid" != 0) {
+            $("#ddlBlock").val("@ViewBag.Blockid");
+            $('#ddlBlock').trigger('change');
+        }
+        if ("@ViewBag.GPId" != 0) {
+            $("#ddlGp").val("@ViewBag.GPId");
+        }
+    });
+</script>
+
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function getDistrictbyblockid(blockid) {
+        var result = "";
+        $.ajax({
+            url: '@Url.Content("~/")' + 'Master/GetDistrictByBlockid',
+            data: { blockid: blockid },
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                if (data.state == "success") {
+                    result = data.data;
+                }
+            }
+        });
+        return result;
+    }
+    function NoOfTotalRegDistWise(Categoryid, isCat) {
+        var Categoryid = Categoryid;
+        var isCat = isCat;
+        $('#successModalDistTotalReg').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWiseTotalRegistrationpopup", "MISReports")',
+            data: { "Categoryid": Categoryid, "isCat": isCat },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.Total_Members + "</td></tr>";
+                });
+                $("#addmoreDistWiseTotlReg").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function NoOfTotalMembersDistWise(Categoryid, isCat) {
+        var Categoryid = Categoryid;
+        var isCat = isCat;
+        $('#successModalDistWiseTotalMembers').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWiseTotalmemberpopup", "MISReports")',
+            data: { "Categoryid": Categoryid, "isCat": isCat },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    if(v1.IsLeader==1){
+                        List += "<tr><td>" + Count + "</td><td>" + v1.MemberName + "<div class='text-muted'>[Leader]</div></td><td>" + v1.Role + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td></tr>";
+                    }
+                    else{
+                        List += "<tr><td>" + Count + "</td><td>" + v1.MemberName + "</td><td>" + v1.Role + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.AadharNo + "</td><td>" + v1.AccountNo + "</td></tr>";
+                    }
+                });
+                $("#addmoreDistWiseTotlmembers").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function NoOfTotalPendingDistWise(Categoryid, isCat) {
+        var Categoryid = Categoryid;
+        var isCat = isCat;
+        $('#successModalDistWiseTotalPending').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWisePendingmemberpopup", "MISReports")',
+            data: { "Categoryid": Categoryid, "isCat": isCat },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.Total_Members + "</td></tr>";
+                });
+                $("#addmoreDistWiseTotalPending").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function NoOfTotalApprovedDistWise(Categoryid, isCat) {
+        var Categoryid = Categoryid;
+        var isCat = isCat;
+        $('#successModalTotalApprovedDistWise').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWiseApprovememberpopup", "MISReports")',
+            data: { "Categoryid": Categoryid, "isCat": isCat },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.Total_Members + "</td></tr>";
+                });
+                $("#addmoreTotlTotalApprovedDistWise").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+        });
+    }
+</script>
+<script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+    function NoOfTotalRejectedDistWise(Categoryid, isCat) {
+        var Categoryid = Categoryid;
+        var isCat = isCat;
+        $('#successModalDistWiseTotalrejecteded').modal('show');
+        $.ajax({
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("RequestVerificationToken",
+                    $('input:hidden[name="__RequestVerificationToken"]').val());
+            },
+            url: '@Url.Action("DistWiseRejectededmemberpopup", "MISReports")',
+            data: { "Categoryid": Categoryid, "isCat": isCat },
+            success: function (newdata) {
+                var Count = 0;
+                var List = "";
+                newdata = JSON.parse(newdata);
+                $.each(newdata.data, function (i, v1) {
+                    Count = Count + 1;
+                    List += "<tr><td>" + Count + "</td><td>" + v1.GroupName + "</td><td>" + v1.GrpCreatedOn + "</td><td>" + v1.DistrictName + "<div class=text-muted>" + v1.BlockName + "</div>" + "<div class=text-muted>" + v1.GPNAME + "</div>" + "</td><td>" + v1.Total_Members + "</td></tr>";
+                });
+                $("#addmoreDistWiseTotalrejecteded").html(List);
+            },
+            error: function (xhr, status, error) {
+                console.log("AJAX Error: " + status + " - " + error);
+            }
+
+        });
+    }
+</script>
+<script>
+    function reset(){
+        window.location.href = "../MISReports/Distwise_TroupeReg";
+    }
+</script>

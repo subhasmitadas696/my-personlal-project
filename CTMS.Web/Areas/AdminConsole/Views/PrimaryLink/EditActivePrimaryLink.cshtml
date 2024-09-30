@@ -1,0 +1,282 @@
+﻿@model CTMS.Web.Areas.AdminConsole.Models.PrimaryLink.PrimaryModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewBag.Title = "AddPrimaryLink";
+    Layout = "~/Areas/AdminConsole/Views/Shared/_AdminConsoleLayout.cshtml";
+
+}
+
+
+@section Scripts {
+
+    <script type="text/javascript" language="javascript">
+        function validateForm() {
+            
+        }
+
+        function inputLimiter(e, allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'NameCharactersymbol') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz./&';
+            }
+            if (allow == 'NameCharacters') {
+                AllowableCharacters = ' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.\'';
+            }
+            if (allow == 'Email') {
+                AllowableCharacters = '1234567890@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_.';
+            }
+            if (allow == 'Description') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-.,()/';
+            }
+            if (allow == 'NameCharactersAndNumbers') {
+                AllowableCharacters = '1234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-,/.\&';
+            }
+            if (allow == 'Numbers') {
+                AllowableCharacters = '1234567890';
+            }
+            if (allow == 'Decimal') {
+                AllowableCharacters = '1234567890.';
+            }
+            if (allow == 'Filename') {
+                AllowableCharacters = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/';
+            }
+            var k;
+            k = document.all ? parseInt(e.keyCode) : parseInt(e.which);
+            if (k != 13 && k != 8 && k != 0) {
+                if ((e.ctrlKey == false) && (e.altKey == false)) {
+                    return (AllowableCharacters.indexOf(String.fromCharCode(k)) != -1);
+                }
+                else {
+                    return true;
+                }
+            }
+            else {
+                return true;
+            }
+        }
+        $(function () {
+            $("#btnReset").bind("click", function () {
+                var glinkid = $("#ddlGlobalLink").val();
+                var projlinkid = $("#ddlProjectLink").val();
+                window.location.href = '@Url.Action("ViewActivePrimaryLink","PrimaryLink",new { id = "CC",projectId="PP"})'.replace("CC", glinkid).replace("PP", projlinkid);
+
+            });
+        });
+        function BindGlobalLink() {
+            var ProjectId = $('#ddlProjectLink').val();
+            var data = {
+                projId: ProjectId
+
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Content("~/AdminConsole/PrimaryLink/BindGlobalLinkByProjectId")',
+                data: data,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.length == 0) {
+
+                    } else {
+                        $("#ddlGlobalLink").empty();
+                        $("#ddlGlobalLink").append($('<option value="0">--Select Global Link--</option>'));
+                        if (response.length > 0) {
+                            for (var i = 0; i < response.length; i++) {
+                                $("#ddlGlobalLink").append($('<option/>')
+                                    .val(response[i].intGLinkID)
+                                    .html(response[i].nvchGLinkName)
+                                );
+                            }
+
+                        }
+
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+            return true;
+
+
+        }
+    </script>
+
+    <script type="text/javascript" nonce="uG2bsk6JIH923nsvp01n24KE">
+        $(document).ready(function () {
+            $("#lblslno").text(@Model.INTSLNO);
+
+            $('#btnsubmit').click(function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                if ($("#ddlProjectLink").val() == 0) {
+                    $("#ddlProjectLink").focus();
+                    new swal("Please Select Project Link Name.");
+
+                    return false;
+                }
+                if ($("#ddlGlobalLink").val() == 0) {
+                    $("#ddlGlobalLink").focus();
+                    new swal("Please Select Global Link Name.");
+
+                    return false;
+                }
+                if ($("#ddlFunctionMaster").val() == 0) {
+                    $("#ddlFunctionMaster").focus();
+                    new swal("Please Select Function Master  Name.");
+
+                    return false;
+                }
+                if ($("#txtPLinkName").val() == 0) {
+                    $("#txtPLinkName").focus();
+                    new swal("Primary Link Name Should Not Blank");
+
+                    return false;
+                }
+
+                var formData = {
+                    INTPROJECTLINKID: $('#ddlProjectLink').val(),
+                    INTGLINKID: $('#ddlGlobalLink').val(),
+                    INTFUNCTIONID: $('#ddlFunctionMaster').val(),
+                    PlinkName: $('#txtPLinkName').val(),
+                    INTPLINKID: $('#INTPLINKID').val(),
+                    UpdatedBy: $('#hdnGLinkID').val(),
+                    INTSLNO: $('#hfID').val(),
+                };
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You want to Update",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes",
+                    closeOnConfirm: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/AdminConsole/PrimaryLink/EditPrimaryLink',
+                            data: formData,
+                            success: function (response) {
+                                console.log(response);
+                                if (response === "Updated Successfully") {
+                                    Swal.fire({
+                                        title: "",
+                                        text: response,
+                                        icon: "success"
+                                    }).then(() => {
+                                        window.location.href = "/AdminConsole/PrimaryLink/ViewActivePrimaryLink";
+                                    });
+                                } else if (response === "Already Exist") {
+                                    Swal.fire({
+                                        title: "",
+                                        text: response,
+                                        icon: "warning"
+                                    }).then(() => {
+                                        return;
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "",
+                                        text: response,
+                                        icon: "error"
+                                    }).then(() => {
+                                        return;
+                                    });
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: "",
+                                    text: 'An error occurred while processing the request.',
+                                    icon: "error"
+                                }).then(() => {
+                                    return;
+                                });
+                            }
+                        });
+                    }
+                });
+
+            });
+        });
+
+    </script>
+
+
+}
+<div class="card card--lg"> 
+
+    <div class="nav nav-tabs card--lg__tabs" id="nav-tab" role="tablist">
+        <a class="nav-link active" id="add-hierarchy" asp-controller="PrimaryLink" asp-action="AddPrimaryLink">
+            Add
+        </a>
+        <a class="nav-link" id="active-hierarchy" asp-controller="PrimaryLink" asp-action="ViewActivePrimaryLink">
+            Active
+        </a>
+        <a class="nav-link" id="inactive-hierarchy" asp-controller="PrimaryLink" asp-action="ViewInActivePrimaryLink">
+            InActive
+        </a>
+    </div>
+    <div class="card-body">
+        <form id="frmUpdatePrimaryLink" data-parsley-validate novalidate method="post" asp-action="EditPrimaryLink" asp-controller="PrimaryLink" asp-area="AdminConsole" asp-antiforgery="true" onsubmit="return validateForm()">
+            <div class="form-group row">
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Project Link Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTPROJECTLINKID" asp-items="@(new SelectList(Model.ViewProjectLinkList,"INTPROJECTLINKID","NVCHPROJECTLINKNAME"))" id="ddlProjectLink" onchange=" return BindGlobalLink();" class="form-select" autofocus>
+                            <option value="0">--Select Project Link--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Global Link Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTGLINKID" asp-items="@(new SelectList(Model.GlobalList,"intGLinkID","nvchGLinkName"))" id="ddlGlobalLink" onchange=" return BindMaxId();" class="form-select">
+                            <option value="0">--Select Global Link--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Function Master Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <select asp-for="INTFUNCTIONID" asp-items="@(new SelectList(Model.FunctionList,"INTFUNCTIONID","VCHFUNCTION"))" id="ddlFunctionMaster" class="form-select">
+                            <option value="0">--Select Function Master --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group">
+                    <label class="control-label">Primary Link Name<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <input type="text" asp-for="PlinkName" id="txtPLinkName" name="PlinkName" Onkeypress="return inputLimiter(event,'NameCharactersAndNumbers')" value="@Model.NVCHPLINKNAME" class="form-control" placeholder="Enter Global Link Name" autocomplete="off" maxlength="100" />
+                        <input asp-for="UpdatedBy" type="hidden" id="hdnGLinkID" value=@Model.UpdatedBy />
+                        <input asp-for="INTPLINKID" id="INTPLINKID" type="hidden" value="@Model.INTPLINKID" />
+                    </div>
+                </div>
+
+                <div class="col-md-4 form-group" id="dvmaxid">
+                    <label class="control-label">Primary Link Sl No<span style="color:Red">*</span></label>
+                    <div class="input-group">
+                        <input type="hidden" asp-for="INTSLNO" name="INTSLNO" id="hfID" />
+                        <label id="lblslno" asp-for="INTSLNO"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="text-center">
+                    <span class="colon"></span>
+                    <button type="submit" name="submit" id="btnsubmit" class="btn btn-primary mb-1t white-text" title="Submit" value="Submit">Update</button>
+                    <input type="button" id="btnReset" value="Cancel" class="btn btn-danger" title="Reset" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
